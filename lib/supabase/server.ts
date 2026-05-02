@@ -19,7 +19,7 @@ export async function createClient() {
             cookieStore.set(name, value, options),
           );
         } catch {
-          // Server Components cannot set cookies — proxy.ts refreshes tokens.
+          // Cookie writes here are skipped in RSC; no Edge proxy + @supabase/ssr (bundler __dirname on Vercel).
         }
       },
     },
