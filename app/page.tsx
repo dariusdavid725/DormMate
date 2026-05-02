@@ -45,7 +45,7 @@ export default async function Home() {
             <>
               Set NEXT_PUBLIC_* in{" "}
               <code className="rounded bg-zinc-200 px-1.5 py-0.5 text-xs dark:bg-zinc-800">
-                web/.env.local
+                .env.local
               </code>
               {" "}
               — see{" "}
