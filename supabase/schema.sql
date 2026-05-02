@@ -22,10 +22,11 @@
   primul proprietar după crearea household-ului („owner”). Invitația colegilor
   de apartament în tabele diferite / RPC-uri poate fi adăugată la pasul următor.
 
-  IMPORTANT — SELECT pe household_members: NU folosi în USING un subquery către
-  același tabel (EXISTS … FROM household_members …), Postgres intră în
-  „infinite recursion detected in policy”. Aici folosim doar user_id = auth.uid();
-  casa apartamentului e vizibilă prin households_select_own (+ membership-ul tău).
+  IMPORTANT — household_members și RLS: nu subquery-uri către household_members în
+  politica de SELECT (USING) sau în INSERT (WITH CHECK) pe același tabel —
+  Postgres raportează „infinite recursion detected in policy”. SELECT: doar rândul
+  curent (`user_id = auth.uid()`). Verificarea „în afara politicii” („nu există
+  încă membri”) se face prin funcție SECURITY DEFINER mai jos.
 
   ────────────────────────────────────────────────────────────────────────────
 */
@@ -77,6 +78,28 @@ before update on public.households
 for each row
 execute procedure public.set_updated_at();
 
+-- RLS helpers (SECURITY DEFINER reads actual rows — not re-run through household_members policies)
+create or replace function public.household_has_no_members(p_household_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select not exists (
+    select 1
+    from public.household_members m
+    where m.household_id = p_household_id
+  );
+$$;
+
+comment on function public.household_has_no_members(uuid) is
+  'True if household has zero members (for RLS; bypasses recursion in INSERT policies).';
+
+revoke all on function public.household_has_no_members(uuid) from public;
+
+grant execute on function public.household_has_no_members(uuid) to authenticated;
+
 -- RLS -----------------------------------------------------------------------------
 alter table public.households enable row level security;
 alter table public.household_members enable row level security;
@@ -125,10 +148,7 @@ with check (
     select 1 from public.households h
     where h.id = household_members.household_id and h.created_by = (select auth.uid())
   )
-  and not exists (
-    select 1 from public.household_members m
-    where m.household_id = household_members.household_id
-  )
+  and public.household_has_no_members(household_members.household_id)
 );
 
 -- Permisiuni implicite (Supabase folosește rolul authenticated) ---------------
