@@ -9,14 +9,18 @@ import {
 
 const initial: HouseholdActionState = {};
 
-export function CreateHouseholdForm() {
+export function CreateHouseholdForm({
+  className = "mt-6 space-y-4",
+}: {
+  className?: string;
+}) {
   const [state, formAction, pending] = useActionState(
     createHousehold,
     initial,
   );
 
   return (
-    <form action={formAction} className="mt-6 space-y-4">
+    <form action={formAction} className={className}>
       {state?.error && (
         <div
           role="alert"
@@ -39,13 +43,13 @@ export function CreateHouseholdForm() {
           required
           maxLength={120}
           placeholder="e.g. 4B Linden Hall, Flat 12"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm outline-none ring-emerald-500/30 placeholder:text-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
+          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 shadow-sm outline-none ring-emerald-500/30 placeholder:text-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
         />
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+        className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-60"
       >
         {pending ? "Creating…" : "Create household"}
       </button>

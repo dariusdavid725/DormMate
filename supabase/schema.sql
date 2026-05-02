@@ -1,39 +1,37 @@
 /*
-  ─────────────────────────────────────────────────────────────────────────────
-  DORMMATE — SCHEMA SUPABASE (tot cuprinsul acestui fișier)
+  -----------------------------------------------------------------------------
+  DORMMATE — Supabase schema / PostgreSQL
 
-  În SQL Editor copiezi DIN CAPĂT PÂNĂ LA SFÂRȘIT (Ctrl+A în acest fișier → Run).
+  In Supabase SQL Editor: select ALL of this file (Ctrl+A), then Run.
+  Safe to run again on the same project (idempotent-ish):
+  DROP IF EXISTS on policies / old overloads; CREATE IF NOT EXISTS tables;
+  CREATE OR REPLACE on functions.
 
-  Este idempotent pentru re-rulări pe același proiect:
-  CREATE IF NOT EXISTS la tabele, DROP POLICY IF EXISTS apoi CREATE, CREATE OR REPLACE
-  la funcții.
-
-  Creează: tabele households + household_members, RLS cu funcții helper, RPC
-  public.create_household_as_owner (folosit din aplicație la „Create household”).
-  ─────────────────────────────────────────────────────────────────────────────
+  Covers: households, household_members, RLS helpers,
+  RPC create_household_as_owner, RPC list_household_members_for_user (list all
+  members when the caller belongs to that household).
+  -----------------------------------------------------------------------------
 */
 
---------------------------------------------------------------------------------
--- 1. Funcții abandonate în versiuni anterioare (ignoră eroarea „does not exist”)
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- Legacy overloads removed in earlier revisions
+-------------------------------------------------------------------------------
+drop function if exists public.user_can_see_household (uuid);
 
-drop function if exists public.user_can_see_household(uuid);
+drop function if exists public.household_created_by_current_user (uuid);
 
-drop function if exists public.household_created_by_current_user(uuid);
-
---------------------------------------------------------------------------------
--- 2. Tabele
---------------------------------------------------------------------------------
-
+-------------------------------------------------------------------------------
+-- Tables
+-------------------------------------------------------------------------------
 create table if not exists public.households (
   id uuid primary key default gen_random_uuid (),
-  name text not null check (length(trim(name)) between 1 and 120),
+  name text not null check (length (trim(name)) between 1 and 120),
   created_by uuid not null references auth.users (id) on delete cascade,
-  created_at timestamptz not null default now(),
+  created_at timestamptz not null default now (),
   updated_at timestamptz not null default now ()
 );
 
-comment on table public.households is 'Apartament / cămin partajat.';
+comment on table public.households is 'Shared flat / dorm space.';
 
 create table if not exists public.household_members (
   id uuid primary key default gen_random_uuid (),
@@ -44,7 +42,7 @@ create table if not exists public.household_members (
   constraint household_members_household_user_unique unique (household_id, user_id)
 );
 
-comment on table public.household_members is 'Membru într-un household.';
+comment on table public.household_members is 'User membership in a household.';
 
 create index if not exists household_members_user_id_idx
   on public.household_members (user_id);
@@ -55,11 +53,10 @@ create index if not exists household_members_household_id_idx
 create index if not exists households_created_by_idx
   on public.households (created_by);
 
---------------------------------------------------------------------------------
--- 3. Trigger updated_at pe households
---------------------------------------------------------------------------------
-
-create or replace function public.set_updated_at()
+-------------------------------------------------------------------------------
+-- Trigger: households.updated_at
+-------------------------------------------------------------------------------
+create or replace function public.set_updated_at ()
 returns trigger
 language plpgsql
 as $$
@@ -76,11 +73,10 @@ before update on public.households
 for each row
 execute procedure public.set_updated_at ();
 
---------------------------------------------------------------------------------
--- 4. Funcții SECURITY DEFINER (RLS fără recurs între households ↔ members)
---------------------------------------------------------------------------------
-
-create or replace function public.user_can_see_household(
+-------------------------------------------------------------------------------
+-- SECURITY DEFINER helpers (avoid RLS recursion across households ↔ members)
+-------------------------------------------------------------------------------
+create or replace function public.user_can_see_household (
   p_household_id uuid,
   p_user_id uuid
 )
@@ -92,13 +88,11 @@ set search_path = public
 as $$
   select p_user_id is not null and (
     exists (
-      select 1
-      from public.households h
+      select 1 from public.households h
       where h.id = p_household_id and h.created_by = p_user_id
     )
     or exists (
-      select 1
-      from public.household_members m
+      select 1 from public.household_members m
       where m.household_id = p_household_id and m.user_id = p_user_id
     )
   );
@@ -142,10 +136,9 @@ $$;
 revoke all on function public.household_has_no_members (uuid) from public;
 grant execute on function public.household_has_no_members (uuid) to authenticated;
 
---------------------------------------------------------------------------------
--- 5. RPC folosit din app: household + membru „owner” într-o singură tranzacție
---------------------------------------------------------------------------------
-
+-------------------------------------------------------------------------------
+-- RPC: create household + owner row (one transaction)
+-------------------------------------------------------------------------------
 create or replace function public.create_household_as_owner (p_name text)
 returns uuid
 language plpgsql
@@ -184,17 +177,43 @@ $$;
 revoke all on function public.create_household_as_owner (text) from public;
 grant execute on function public.create_household_as_owner (text) to authenticated;
 
---------------------------------------------------------------------------------
--- 6. RLS și politici
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- RPC: list members (caller must be in that household; definer read)
+-------------------------------------------------------------------------------
+drop function if exists public.list_household_members_for_user (uuid);
 
+create or replace function public.list_household_members_for_user (p_household_id uuid)
+returns table (user_id uuid, role text, joined_at timestamptz)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select m.user_id,
+         m.role::text as role,
+         m.joined_at
+  from public.household_members m
+  where m.household_id = p_household_id
+    and exists (
+      select 1
+      from public.household_members self
+      where self.household_id = m.household_id
+        and self.user_id = auth.uid ()
+    );
+$$;
+
+revoke all on function public.list_household_members_for_user (uuid) from public;
+grant execute on function public.list_household_members_for_user (uuid) to authenticated;
+
+-------------------------------------------------------------------------------
+-- RLS + policies
+-------------------------------------------------------------------------------
 alter table public.households enable row level security;
 alter table public.household_members enable row level security;
 
 drop policy if exists households_select_own on public.households;
 create policy households_select_own on public.households
-for select to authenticated
-using (
+for select to authenticated using (
   public.user_can_see_household (id, (select auth.uid ()))
 );
 
@@ -233,10 +252,8 @@ with check (
   and public.household_has_no_members (household_members.household_id)
 );
 
---------------------------------------------------------------------------------
--- 7. Permisiuni pe tabele
---------------------------------------------------------------------------------
-
+-------------------------------------------------------------------------------
+-- Table grants
+-------------------------------------------------------------------------------
 grant select, insert, update, delete on public.households to authenticated;
-
 grant select, insert on public.household_members to authenticated;
