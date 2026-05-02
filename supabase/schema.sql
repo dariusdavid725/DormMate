@@ -3,15 +3,13 @@
   DORMMATE — SCHEMA INIȚIAL (PostgreSQL / Supabase)
   ═══════════════════════════════════════════════════════════════════════════
 
-  Tu trebuie să faci (o singură dată după modificări ale acestui fișier):
+  Un singur loc pentru DB: rulezi întreg fișierul în Supabase SQL Editor.
 
-  1) Deschide Supabase Dashboard → proiectul DormMate.
-  2) Mergi la SQL Editor → New query.
-  3) Copiezi întreg conținutul de mai jos (fără acest bloc de comentariu,
-     dacă vrei mai curat în editor — comentariul nu strică, poate fi lăsat).
-  4) Apasă Run.
-  5) Nu ar fi trebuie să apară erori. Dacă reaplici peste schema existentă și
-     obiectele există deja → folosește migrații incrementale mai târziu.
+  1) Dashboard → SQL Editor → New query.
+  2) Copiezi și rulezi întreg fișierul de mai jos (comentariul poate rămâne).
+  3) Este gândit idempotent pentru proiecte deja bootate: CREATE IF NOT EXISTS
+     la tabele, DROP IF EXISTS înainte de politici — actualizezi RLS/funcții fără
+     fișiere separate de „patch”; nu dublează nimic în repo.
 
   Ce creează acest fișier:
   - households: un „spațiu” comun (apartament, camin etc.)
