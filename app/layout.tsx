@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
+
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +17,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DormMate — Intelligent Co-Living",
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+    : undefined,
+  title: {
+    default: "DormMate — Intelligent Co-Living",
+    template: "%s · DormMate",
+  },
   description:
-    "AI-powered shared living for dorms and apartments: money, chores, inventory, presence.",
+    "AI-linked tools for fair shared flats: splits, staples, chores, and focus — without roommate drama.",
+  openGraph: {
+    title: "DormMate",
+    description: "Co-living OS for fair shared flats and dorms.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -24,11 +39,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
+      <body className="flex min-h-full flex-col font-sans text-zinc-900 antialiased dark:bg-black dark:text-zinc-50">
+        <SiteHeader />
+        <main className="flex flex-1 flex-col">{children}</main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }
