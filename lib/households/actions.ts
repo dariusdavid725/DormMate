@@ -3,6 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import {
+  PUBLIC_TRY_AGAIN,
+  shouldExposeSupabaseError,
+} from "@/lib/errors/public";
 import { createClient } from "@/lib/supabase/server";
 
 export type HouseholdActionState = {
@@ -37,12 +41,15 @@ export async function createHousehold(
     .single();
 
   if (insH || !row) {
-    const msg = insH?.message ?? "Could not create household.";
-    const hint =
-      msg.includes("relation") || msg.includes("does not exist")
-        ? " Run supabase/schema.sql in the Supabase SQL Editor first."
-        : "";
-    return { error: msg + hint };
+    if (insH?.message) {
+      console.error("[createHousehold] households insert", insH.message);
+    }
+    if (!shouldExposeSupabaseError()) {
+      return { error: PUBLIC_TRY_AGAIN };
+    }
+    return {
+      error: insH?.message ?? "Could not create household.",
+    };
   }
 
   const { error: insM } = await supabase.from("household_members").insert({
@@ -52,9 +59,12 @@ export async function createHousehold(
   });
 
   if (insM) {
+    console.error("[createHousehold] household_members insert", insM.message);
     await supabase.from("households").delete().eq("id", row.id);
     return {
-      error: insM.message,
+      error: shouldExposeSupabaseError()
+        ? insM.message
+        : PUBLIC_TRY_AGAIN,
     };
   }
 

@@ -22,6 +22,11 @@
   primul proprietar după crearea household-ului („owner”). Invitația colegilor
   de apartament în tabele diferite / RPC-uri poate fi adăugată la pasul următor.
 
+  IMPORTANT — SELECT pe household_members: NU folosi în USING un subquery către
+  același tabel (EXISTS … FROM household_members …), Postgres intră în
+  „infinite recursion detected in policy”. Aici folosim doar user_id = auth.uid();
+  casa apartamentului e vizibilă prin households_select_own (+ membership-ul tău).
+
   ────────────────────────────────────────────────────────────────────────────
 */
 
@@ -105,15 +110,9 @@ using (created_by = (select auth.uid()));
 
 -- Members -----------------------------------------------------------------------
 drop policy if exists hm_select_related on public.household_members;
-create policy hm_select_related on public.household_members
-for select to authenticated using (
-  user_id = (select auth.uid())
-  or exists (
-    select 1 from public.household_members mine
-    where mine.household_id = household_members.household_id
-      and mine.user_id = (select auth.uid())
-  )
-);
+drop policy if exists hm_select_own on public.household_members;
+create policy hm_select_own on public.household_members
+for select to authenticated using (user_id = (select auth.uid()));
 
 -- Primul proprietar după creare household — doar created_by și doar dacă nu există alți membri.
 drop policy if exists hm_insert_first_owner_only on public.household_members;

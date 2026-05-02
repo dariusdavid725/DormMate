@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
+import {
+  PUBLIC_TRY_AGAIN,
+  shouldExposeSupabaseError,
+} from "@/lib/errors/public";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -70,7 +74,11 @@ export default async function DashboardPage() {
     }
   }
 
-  const listError = memErr?.message;
+  const listErrorTechnical = memErr?.message;
+
+  if (memErr?.message) {
+    console.error("[dashboard] household_members", memErr.message);
+  }
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-10 px-4 py-14 sm:px-6">
@@ -86,19 +94,16 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {listError && (
+      {listErrorTechnical && (
         <div
           role="alert"
           className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-100"
         >
           <p className="font-medium">Could not load households</p>
-          <p className="mt-1 opacity-90">{listError}</p>
-          <p className="mt-2 opacity-90">
-            If tables are missing, run{" "}
-            <code className="rounded bg-amber-200/70 px-1 text-xs dark:bg-amber-900/60">
-              supabase/schema.sql
-            </code>{" "}
-            in the Supabase SQL Editor.
+          <p className="mt-1 opacity-90">
+            {shouldExposeSupabaseError()
+              ? listErrorTechnical
+              : PUBLIC_TRY_AGAIN}
           </p>
         </div>
       )}
