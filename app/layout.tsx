@@ -5,7 +5,7 @@ import "./globals.css";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { tryGetMetadataBase } from "@/lib/site-url";
+import { getSiteUrl, tryGetMetadataBase } from "@/lib/site-url";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   description:
     "AI-linked tools for fair shared flats: splits, staples, chores, and focus — without roommate drama.",
   openGraph: {
+    url: process.env.NEXT_PUBLIC_SITE_URL ? getSiteUrl() : undefined,
     title: "DormMate",
     description: "Co-living OS for fair shared flats and dorms.",
     type: "website",
