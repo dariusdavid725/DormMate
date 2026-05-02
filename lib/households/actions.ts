@@ -26,17 +26,31 @@ export async function createHousehold(
   }
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) {
-    return { error: "Not signed in." };
+  const { error: refreshError } = await supabase.auth.refreshSession();
+
+  if (refreshError) {
+    console.error("[createHousehold] refreshSession", refreshError.message);
+  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const userId = session?.user?.id;
+
+  if (!session?.access_token || !userId) {
+    console.error("[createHousehold] missing session or JWT for PostgREST");
+    return {
+      error: shouldExposeSupabaseError()
+        ? "No valid session JWT for database. Try signing out and in again."
+        : PUBLIC_TRY_AGAIN,
+    };
   }
 
   const { data: row, error: insH } = await supabase
     .from("households")
-    .insert({ name, created_by: user.id })
+    .insert({ name, created_by: userId })
     .select("id")
     .single();
 
@@ -54,7 +68,7 @@ export async function createHousehold(
 
   const { error: insM } = await supabase.from("household_members").insert({
     household_id: row.id,
-    user_id: user.id,
+    user_id: userId,
     role: "owner",
   });
 
