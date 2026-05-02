@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
+import { getSupabaseAnonKey, getSupabaseUrl } from "./env";
 
 /** Refreshez auth JWT în cookies dacă sunt setate variabilele Supabase. */
 export async function updateSession(request: NextRequest) {
