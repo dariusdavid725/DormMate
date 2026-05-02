@@ -7,7 +7,7 @@
   DROP IF EXISTS on policies / old overloads; CREATE IF NOT EXISTS tables;
   CREATE OR REPLACE on functions.
 
-  Covers: households, household_members, RLS helpers,
+  Covers: households, household_members, receipts, RLS helpers,
   RPC create_household_as_owner, RPC list_household_members_for_user (list all
   members when the caller belongs to that household).
   -----------------------------------------------------------------------------
@@ -52,6 +52,25 @@ create index if not exists household_members_household_id_idx
 
 create index if not exists households_created_by_idx
   on public.households (created_by);
+
+create table if not exists public.receipts (
+  id uuid primary key default gen_random_uuid (),
+  household_id uuid not null references public.households (id) on delete cascade,
+  created_by uuid not null references auth.users (id) on delete cascade,
+  merchant text,
+  total_amount numeric (14, 2),
+  currency text not null default 'EUR',
+  purchased_at timestamptz,
+  source_filename text,
+  extraction jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now ()
+);
+
+comment on table public.receipts is 'Scanned receipts / AI extraction payloads per household.';
+
+create index if not exists receipts_household_id_idx on public.receipts (household_id);
+
+create index if not exists receipts_created_at_idx on public.receipts (created_at desc);
 
 -------------------------------------------------------------------------------
 -- Trigger: households.updated_at
@@ -252,8 +271,25 @@ with check (
   and public.household_has_no_members (household_members.household_id)
 );
 
+alter table public.receipts enable row level security;
+
+drop policy if exists receipts_select_visible on public.receipts;
+create policy receipts_select_visible on public.receipts
+for select to authenticated using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+);
+
+drop policy if exists receipts_insert_member on public.receipts;
+create policy receipts_insert_member on public.receipts
+for insert to authenticated
+with check (
+  created_by = (select auth.uid ())
+  and public.user_can_see_household (household_id, (select auth.uid ()))
+);
+
 -------------------------------------------------------------------------------
 -- Table grants
 -------------------------------------------------------------------------------
 grant select, insert, update, delete on public.households to authenticated;
 grant select, insert on public.household_members to authenticated;
+grant select, insert on public.receipts to authenticated;

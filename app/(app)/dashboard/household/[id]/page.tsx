@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { RenameHouseholdForm } from "@/components/dashboard/rename-household-form";
+import { ReceiptList } from "@/components/receipts/receipt-list";
+import { ReceiptScannerPanel } from "@/components/receipts/receipt-scanner-panel";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
@@ -13,6 +15,7 @@ import {
   loadHouseholdMembers,
   loadHouseholdSummaries,
 } from "@/lib/households/queries";
+import { loadReceiptsForHousehold } from "@/lib/receipts/queries";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +57,13 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const { id } = await props.params;
   const resolvedSearch =
     props.searchParams != null ? await props.searchParams : {};
-  const view = resolvedSearch.view === "members" ? "members" : "overview";
+  const rawView = resolvedSearch.view;
+  const view =
+    rawView === "members"
+      ? "members"
+      : rawView === "receipts"
+        ? "receipts"
+        : "overview";
 
   const supabase = await createClient();
   const {
@@ -76,6 +85,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
   const membersResult =
     view === "members" ? await loadHouseholdMembers(id) : null;
+
+  const receiptsPayload =
+    view === "receipts" ? await loadReceiptsForHousehold(id) : null;
 
   const canRename = household.createdBy === user.id;
 
@@ -156,50 +168,77 @@ export default async function HouseholdDetailPage(props: PageProps) {
         >
           Members
         </Link>
+        <Link
+          href={`${tabBase}?view=receipts`}
+          scroll={false}
+          className={[
+            "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
+            view === "receipts"
+              ? "border border-b-0 border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+              : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200",
+          ].join(" ")}
+        >
+          Receipts
+        </Link>
       </div>
 
       {view === "overview" ? (
         <>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <Link
+              href={`${tabBase}?view=receipts`}
+              scroll={false}
+              className="group flex flex-col rounded-3xl border border-teal-200/80 bg-gradient-to-br from-teal-50 via-white to-amber-50 p-6 shadow-sm ring-1 ring-teal-600/10 transition hover:shadow-md dark:border-teal-900/50 dark:from-teal-950/40 dark:via-stone-950 dark:to-amber-950/30 dark:ring-teal-400/15"
+            >
+              <span className="w-fit rounded-full bg-teal-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                Beta
+              </span>
+              <h2 className="mt-4 text-lg font-semibold text-stone-900 group-hover:text-teal-900 dark:text-stone-50 dark:group-hover:text-teal-200">
+                Receipts & splits
+              </h2>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+                Snap grocery runs — we read totals so nobody re-types chaos from a
+                crumpled slip.
+              </p>
+              <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-700 group-hover:gap-2 dark:text-teal-300">
+                Open receipts tab
+                <span aria-hidden>→</span>
+              </span>
+            </Link>
             {[
               {
-                title: "Balances",
-                desc: "Shared expenses & settle-ups with receipt context.",
-                status: "Planned",
+                title: "Pantry & staples",
+                desc: "Shared TP, milk, spices — low-stock cues without passive aggression.",
+                status: "Soon",
               },
               {
-                title: "Staples & groceries",
-                desc: "Shared inventory and predictable restock cues.",
-                status: "Planned",
-              },
-              {
-                title: "Chores & norms",
-                desc: "Fair rotations and low-drama reminders.",
-                status: "Planned",
+                title: "Chores & quiet hours",
+                desc: "Fair rotations and gentle signal when someone’s heads-down.",
+                status: "Soon",
               },
             ].map((card) => (
               <article
                 key={card.title}
-                className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50"
+                className="flex flex-col rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950/50"
               >
-                <span className="w-fit rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                <span className="w-fit rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-600 dark:bg-stone-800 dark:text-stone-400">
                   {card.status}
                 </span>
-                <h2 className="mt-4 text-base font-semibold text-zinc-900 dark:text-white">
+                <h2 className="mt-4 text-base font-semibold text-stone-900 dark:text-stone-50">
                   {card.title}
                 </h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
                   {card.desc}
                 </p>
               </article>
             ))}
           </div>
 
-          <section className="mt-12 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950/35">
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+          <section className="mt-12 rounded-3xl border border-stone-200 bg-white p-8 shadow-sm dark:border-stone-800 dark:bg-stone-950/35">
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
               Settings
             </h2>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
               {canRename
                 ? "Rename is available to whoever created this household."
                 : "Only the creator can rename this household. Ask them to adjust the display name."}
@@ -212,7 +251,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ) : null}
           </section>
         </>
-      ) : (
+      ) : view === "members" ? (
         <section className="mt-10">
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40">
             <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
@@ -282,6 +321,39 @@ export default async function HouseholdDetailPage(props: PageProps) {
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+        </section>
+      ) : (
+        <section className="mt-10 space-y-8">
+          <ReceiptScannerPanel householdId={id} />
+          <div>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
+              Saved receipts
+            </h2>
+            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
+              Everyone in this household can see these — transparency beats awkward
+              guessing about who paid what.
+            </p>
+            {receiptsPayload?.error ? (
+              <p className="mt-4 text-sm text-rose-700 dark:text-rose-300">
+                Could not load receipts. Run the latest{" "}
+                <code className="rounded bg-stone-100 px-1 dark:bg-stone-800">
+                  supabase/schema.sql
+                </code>{" "}
+                so the{" "}
+                <code className="rounded bg-stone-100 px-1 dark:bg-stone-800">
+                  receipts
+                </code>{" "}
+                table exists.
+              </p>
+            ) : (
+              <div className="mt-6">
+                <ReceiptList
+                  receipts={receiptsPayload?.receipts ?? []}
+                  emptyHint="No receipts saved yet — upload one above."
+                />
+              </div>
             )}
           </div>
         </section>

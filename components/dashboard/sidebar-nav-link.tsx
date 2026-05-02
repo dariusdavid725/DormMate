@@ -23,14 +23,14 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
       className={[
         "group flex rounded-xl px-3 py-2 text-sm transition",
         active
-          ? "bg-emerald-600/12 font-medium text-emerald-900 ring-1 ring-emerald-600/25 dark:bg-emerald-500/15 dark:text-emerald-50 dark:ring-emerald-400/25"
-          : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100",
+          ? "bg-teal-600/15 font-medium text-teal-950 ring-1 ring-teal-600/25 dark:bg-teal-500/15 dark:text-teal-50 dark:ring-teal-400/30"
+          : "text-stone-600 hover:bg-amber-50/90 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100",
       ].join(" ")}
     >
       <div className="min-w-0 flex-1">
         <span className="block truncate">{title}</span>
         {hint ? (
-          <span className="mt-0.5 block truncate text-[11px] font-normal uppercase tracking-wide text-zinc-400 group-hover:text-zinc-500 dark:text-zinc-500 dark:group-hover:text-zinc-400">
+          <span className="mt-0.5 block truncate text-[11px] font-normal uppercase tracking-wide text-stone-400 group-hover:text-stone-500 dark:text-stone-500 dark:group-hover:text-stone-400">
             {hint}
           </span>
         ) : null}

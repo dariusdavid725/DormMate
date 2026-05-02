@@ -17,30 +17,30 @@ export async function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200/80 bg-white/85 backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-950/85">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-stone-200/90 bg-[#faf8f5]/90 backdrop-blur-md dark:border-stone-800/90 dark:bg-stone-950/90">
+      <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight text-zinc-900 dark:text-white"
+          className="flex items-center gap-2.5 font-semibold tracking-tight text-stone-900 dark:text-white"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-xs font-bold text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-xs font-bold text-white shadow-md shadow-teal-900/25 dark:shadow-black/40">
             DM
           </span>
           <span>DormMate</span>
         </Link>
         <nav
           aria-label="Main"
-          className="hidden flex-1 justify-center md:flex md:gap-8"
+          className="hidden flex-1 justify-center md:flex md:gap-10"
         >
           <Link
             href="/#features"
-            className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            className="text-sm font-medium text-stone-600 transition-colors hover:text-teal-800 dark:text-stone-400 dark:hover:text-teal-300"
           >
-            Features
+            Why it helps
           </Link>
           <Link
             href="/#how-it-works"
-            className="text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            className="text-sm font-medium text-stone-600 transition-colors hover:text-teal-800 dark:text-stone-400 dark:hover:text-teal-300"
           >
             How it works
           </Link>
@@ -48,19 +48,19 @@ export async function SiteHeader() {
         <div className="flex items-center gap-2 sm:gap-3">
           {userEmail ? (
             <>
-              <span className="hidden max-w-[12rem] truncate text-sm text-zinc-600 dark:text-zinc-400 sm:inline">
+              <span className="hidden max-w-[12rem] truncate text-sm text-stone-600 dark:text-stone-400 sm:inline">
                 {userEmail}
               </span>
               <Link
                 href="/dashboard"
-                className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+                className="rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-teal-500 hover:to-emerald-500"
               >
-                Dashboard
+                Your space
               </Link>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-800 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                  className="rounded-2xl border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-900 dark:text-stone-100 dark:hover:bg-stone-800"
                 >
                   Sign out
                 </button>
@@ -70,13 +70,13 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 transition hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-white"
+                className="rounded-2xl px-3 py-2 text-sm font-semibold text-stone-700 transition hover:text-teal-800 dark:text-stone-300 dark:hover:text-teal-300"
               >
                 Log in
               </Link>
               <Link
                 href="/signup"
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700"
+                className="rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-teal-500 hover:to-emerald-500"
               >
                 Get started
               </Link>

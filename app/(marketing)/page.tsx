@@ -5,35 +5,35 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: {
-    default: "DormMate — Co-living for roommates who hate spreadsheets",
+    default: "DormMate — Roommate life without the spreadsheet dread",
     template: "%s · DormMate",
   },
   description:
-    "Split bills fairly, chore balance, groceries, and focus time — shared living OS for students and young renters.",
+    "Fair splits, groceries that actually get bought again, and chores that don’t blow up the group chat — made for students & renters sharing a roof.",
 };
 
 const features = [
   {
-    title: "Fair money splits",
-    body: "Receipts, shared vs personal buys, settle-up without WhatsApp archaeology.",
-    icon: "◎",
+    title: "Money without shame spirals",
+    body: "Know what’s shared vs yours — settle up without digging through three apps.",
+    emoji: "🧾",
   },
   {
-    title: "Groceries that don’t spiral",
-    body: "Shared lists and low-stock cues so TP and milk disappear less mysteriously.",
-    icon: "◆",
+    title: "The pantry people remember",
+    body: "Shared staples so TP and milk vanish less mysteriously.",
+    emoji: "🥛",
   },
   {
-    title: "Quiet hours, respectfully",
-    body: "Signals for studying and sleep so interruptions become opt-in.",
-    icon: "☾",
+    title: "Boundaries, kindly said",
+    body: "Study mode & quiet windows — signal respect without passive‑aggressive sticky notes.",
+    emoji: "🌙",
   },
 ];
 
 const steps = [
-  "Sign up once with your uni or personal email.",
-  "Create your household — or join via invite.",
-  "Add expenses, chores, and grocery staples as you actually live.",
+  "Make an account with your uni or personal email.",
+  "Spin up a household for your flat — invites land soon.",
+  "Scan receipts and split fairly instead of doing receipt archaeology.",
 ];
 
 export default async function Home() {
@@ -50,43 +50,48 @@ export default async function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-28">
+      <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 sm:pt-20">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-32 h-[28rem] bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(16,185,129,0.18),transparent)] dark:bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(16,185,129,0.1),transparent)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-15%,rgba(45,212,191,0.22),transparent)] dark:bg-[radial-gradient(ellipse_90%_70%_at_50%_-15%,rgba(45,212,191,0.12),transparent)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-amber-50/90 to-transparent dark:from-stone-950"
         />
         <div className="relative mx-auto max-w-3xl text-center">
-          <p className="inline-flex rounded-full border border-emerald-200/80 bg-emerald-50/80 px-3 py-1 text-xs font-medium text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-100">
-            Shared flats & dorms • Private beta quality
+          <p className="inline-flex rounded-full border border-teal-200/90 bg-white/90 px-4 py-1.5 text-xs font-semibold text-teal-900 shadow-sm backdrop-blur dark:border-teal-800/80 dark:bg-teal-950/40 dark:text-teal-100">
+            Built for shared kitchens & thin walls · Honest beta
           </p>
-          <h1 className="mt-6 text-balance text-4xl font-semibold tracking-tight text-zinc-950 sm:text-5xl lg:text-[3.35rem] dark:text-white">
-            Co-living that stays organized without becoming a second job
+          <h1 className="mt-8 text-balance text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl lg:text-[3.15rem] lg:leading-[1.12] dark:text-stone-50">
+            Shared rent is enough drama — money doesn&apos;t have to be
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-pretty text-lg text-zinc-600 dark:text-zinc-400">
-            DormMate is the lightweight operating system for roommates — money,
-            pantry, chores, and headspace — with AI-ready hooks as we mature.
+          <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-stone-600 dark:text-stone-400">
+            Research on student stress shows money ambiguity spikes anxiety and
+            avoidance. DormMate keeps things visible and fair — starting with
+            receipts you can snap, not spreadsheets you dread.
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
             {userLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="inline-flex rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                className="inline-flex rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/20 transition hover:from-teal-500 hover:to-emerald-500 dark:shadow-black/40"
               >
-                Go to dashboard
+                Go to your space
               </Link>
             ) : (
               <>
                 <Link
                   href="/signup"
-                  className="inline-flex rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+                  className="inline-flex rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/20 transition hover:from-teal-500 hover:to-emerald-500 dark:shadow-black/40"
                 >
-                  Start free account
+                  Start free
                 </Link>
                 <Link
                   href="/login"
-                  className="inline-flex rounded-lg border border-zinc-300 px-6 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-white dark:hover:bg-zinc-800"
+                  className="inline-flex rounded-2xl border border-stone-300 bg-white/90 px-8 py-3.5 text-sm font-semibold text-stone-900 backdrop-blur transition hover:bg-stone-50 dark:border-stone-600 dark:bg-stone-900/80 dark:text-stone-50 dark:hover:bg-stone-800"
                 >
-                  Log in
+                  I already have an account
                 </Link>
               </>
             )}
@@ -96,23 +101,29 @@ export default async function Home() {
 
       <section
         id="features"
-        className="scroll-mt-24 border-y border-zinc-200 bg-zinc-50/80 py-16 dark:border-zinc-800 dark:bg-zinc-950/60"
+        className="scroll-mt-24 border-y border-stone-200/90 bg-gradient-to-b from-white to-amber-50/50 py-16 dark:border-stone-800 dark:from-stone-950 dark:to-stone-950"
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-center text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">
-            Designed for noisy group chats & tight budgets
+          <h2 className="text-center text-2xl font-semibold tracking-tight text-stone-900 dark:text-stone-50">
+            Made for people who actually split a fridge
           </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+            Co‑living works better when trust is easy — clear totals, shared
+            rituals, and fewer “who ate my yoghurt?” mysteries.
+          </p>
           <div className="mt-14 grid gap-6 sm:grid-cols-3">
             {features.map((item) => (
               <article
                 key={item.title}
-                className="rounded-2xl border border-zinc-200 bg-white p-7 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                className="rounded-3xl border border-stone-200/90 bg-white/95 p-7 shadow-sm ring-1 ring-stone-900/[0.03] dark:border-stone-800 dark:bg-stone-900/70 dark:ring-white/[0.04]"
               >
-                <div className="text-2xl text-emerald-600 dark:text-emerald-400">{item.icon}</div>
-                <h3 className="mt-4 text-lg font-medium text-zinc-900 dark:text-white">
+                <div className="text-3xl" aria-hidden>
+                  {item.emoji}
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-stone-900 dark:text-stone-50">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                <p className="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
                   {item.body}
                 </p>
               </article>
@@ -122,47 +133,47 @@ export default async function Home() {
       </section>
 
       <section id="how-it-works" className="scroll-mt-24 px-4 py-16 sm:px-6">
-        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">
-              How groups get started
+            <h2 className="text-2xl font-semibold tracking-tight text-stone-900 dark:text-stone-50">
+              Three calm steps
             </h2>
             <ol className="mt-10 space-y-6">
               {steps.map((text, idx) => (
                 <li key={text} className="flex gap-4">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-semibold text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-sm font-bold text-white shadow-md shadow-teal-900/25 dark:shadow-black/40">
                     {idx + 1}
                   </span>
-                  <p className="text-sm leading-relaxed text-zinc-600 pt-2 dark:text-zinc-400">
+                  <p className="pt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
                     {text}
                   </p>
                 </li>
               ))}
             </ol>
           </div>
-          <div className="mt-14 rounded-2xl border border-dashed border-zinc-300 p-10 text-center text-sm text-zinc-500 lg:mt-0 dark:border-zinc-700 dark:text-zinc-400">
-            Household creation and invites ship next — you already have accounts and a
-            protected dashboard scaffold.
+          <div className="mt-14 rounded-3xl border border-dashed border-teal-300/70 bg-teal-50/60 p-10 text-center text-sm leading-relaxed text-teal-950 lg:mt-0 dark:border-teal-800/60 dark:bg-teal-950/30 dark:text-teal-100">
+            Small households feel safer when tools sound human — not like HR for
+            your flatmate.
           </div>
         </div>
       </section>
 
-      <section className="border-t border-zinc-200 bg-emerald-600 px-4 py-16 text-center dark:border-zinc-800">
-        <p className="text-lg font-medium text-white">
-          Ready to calm the roommate chaos?
+      <section className="border-t border-stone-200 bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 px-4 py-16 text-center dark:border-stone-800">
+        <p className="text-lg font-semibold text-white drop-shadow-sm">
+          Ready to lower the awkward thermostat?
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           {userLoggedIn ? (
             <Link
               href="/dashboard"
-              className="inline-flex rounded-lg bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-zinc-100"
+              className="inline-flex rounded-2xl bg-white px-8 py-3.5 text-sm font-semibold text-teal-900 shadow-lg shadow-teal-950/30 transition hover:bg-stone-50"
             >
-              Open dashboard
+              Open workspace
             </Link>
           ) : (
             <Link
               href="/signup"
-              className="inline-flex rounded-lg bg-white px-6 py-3 text-sm font-semibold text-emerald-900 transition hover:bg-zinc-100"
+              className="inline-flex rounded-2xl bg-white px-8 py-3.5 text-sm font-semibold text-teal-900 shadow-lg shadow-teal-950/30 transition hover:bg-stone-50"
             >
               Join DormMate
             </Link>

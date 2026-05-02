@@ -20,14 +20,14 @@ export function DashboardShell({
   const stripItems = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-zinc-100/90 via-zinc-50 to-white dark:from-black dark:via-zinc-950 dark:to-black">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-amber-50/80 via-[#faf8f5] to-white dark:from-stone-950 dark:via-stone-950 dark:to-stone-950">
       <WorkspaceHeader email={email} />
       <MobileHouseholdStrip households={stripItems} />
       <div className="flex flex-1 min-h-0">
-        <aside className="hidden w-[272px] shrink-0 overflow-y-auto border-r border-zinc-200 bg-white/60 py-6 pl-8 pr-4 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/50 lg:flex lg:flex-col">
+        <aside className="hidden w-[272px] shrink-0 overflow-y-auto border-r border-stone-200/90 bg-white/70 py-6 pl-8 pr-4 backdrop-blur dark:border-stone-800 dark:bg-stone-950/60 lg:flex lg:flex-col">
           <nav aria-label="Workspace" className="flex flex-col gap-6">
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
                 Main
               </p>
               <div className="flex flex-col gap-0.5">
@@ -40,7 +40,7 @@ export function DashboardShell({
               </div>
             </div>
             <div className="min-h-0 flex-1">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-400 dark:text-stone-500">
                 Households
               </p>
               <div className="flex flex-col gap-0.5">
@@ -53,25 +53,25 @@ export function DashboardShell({
                   />
                 ))}
                 {households.length === 0 ? (
-                  <p className="rounded-xl border border-dashed border-zinc-200 px-3 py-4 text-xs leading-relaxed text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+                  <p className="rounded-xl border border-dashed border-stone-300 px-3 py-4 text-xs leading-relaxed text-stone-500 dark:border-stone-700 dark:text-stone-400">
                     No households yet — create one from the overview.
                   </p>
                 ) : null}
               </div>
             </div>
-            <div className="mt-auto border-t border-zinc-200 pt-6 text-[11px] text-zinc-500 dark:border-zinc-800 dark:text-zinc-500">
-              <p className="font-medium uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-500">
+            <div className="mt-auto border-t border-stone-200 pt-6 text-[11px] text-stone-500 dark:border-stone-800 dark:text-stone-500">
+              <p className="font-medium uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500">
                 Legal
               </p>
               <div className="mt-2 flex flex-col gap-1.5">
                 <a
-                  className="text-zinc-600 hover:text-emerald-700 hover:underline dark:text-zinc-400 dark:hover:text-emerald-400"
+                  className="text-stone-600 hover:text-teal-800 hover:underline dark:text-stone-400 dark:hover:text-teal-300"
                   href="/privacy"
                 >
                   Privacy
                 </a>
                 <a
-                  className="text-zinc-600 hover:text-emerald-700 hover:underline dark:text-zinc-400 dark:hover:text-emerald-400"
+                  className="text-stone-600 hover:text-teal-800 hover:underline dark:text-stone-400 dark:hover:text-teal-300"
                   href="/terms"
                 >
                   Terms
@@ -93,8 +93,8 @@ export function DashboardShell({
           <main className="relative flex-1 px-4 py-8 lg:px-10 lg:py-10">
             {children}
           </main>
-          <footer className="border-t border-zinc-200/90 px-4 py-6 text-center text-[11px] text-zinc-500 lg:px-10 dark:border-zinc-800 dark:text-zinc-500">
-            DormMate workspace — shared living without spreadsheet chaos.
+          <footer className="border-t border-stone-200/90 px-4 py-6 text-center text-[11px] text-stone-500 lg:px-10 dark:border-stone-800 dark:text-stone-500">
+            DormMate — fewer tense chats about milk money.
           </footer>
         </div>
       </div>
