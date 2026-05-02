@@ -37,9 +37,7 @@ export async function createHousehold(
     data: { session },
   } = await supabase.auth.getSession();
 
-  const userId = session?.user?.id;
-
-  if (!session?.access_token || !userId) {
+  if (!session?.access_token || !session.user?.id) {
     console.error("[createHousehold] missing session or JWT for PostgREST");
     return {
       error: shouldExposeSupabaseError()
@@ -48,37 +46,20 @@ export async function createHousehold(
     };
   }
 
-  const { data: row, error: insH } = await supabase
-    .from("households")
-    .insert({ name, created_by: userId })
-    .select("id")
-    .single();
+  const { data: householdId, error: rpcErr } = await supabase.rpc(
+    "create_household_as_owner",
+    { p_name: name },
+  );
 
-  if (insH || !row) {
-    if (insH?.message) {
-      console.error("[createHousehold] households insert", insH.message);
+  if (rpcErr || !householdId) {
+    if (rpcErr?.message) {
+      console.error("[createHousehold] rpc create_household_as_owner", rpcErr.message);
     }
     if (!shouldExposeSupabaseError()) {
       return { error: PUBLIC_TRY_AGAIN };
     }
     return {
-      error: insH?.message ?? "Could not create household.",
-    };
-  }
-
-  const { error: insM } = await supabase.from("household_members").insert({
-    household_id: row.id,
-    user_id: userId,
-    role: "owner",
-  });
-
-  if (insM) {
-    console.error("[createHousehold] household_members insert", insM.message);
-    await supabase.from("households").delete().eq("id", row.id);
-    return {
-      error: shouldExposeSupabaseError()
-        ? insM.message
-        : PUBLIC_TRY_AGAIN,
+      error: rpcErr?.message ?? "Could not create household.",
     };
   }
 

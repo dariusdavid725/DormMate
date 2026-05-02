@@ -147,6 +147,49 @@ revoke all on function public.household_has_no_members(uuid) from public;
 
 grant execute on function public.household_has_no_members(uuid) to authenticated;
 
+-- App entrypoint (Server Actions / SSR): one transaction, definer INSERTs bypass flaky JWT↔REST RLS on split calls.
+create or replace function public.create_household_as_owner(p_name text)
+returns uuid
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  trimmed text;
+  hid uuid;
+  uid uuid;
+begin
+  uid := auth.uid();
+  if uid is null then
+    raise exception 'not authenticated'
+      using errcode = '42501';
+  end if;
+
+  trimmed := trim(both from p_name);
+  if length(trimmed) < 1 or length(trimmed) > 120 then
+    raise exception 'invalid household name'
+      using errcode = '22023';
+  end if;
+
+  insert into public.households (name, created_by)
+  values (trimmed, uid)
+  returning id into hid;
+
+  insert into public.household_members (household_id, user_id, role)
+  values (hid, uid, 'owner');
+
+  return hid;
+end;
+$$;
+
+comment on function public.create_household_as_owner(text) is
+  'Atomic household + owner row; SECURITY DEFINER so PostgREST need not satisfy multi-step INSERT RLS chain.';
+
+revoke all on function public.create_household_as_owner(text) from public;
+
+grant execute on function public.create_household_as_owner(text) to authenticated;
+
 -- RLS -----------------------------------------------------------------------------
 alter table public.households enable row level security;
 alter table public.household_members enable row level security;
