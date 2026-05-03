@@ -21,13 +21,18 @@ function SubmitPending({
 
 type HouseholdOption = { id: string; name: string };
 
+type MemberOption = { userId: string; label: string };
+
 export function CreateHouseholdTaskForm({
   households,
   fixedHouseholdId,
+  memberOptions,
   className,
 }: {
   households: HouseholdOption[];
   fixedHouseholdId?: string;
+  /** When provided (e.g. on household tasks tab), populate assign-to dropdown */
+  memberOptions?: MemberOption[];
   className?: string;
 }) {
   const [state, formAction] = useActionState<
@@ -41,6 +46,10 @@ export function CreateHouseholdTaskForm({
   const fixed =
     typeof fixedHouseholdId === "string" ? fixedHouseholdId.trim() : "";
   const canPost = fixed.length > 0 || households.length > 0;
+
+  const membersSorted = [...(memberOptions ?? [])].sort((a, b) =>
+    a.label.localeCompare(b.label),
+  );
 
   if (!canPost) {
     return null;
@@ -110,6 +119,41 @@ export function CreateHouseholdTaskForm({
           className="mt-2 w-full resize-none rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg/60 px-3 py-2.5 text-sm text-dm-text outline-none focus-visible:border-dm-electric focus-visible:ring-2 focus-visible:ring-dm-electric/20"
         />
       </label>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <label className="block">
+          <span className="text-xs font-bold uppercase tracking-wider text-dm-muted">
+            Assign to · optional
+          </span>
+          <select
+            name="assigned_to"
+            defaultValue=""
+            className="mt-2 w-full rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg/60 px-3 py-2.5 text-sm text-dm-text outline-none focus-visible:border-dm-electric"
+          >
+            <option value="">Anyone in the flat</option>
+            {membersSorted.map((m) => (
+              <option key={m.userId} value={m.userId}>
+                {m.label}
+              </option>
+            ))}
+          </select>
+          {membersSorted.length === 0 ? (
+            <span className="mt-2 block text-[11px] text-dm-muted">
+              Invite roommates — then you can assign by name here.
+            </span>
+          ) : null}
+        </label>
+        <label className="block">
+          <span className="text-xs font-bold uppercase tracking-wider text-dm-muted">
+            Due · optional
+          </span>
+          <input
+            type="date"
+            name="due_at"
+            className="mt-2 w-full rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg/60 px-3 py-2.5 text-sm tabular-nums text-dm-text outline-none focus-visible:border-dm-electric"
+          />
+        </label>
+      </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="block">

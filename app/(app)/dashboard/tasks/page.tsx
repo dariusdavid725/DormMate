@@ -3,13 +3,19 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { CreateHouseholdTaskForm } from "@/components/tasks/create-household-task-form";
-import { HouseholdTaskList } from "@/components/tasks/household-task-list";
+import {
+  HouseholdCompletedTaskList,
+  HouseholdTaskList,
+} from "@/components/tasks/household-task-list";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
-import { loadHouseholdSummaries } from "@/lib/households/queries";
-import { loadOpenTasksForUser } from "@/lib/tasks/queries";
+import { loadHouseholdMembers, loadHouseholdSummaries } from "@/lib/households/queries";
+import {
+  loadOpenTasksForUser,
+  loadRecentCompletedTasksForUser,
+} from "@/lib/tasks/queries";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +36,56 @@ export default async function DashboardTasksPage() {
 
   const { households, error: hhErr } = await loadHouseholdSummaries(user.id);
   const { tasks, error: taskErr } = await loadOpenTasksForUser(user.id);
+  const hhIds = households.map((h) => h.id);
+  const { tasks: doneRecently, error: doneErr } =
+    await loadRecentCompletedTasksForUser(hhIds, 14);
+
+  const ids = [
+    ...new Set(
+      [...tasks, ...doneRecently]
+        .flatMap((t) => [t.assignedToUserId, t.completedByUserId])
+        .filter((x): x is string => !!x),
+    ),
+  ];
+
+  let profileMap: Record<string, string> = {};
+
+  if (ids.length > 0) {
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("id, display_name")
+      .in("id", ids);
+
+    profileMap = Object.fromEntries(
+      (profs ?? []).map((p) => {
+        const row = p as { id: string; display_name: string | null };
+        const dn = row.display_name?.trim();
+        return [
+          row.id,
+          dn && dn.length ? dn : `Mate · ${row.id.slice(0, 6)}`,
+        ] as const;
+      }),
+    );
+  }
+
+  const memberLabels = profileMap;
+
+  let assignOptions:
+    | { userId: string; label: string }[]
+    | undefined;
+
+  if (households.length === 1) {
+    const m = await loadHouseholdMembers(households[0]!.id);
+    if (Array.isArray(m)) {
+      assignOptions = m.map((mem) => ({
+        userId: mem.userId,
+        label:
+          mem.displayName?.trim()
+            ?? mem.email?.trim()
+            ?? `Mate · ${mem.userId.slice(0, 6)}`,
+      }));
+    }
+  }
 
   const householdOptions = households.map((h) => ({ id: h.id, name: h.name }));
 
@@ -69,7 +125,20 @@ export default async function DashboardTasksPage() {
       <section className="grid gap-8 lg:grid-cols-[1fr,minmax(280px,380px)]">
         <div className="space-y-2">
           <h2 className="font-cozy-display text-xl text-dm-muted">Open stickies</h2>
-          <HouseholdTaskList tasks={tasks} />
+          <HouseholdTaskList
+            tasks={tasks}
+            currentUserId={user.id}
+            memberLabels={memberLabels}
+          />
+          <div className="cozy-receipt cozy-tilt-xs-alt mt-8 px-4 py-4">
+            <h3 className="text-sm font-semibold text-dm-text">
+              Peeled lately
+            </h3>
+            <HouseholdCompletedTaskList
+              tasks={doneRecently}
+              memberLabels={memberLabels}
+            />
+          </div>
         </div>
 
         <div className="cozy-poster cozy-tilt-xs-alt p-5">
@@ -89,6 +158,7 @@ export default async function DashboardTasksPage() {
             <CreateHouseholdTaskForm
               className="mt-6 space-y-4"
               households={householdOptions}
+              memberOptions={assignOptions}
             />
           )}
         </div>

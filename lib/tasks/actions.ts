@@ -20,6 +20,8 @@ export async function createHouseholdTask(
   const rewardLabelRaw = String(formData.get("reward_label") ?? "").trim();
   const pointsRaw = String(formData.get("reward_points") ?? "10").trim();
   const rewardPoints = Math.min(500, Math.max(1, Math.floor(Number(pointsRaw)) || 10));
+  const assignedRaw = String(formData.get("assigned_to") ?? "").trim();
+  const dueRaw = String(formData.get("due_at") ?? "").trim();
 
   if (!householdId) {
     return { error: "Choose a household." };
@@ -43,6 +45,14 @@ export async function createHouseholdTask(
     };
   }
 
+  const uuidRe =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const assigned_to = uuidRe.test(assignedRaw) ? assignedRaw : null;
+  const due_at =
+    dueRaw.match(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?/)
+      ? new Date(dueRaw.includes("T") ? dueRaw : `${dueRaw}T23:59:59`).toISOString()
+      : null;
+
   const { error: insertErr } = await supabase.from("household_tasks").insert({
     household_id: householdId,
     title,
@@ -50,6 +60,8 @@ export async function createHouseholdTask(
     reward_points: rewardPoints,
     reward_label: rewardLabelRaw.length ? rewardLabelRaw : null,
     created_by: uid,
+    assigned_to,
+    due_at,
   });
 
   if (insertErr?.message) {

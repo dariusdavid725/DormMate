@@ -129,3 +129,117 @@ export async function updateHouseholdName(
   revalidatePath(detailPath);
   redirect(detailPath);
 }
+
+export type InviteActionState = { error?: string; ok?: boolean; code?: string };
+
+export async function joinHouseholdByInviteCode(
+  _prev: InviteActionState | void,
+  formData: FormData,
+): Promise<InviteActionState | void> {
+  const code = String(formData.get("code") ?? "").trim();
+  if (code.length < 4) {
+    return { error: "Paste a valid invite code." };
+  }
+
+  const supabase = await createClient();
+  const { data: hid, error: rpcErr } = await supabase.rpc(
+    "join_household_by_invite_code",
+    { p_code: code },
+  );
+
+  if (rpcErr?.message || !hid) {
+    if (!shouldExposeSupabaseError()) {
+      return { error: PUBLIC_TRY_AGAIN };
+    }
+    return { error: rpcErr?.message ?? "Could not join." };
+  }
+
+  const hh = String(hid);
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/household/${hh}`);
+  redirect(`/dashboard/household/${hh}`);
+}
+
+export async function regenerateInviteFormAction(
+  _prev: InviteActionState | void,
+  formData: FormData,
+): Promise<InviteActionState> {
+  const householdId = String(formData.get("household_id") ?? "").trim();
+  return regenerateHouseholdInviteCode(householdId);
+}
+
+export async function regenerateHouseholdInviteCode(
+  householdId: string,
+): Promise<InviteActionState> {
+  if (!householdId) {
+    return { error: "Missing household." };
+  }
+
+  const supabase = await createClient();
+
+  const { data: code, error: rpcErr } = await supabase.rpc(
+    "regenerate_household_invite_code",
+    { p_household_id: householdId },
+  );
+
+  if (rpcErr?.message) {
+    if (!shouldExposeSupabaseError()) {
+      return { error: PUBLIC_TRY_AGAIN };
+    }
+    return { error: rpcErr.message };
+  }
+
+  if (typeof code !== "string") {
+    return { error: "Could not regenerate code." };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/household/${householdId}?view=members`);
+
+  return { ok: true, code };
+}
+
+export async function removeHouseholdMember(formData: FormData): Promise<void> {
+  const householdId = String(formData.get("household_id") ?? "").trim();
+  const targetUserId = String(formData.get("target_user_id") ?? "").trim();
+  if (!householdId || !targetUserId) return;
+
+  const supabase = await createClient();
+
+  const { error: rpcErr } = await supabase.rpc("remove_household_member", {
+    p_household_id: householdId,
+    p_target_user_id: targetUserId,
+  });
+
+  if (rpcErr?.message) {
+    console.error("[removeHouseholdMember]", rpcErr.message);
+    return;
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/household/${householdId}`);
+}
+
+export async function promoteHouseholdMemberToAdmin(formData: FormData): Promise<void> {
+  const householdId = String(formData.get("household_id") ?? "").trim();
+  const targetUserId = String(formData.get("target_user_id") ?? "").trim();
+  if (!householdId || !targetUserId) return;
+
+  const supabase = await createClient();
+
+  const { error: rpcErr } = await supabase.rpc(
+    "promote_household_member_to_admin",
+    {
+      p_household_id: householdId,
+      p_target_user_id: targetUserId,
+    },
+  );
+
+  if (rpcErr?.message) {
+    console.error("[promoteHouseholdMemberToAdmin]", rpcErr.message);
+    return;
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/household/${householdId}`);
+}

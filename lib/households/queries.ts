@@ -14,6 +14,9 @@ export type HouseholdDetail = {
   name: string;
   createdBy: string;
   createdAt: string;
+  /** Present for owner/admin only (invite link). */
+  inviteCode: string | null;
+  canManageMembers: boolean;
 };
 
 export type HouseholdMemberRow = {
@@ -22,6 +25,7 @@ export type HouseholdMemberRow = {
   joinedAt: string;
   displayName: string | null;
   avatarUrl: string | null;
+  email: string | null;
   rewardPoints: number;
 };
 
@@ -86,7 +90,7 @@ export async function loadHouseholdDetail(
 
   const { data: hh, error: hhErr } = await supabase
     .from("households")
-    .select("id, name, created_by, created_at")
+    .select("id, name, created_by, created_at, invite_code")
     .eq("id", householdId)
     .maybeSingle();
 
@@ -102,13 +106,7 @@ export async function loadHouseholdDetail(
     name: string;
     created_by: string;
     created_at: string;
-  };
-
-  const typed: HouseholdDetail = {
-    id: row.id,
-    name: row.name,
-    createdBy: row.created_by,
-    createdAt: row.created_at,
+    invite_code: string | null;
   };
 
   const { data: me, error: meErr } = await supabase
@@ -122,16 +120,28 @@ export async function loadHouseholdDetail(
     return { ok: false };
   }
 
+  const role = (me as { role: string }).role;
+  const canManage = role === "owner" || role === "admin";
+
+  const typed: HouseholdDetail = {
+    id: row.id,
+    name: row.name,
+    createdBy: row.created_by,
+    createdAt: row.created_at,
+    inviteCode: canManage ? row.invite_code : null,
+    canManageMembers: canManage,
+  };
+
   return {
     ok: true,
     household: typed,
-    memberRole: (me as { role: string }).role,
+    memberRole: role,
   };
 }
 
-export async function loadHouseholdMembers(householdId: string): Promise<
+export const loadHouseholdMembers = cache(async (householdId: string): Promise<
   HouseholdMemberRow[] | { error: string }
-> {
+> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc("list_household_members_for_user", {
@@ -149,6 +159,7 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     joined_at: string;
     display_name: string | null;
     avatar_url: string | null;
+    email: string | null;
     reward_points?: number | null;
   };
 
@@ -160,6 +171,7 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     joinedAt: r.joined_at,
     displayName: r.display_name,
     avatarUrl: r.avatar_url,
+    email: r.email,
     rewardPoints: Math.max(0, Math.floor(Number(r.reward_points ?? 0))),
   }));
-}
+});

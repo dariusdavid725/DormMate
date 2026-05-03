@@ -12,6 +12,10 @@ export type HouseholdTaskRow = {
   rewardLabel: string | null;
   status: "open" | "done";
   createdAt: string;
+  assignedToUserId: string | null;
+  dueAt: string | null;
+  completedByUserId: string | null;
+  completedAt: string | null;
 };
 
 type RawJoined = {
@@ -23,11 +27,18 @@ type RawJoined = {
   reward_label: string | null;
   status: string;
   created_at: string;
+  assigned_to: string | null;
+  due_at: string | null;
+  completed_by: string | null;
+  completed_at: string | null;
   households:
     | { name: string }
     | [{ name: string }]
     | null;
 };
+
+const selectTasks =
+  "id, household_id, title, notes, reward_points, reward_label, status, created_at, assigned_to, due_at, completed_by, completed_at, households(name)";
 
 function mapRaw(r: RawJoined): HouseholdTaskRow | null {
   const h = r.households;
@@ -48,6 +59,10 @@ function mapRaw(r: RawJoined): HouseholdTaskRow | null {
     rewardLabel: r.reward_label,
     status: st,
     createdAt: r.created_at,
+    assignedToUserId: r.assigned_to,
+    dueAt: r.due_at,
+    completedByUserId: r.completed_by,
+    completedAt: r.completed_at,
   };
 }
 
@@ -60,10 +75,9 @@ export const loadOpenTasksForUser = cache(async (userId: string) => {
 
   const { data, error } = await supabase
     .from("household_tasks")
-    .select(
-      "id, household_id, title, notes, reward_points, reward_label, status, created_at, households(name)",
-    )
+    .select(selectTasks)
     .eq("status", "open")
+    .or(`assigned_to.is.null,assigned_to.eq.${userId}`)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -83,15 +97,69 @@ export async function loadOpenTasksForHousehold(householdId: string) {
 
   const { data, error } = await supabase
     .from("household_tasks")
-    .select(
-      "id, household_id, title, notes, reward_points, reward_label, status, created_at, households(name)",
-    )
+    .select(selectTasks)
     .eq("household_id", householdId)
     .eq("status", "open")
     .order("created_at", { ascending: true });
 
   if (error) {
     console.error("[tasks] load open for household", error.message);
+    return { error: error.message, tasks: [] as HouseholdTaskRow[] };
+  }
+
+  const tasks = (data ?? [])
+    .map((row) => mapRaw(row as RawJoined))
+    .filter((x): x is HouseholdTaskRow => x !== null);
+
+  return { error: null as string | null, tasks };
+}
+
+export async function loadCompletedTasksForHousehold(
+  householdId: string,
+  take = 30,
+) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("household_tasks")
+    .select(selectTasks)
+    .eq("household_id", householdId)
+    .eq("status", "done")
+    .order("completed_at", { ascending: false })
+    .limit(take);
+
+  if (error) {
+    console.error("[tasks] load done for household", error.message);
+    return { error: error.message, tasks: [] as HouseholdTaskRow[] };
+  }
+
+  const tasks = (data ?? [])
+    .map((row) => mapRaw(row as RawJoined))
+    .filter((x): x is HouseholdTaskRow => x !== null);
+
+  return { error: null as string | null, tasks };
+}
+
+export async function loadRecentCompletedTasksForUser(
+  householdIds: string[],
+  limit = 22,
+) {
+  if (householdIds.length === 0) {
+    return { error: null as string | null, tasks: [] as HouseholdTaskRow[] };
+  }
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("household_tasks")
+    .select(selectTasks)
+    .in("household_id", householdIds)
+    .eq("status", "done")
+    .order("completed_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[tasks] recent done households", error.message);
     return { error: error.message, tasks: [] as HouseholdTaskRow[] };
   }
 

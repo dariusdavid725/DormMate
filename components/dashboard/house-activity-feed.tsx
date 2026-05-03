@@ -19,6 +19,33 @@ export function HouseActivityFeed({
   return (
     <ul className="cozy-poster divide-y divide-dashed divide-[rgba(91,83,71,0.2)] px-3 py-2">
       {items.map((item, i) => {
+        if (item.kind === "generic_note") {
+          return (
+            <li
+              key={`g-${item.id}`}
+              className="cozy-drop-in px-3 py-3 cozy-hover-wiggle rounded-sm bg-[rgba(254,253,249,0.72)] sm:ml-2 sm:mr-6"
+              style={{ animationDelay: `${Math.min(i, 8) * 42}ms` }}
+            >
+              <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
+                {item.label}
+              </p>
+              <p className="mt-1 text-[13px] text-dm-text">{item.body}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-dm-muted">
+                <span>{item.householdName}</span>
+                <span>{formatRelativeTime(item.at)}</span>
+                {item.href ?
+                  <Link
+                    href={item.href}
+                    className="font-semibold text-dm-electric hover:underline"
+                  >
+                    Peek
+                  </Link>
+                : null}
+              </p>
+            </li>
+          );
+        }
+
         if (item.kind === "receipt_saved") {
           return (
             <li

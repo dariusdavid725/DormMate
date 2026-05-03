@@ -10,6 +10,7 @@ import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
+import { loadUserCrossHouseholdNetLabel } from "@/lib/dashboard/budget-preview";
 import { loadHouseActivityItems } from "@/lib/dashboard/house-activity";
 import { countReceiptsSince } from "@/lib/dashboard/home-metrics";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
@@ -22,19 +23,6 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Home",
 };
-
-function formatEuro(n: number) {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: "EUR",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(n);
-  } catch {
-    return `€${n.toFixed(2)}`;
-  }
-}
 
 export default async function DashboardOverviewPage() {
   const supabase = await createClient();
@@ -53,9 +41,12 @@ export default async function DashboardOverviewPage() {
   const receiptsLast7d = countReceiptsSince(receiptFeed, 7);
 
   const { items: houseActivity, error: activityErr } =
-    await loadHouseActivityItems(households, receiptFeed, 8);
+    await loadHouseActivityItems(households, 10);
 
-  const owedPreview = formatEuro(0);
+  const { label: owedPreview } = await loadUserCrossHouseholdNetLabel(
+    user.id,
+    households,
+  );
 
   const hasHouseholds = households.length > 0;
 

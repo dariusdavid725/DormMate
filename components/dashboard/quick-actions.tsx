@@ -37,13 +37,22 @@ export function DashboardQuickActions() {
           <span className="relative z-[1]">Expense slip</span>
         </Link>
         <span
-          className="cozy-poster cozy-tilt-xs inline-flex px-5 py-3 text-sm font-medium text-dm-muted opacity-80 cozy-drop-in"
+          className="cozy-poster cozy-drop-in cozy-tilt-xs inline-flex px-5 py-3 text-sm font-semibold text-dm-muted cozy-hover-wiggle"
           style={{ animationDelay: "190ms" }}
-          title="Coming later"
-          aria-disabled
+          title="Pick a household, then Events tab"
         >
-          Event flyer · soon
+          Events · on your flat page
         </span>
+        <Link
+          href="/dashboard/join"
+          className={[
+            "inline-flex px-5 py-3 text-sm font-semibold text-dm-muted underline-offset-4",
+            "cozy-drop-in hover:underline",
+          ].join(" ")}
+          style={{ animationDelay: "240ms" }}
+        >
+          Join with invite
+        </Link>
       </div>
     </section>
   );

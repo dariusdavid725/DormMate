@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
+import { loadHouseholdActivities } from "@/lib/activities/queries";
 import type { HouseholdSummary } from "@/lib/households/queries";
-import type { ReceiptFeedPreviewItem } from "@/lib/receipts/feed-queries";
 
 export type HouseActivityItem =
   | {
@@ -23,76 +23,66 @@ export type HouseActivityItem =
       title: string;
       points: number;
       completedByLabel: string;
+    }
+  | {
+      kind: "generic_note";
+      id: string;
+      at: string;
+      householdId: string;
+      householdName: string;
+      label: string;
+      body: string;
+      href?: string;
     };
 
-function formatMoney(amount: number | null, currency: string) {
-  if (amount === null || Number.isNaN(amount)) return "—";
+function formatMoney(amount: unknown, currency: unknown) {
+  const n =
+    typeof amount === "number" ? amount : Number(amount);
+  const cur = typeof currency === "string" ? currency : "EUR";
+  if (amount == null || Number.isNaN(n)) return "—";
   try {
     return new Intl.NumberFormat(undefined, {
       style: "currency",
-      currency: currency || "EUR",
+      currency: cur || "EUR",
       minimumFractionDigits: 2,
-    }).format(amount);
+    }).format(n);
   } catch {
-    return `${amount?.toFixed(2) ?? "—"} ${currency}`;
+    return `${n.toFixed(2)} ${cur}`;
   }
 }
 
 export async function loadHouseActivityItems(
   households: HouseholdSummary[],
-  receiptItems: ReceiptFeedPreviewItem[],
-  limit = 22,
+  limit = 24,
 ): Promise<{ items: HouseActivityItem[]; error: string | null }> {
   if (households.length === 0) {
     return { items: [], error: null };
   }
 
   const supabase = await createClient();
-  const ids = [...new Set(households.map((h) => h.id))];
-  const nameById = new Map(households.map((h) => [h.id, h.name]));
+  const nameByHouseId = new Map(households.map((h) => [h.id, h.name]));
 
-  const { data: doneRaw, error: taskErr } = await supabase
-    .from("household_tasks")
-    .select(
-      "id, household_id, title, completed_at, completed_by, reward_points",
-    )
-    .in("household_id", ids)
-    .eq("status", "done")
-    .not("completed_at", "is", null)
-    .order("completed_at", { ascending: false })
-    .limit(24);
+  const { rows: activities, error: actErr } =
+    await loadHouseholdActivities(households, limit * 2);
 
-  if (taskErr?.message) {
-    console.error("[house-activity] completed tasks", taskErr.message);
-  }
-
-  const doneRows = (doneRaw ?? []) as Array<{
-    id: string;
-    household_id: string;
-    title: string;
-    completed_at: string;
-    completed_by: string | null;
-    reward_points: number;
-  }>;
-
-  const completerIds = [
+  const actorIds = [
     ...new Set(
-      doneRows.map((r) => r.completed_by).filter((x): x is string => !!x),
+      activities.map((a) => a.actor_user_id).filter((x): x is string => !!x),
     ),
   ];
 
-  let nameByUser = new Map<string, string | null>();
-  if (completerIds.length > 0) {
+  let displayByUser = new Map<string, string | null>();
+  if (actorIds.length > 0) {
     const { data: profs, error: pe } = await supabase
       .from("profiles")
       .select("id, display_name")
-      .in("id", completerIds);
+      .in("id", actorIds);
 
     if (pe?.message) {
-      console.error("[house-activity] completer profiles", pe.message);
+      console.error("[house-activity] actors", pe.message);
     }
 
-    nameByUser = new Map(
+    displayByUser = new Map(
       (profs ?? []).map((p) => [
         (p as { id: string }).id,
         (p as { display_name: string | null }).display_name,
@@ -100,45 +90,144 @@ export async function loadHouseActivityItems(
     );
   }
 
-  function labelFor(userId: string | null) {
-    if (!userId) return "Someone";
-    const n = nameByUser.get(userId)?.trim();
-    return n?.length ? n : "Someone";
+  function actorLabel(uid: string | null) {
+    if (!uid) return "Someone";
+    const raw = displayByUser.get(uid)?.trim();
+    return raw?.length ? raw : "Someone";
   }
 
-  const merged: HouseActivityItem[] = [];
+  const items: HouseActivityItem[] = [];
 
-  for (const r of receiptItems) {
-    merged.push({
-      kind: "receipt_saved",
-      id: r.id,
-      at: r.createdAt,
-      householdId: r.householdId,
-      householdName: r.householdName,
-      merchant: r.merchant,
-      amountLabel: formatMoney(r.totalAmount, r.currency),
-      savedByLabel: r.savedByLabel,
-    });
+  for (const row of activities) {
+    const householdName =
+      nameByHouseId.get(row.household_id) ?? "Household";
+    const pl = row.payload ?? {};
+    const at = row.created_at;
+
+    if (row.kind === "receipt_saved") {
+      items.push({
+        kind: "receipt_saved",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        merchant:
+          typeof pl.merchant === "string" ? pl.merchant : null,
+        amountLabel: formatMoney(pl.total, pl.currency),
+        savedByLabel: actorLabel(row.actor_user_id),
+      });
+      continue;
+    }
+
+    if (row.kind === "task_completed") {
+      items.push({
+        kind: "chore_done",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        title:
+          typeof pl.title === "string"
+            ? pl.title
+            : "Chore",
+        points:
+          typeof pl.points === "number"
+            ? pl.points
+            : Math.floor(Number(pl.points ?? 0)) || 0,
+        completedByLabel: actorLabel(row.actor_user_id),
+      });
+      continue;
+    }
+
+    if (row.kind === "household_created") {
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Flat pinned",
+        body:
+          typeof pl.name === "string"
+            ? `${pl.name} is on the corkboard`
+            : "Household started",
+      });
+      continue;
+    }
+
+    if (row.kind === "member_joined") {
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "New roommate",
+        body: `${actorLabel(row.actor_user_id)} joined`,
+      });
+      continue;
+    }
+
+    if (row.kind === "task_created") {
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "New chore",
+        body:
+          typeof pl.title === "string"
+            ? `${actorLabel(row.actor_user_id)} added “${pl.title}”`
+            : `${actorLabel(row.actor_user_id)} added a chore`,
+        href: `/dashboard/household/${row.household_id}?view=tasks`,
+      });
+      continue;
+    }
+
+    if (row.kind === "expense_added") {
+      const title =
+        typeof pl.title === "string" ? pl.title : "Expense";
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Expense logged",
+        body: `${title} · ${formatMoney(pl.amount, pl.currency)}`,
+        href: `/dashboard/household/${row.household_id}?view=expenses`,
+      });
+      continue;
+    }
+
+    if (row.kind === "event_created") {
+      const title =
+        typeof pl.title === "string" ? pl.title : "Event";
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "On the calendar",
+        body:
+          typeof pl.starts_at === "string"
+            ? `${title}`
+            : `${title}`,
+        href: `/dashboard/household/${row.household_id}?view=events`,
+      });
+      continue;
+    }
+
+    /* Unknown kinds — skip to avoid noisy feed */
   }
 
-  for (const t of doneRows) {
-    merged.push({
-      kind: "chore_done",
-      id: t.id,
-      at: t.completed_at,
-      householdId: t.household_id,
-      householdName: nameById.get(t.household_id) ?? "Household",
-      title: t.title,
-      points: t.reward_points,
-      completedByLabel: labelFor(t.completed_by),
-    });
-  }
+  items.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 
-  merged.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
-
-  const seen = new Set<string>();
   const deduped: HouseActivityItem[] = [];
-  for (const x of merged) {
+  const seen = new Set<string>();
+  for (const x of items) {
     const k = `${x.kind}:${x.id}`;
     if (seen.has(k)) continue;
     seen.add(k);
@@ -146,5 +235,5 @@ export async function loadHouseActivityItems(
     if (deduped.length >= limit) break;
   }
 
-  return { items: deduped, error: taskErr?.message ?? null };
+  return { items: deduped, error: actErr ?? null };
 }

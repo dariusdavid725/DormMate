@@ -5,14 +5,19 @@ import { createClient } from "@/lib/supabase/server";
 
 function sanitizeNext(searchParams: URLSearchParams, fallback = "/dashboard"): string {
   const raw = searchParams.get("next");
-  if (
-    typeof raw === "string" &&
-    raw.startsWith("/") &&
-    !raw.startsWith("//")
-  ) {
-    return raw.split("?")[0] ?? fallback;
+  if (typeof raw !== "string" || !raw.startsWith("/") || raw.startsWith("//")) {
+    return fallback;
   }
-  return fallback;
+  try {
+    const u = new URL(raw, "http://dormmate.local");
+    const path = u.pathname + u.search;
+    if (!path.startsWith("/") || path.startsWith("//")) {
+      return fallback;
+    }
+    return path;
+  } catch {
+    return fallback;
+  }
 }
 
 /** Accept `type=` from Supabase email links (signup, recovery, etc.). */
