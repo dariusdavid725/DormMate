@@ -10,7 +10,7 @@ import {
 const initial: HouseholdActionState = {};
 
 export function CreateHouseholdForm({
-  className = "mt-6 space-y-4",
+  className = "mt-6 space-y-5",
 }: {
   className?: string;
 }) {
@@ -29,10 +29,10 @@ export function CreateHouseholdForm({
           {state.error}
         </div>
       )}
-      <div>
+      <div className="pb-1">
         <label
           htmlFor="household-name"
-          className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-dm-muted"
+          className="mb-2 block text-xs font-semibold uppercase tracking-wide text-dm-muted"
         >
           Name
         </label>
@@ -43,13 +43,13 @@ export function CreateHouseholdForm({
           required
           maxLength={120}
           placeholder="e.g. Flat 12 · Tower B"
-          className="w-full rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-3 py-2.5 text-sm text-dm-text outline-none ring-dm-electric/25 transition placeholder:text-dm-muted/70 focus:border-dm-electric focus:ring-2"
+          className="w-full rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-3 py-3 text-sm text-dm-text outline-none ring-dm-electric/25 transition placeholder:text-dm-muted/70 focus:border-dm-electric focus:ring-2"
         />
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-dm-electric px-4 py-3 text-sm font-semibold text-white shadow-md shadow-black/10 transition hover:brightness-105 disabled:opacity-55 sm:w-auto sm:min-w-[9rem]"
+        className="mt-2 w-full rounded-full bg-dm-electric px-4 py-3.5 text-sm font-semibold text-white shadow-md shadow-black/10 transition hover:brightness-105 disabled:opacity-55 sm:w-auto sm:min-w-[10rem]"
       >
         {pending ? "Saving…" : "Create"}
       </button>

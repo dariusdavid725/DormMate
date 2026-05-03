@@ -69,16 +69,21 @@ export default async function DashboardOverviewPage() {
       ? "add a dorm first"
       : `${households.length} household${households.length === 1 ? "" : "s"} linked`;
 
+  const hasHouseholds = households.length > 0;
+
   return (
     <div className="mx-auto w-full max-w-lg pb-[7.5rem] lg:max-w-6xl lg:pb-10">
       <div className="flex flex-wrap items-center justify-between gap-4 lg:max-w-none">
-        <div className="dm-construct-accent pl-1">
-          <p className="inline-flex skew-x-[-8deg] bg-[color-mix(in_srgb,var(--dm-construct-yellow)_82%,transparent)] px-3 py-0.5 text-[11px] font-black uppercase tracking-[0.26em] text-[var(--dm-construct-ink)] dark:text-black">
-            Dorm hub
+        <div className="min-w-0 max-w-2xl">
+          <p className="text-xs font-semibold uppercase tracking-wider text-dm-electric">
+            Today
           </p>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-dm-text">
-            Home — chores & cash in one corridor
+          <h1 className="mt-2 text-4xl font-black tracking-tight text-dm-text sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+            Home
           </h1>
+          <p className="mt-2 text-base leading-snug text-dm-text/90 sm:text-lg sm:leading-normal">
+            Chores and shared money for your flat.
+          </p>
         </div>
         <DormStatusRing
           filled={ringFilled}
@@ -103,60 +108,67 @@ export default async function DashboardOverviewPage() {
         <div className="min-w-0 flex-1 space-y-14">
           <section
             aria-labelledby="open-chores"
-            className="relative overflow-hidden rounded-sm border border-[var(--dm-border-strong)] bg-dm-surface/76 p-6 shadow-xl shadow-black/[0.04] backdrop-blur-md dm-construct-accent lg:p-9"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/78 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
           >
             <div
               aria-hidden
-              className="pointer-events-none absolute -left-24 bottom-[-20%] h-48 w-48 rotate-[18deg] bg-[var(--dm-construct-red)] opacity-[0.08] blur-3xl"
+              className="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-[var(--dm-electric-glow)] opacity-80 blur-3xl"
             />
-            <div className="relative flex flex-wrap items-end justify-between gap-5">
-              <div>
+            <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
                 <p
                   id="open-chores"
-                  className="text-[11px] font-black uppercase tracking-[0.22em] text-[var(--dm-construct-red)] dark:text-orange-400"
+                  className="text-xs font-bold uppercase tracking-wider text-dm-electric"
                 >
-                  Chores on the magnet board
+                  Tasks
                 </p>
-                <p className="mt-4 text-sm leading-relaxed text-dm-muted">
-                  Reward points stack on your roommate card when you knock something out — vibes, coffees, veto power on playlists.
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-dm-text">
+                  One list for the flat. Open{" "}
+                  <Link
+                    href="/dashboard/tasks"
+                    className="font-semibold text-dm-electric underline decoration-dm-electric/40 underline-offset-2 hover:decoration-dm-electric"
+                  >
+                    Tasks
+                  </Link>{" "}
+                  to add chores or claim points.
                 </p>
               </div>
               <Link
                 href="/dashboard/tasks"
-                className="dm-construct-angle inline-flex shrink-0 bg-black px-6 py-2.5 text-xs font-black uppercase tracking-[0.14em] text-white dark:bg-[var(--dm-construct-yellow)] dark:text-black"
+                className="inline-flex shrink-0 items-center justify-center rounded-full border border-dm-electric bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-dm-electric transition hover:bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)]"
               >
-                All tasks →
+                All tasks
               </Link>
             </div>
             {tasksErr ? (
-              <p className="relative mt-4 text-sm font-medium text-amber-600 dark:text-amber-400">
-                Chores unavailable until recent DB migration lands.
+              <p className="relative mt-5 rounded-lg border border-amber-400/40 bg-[var(--dm-accent-warn-bg)] px-3 py-2 text-sm font-medium text-[var(--dm-accent-warn-text)]">
+                Tasks are off until the database migration is applied.
               </p>
             ) : openTasks.length === 0 ? (
-              <p className="relative mt-8 text-[15px] font-medium text-dm-text">
-                Queue is calm — toss the next tidy-up on Tasks.
+              <p className="relative mt-6 text-sm font-medium text-dm-text">
+                No open tasks right now.
               </p>
             ) : (
-              <ul className="relative mt-7 space-y-3">
+              <ul className="relative mt-6 space-y-2.5">
                 {openTasks.slice(0, 4).map((t) => (
                   <li
                     key={t.id}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/50 px-4 py-3 backdrop-blur-sm"
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/55 px-4 py-3.5"
                   >
                     <div className="min-w-0">
-                      <span className="inline-flex skew-x-[-6deg] bg-[var(--dm-construct-yellow)] px-1.5 py-px text-[10px] font-black text-black">
+                      <span className="inline-flex rounded-md bg-[color-mix(in_srgb,var(--dm-electric)_14%,transparent)] px-2 py-0.5 font-mono text-[11px] font-bold tabular-nums text-dm-electric">
                         +{t.rewardPoints}
                       </span>
-                      <span className="ml-3 text-sm font-semibold text-dm-text">
+                      <span className="ml-2.5 text-sm font-semibold text-dm-text">
                         {t.title}
                       </span>
-                      <span className="mt-2 block truncate text-[11px] text-dm-muted lg:mt-0 lg:ml-2 lg:inline lg:truncate">
-                        ({t.householdName})
+                      <span className="mt-1.5 block truncate text-xs text-dm-muted sm:mt-0 sm:ml-2 sm:inline">
+                        {t.householdName}
                       </span>
                     </div>
                     <Link
                       href={`/dashboard/household/${t.householdId}?view=tasks`}
-                      className="rounded-full bg-[var(--dm-accent)] px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-[var(--dm-accent-ink)]"
+                      className="rounded-full border border-dm-electric px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-dm-electric transition hover:bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)]"
                     >
                       Open
                     </Link>
@@ -168,38 +180,30 @@ export default async function DashboardOverviewPage() {
 
           <section
             aria-labelledby="cash-strip"
-            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface to-dm-surface/45 p-6 shadow-xl shadow-black/[0.035] lg:flex lg:items-start lg:justify-between lg:gap-10 lg:p-8"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface via-dm-surface to-dm-surface/80 p-6 shadow-xl shadow-black/[0.04] lg:p-9"
           >
             <div
               aria-hidden
-              className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-[var(--dm-electric-glow)] blur-3xl"
+              className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[var(--dm-electric-glow)] blur-3xl"
             />
-            <div className="relative lg:max-w-xs">
-              <p
-                id="cash-strip"
-                className="text-xs font-bold uppercase tracking-wider text-dm-muted"
-              >
-                Receipts lane
-              </p>
-              <p className="mt-4 text-[13px] leading-relaxed text-dm-muted">
-                Money tools stay quieter here until attribution ships — slips still funnel into Feed & household tabs.
-              </p>
-              <p className="mt-6 font-mono text-4xl font-semibold tracking-tighter text-[var(--dm-accent)] tabular-nums">
-                You are owed {owedPreview}
-              </p>
-            </div>
-            <div className="relative mt-10 flex shrink-0 flex-col gap-4 lg:mt-0 lg:max-w-[15rem]">
-              <ContextualActionChip
-                householdsCount={households.length}
-                receiptsCountAllTime={realReceiptCount}
-                primaryHouseholdHasReceipts={firstHhReceipts > 0}
-                scanReceiptHref={scanHref}
-                createHouseholdHint={households.length === 0}
-              />
+            <div className="relative space-y-7">
+              <div>
+                <p
+                  id="cash-strip"
+                  className="text-xs font-bold uppercase tracking-wider text-dm-electric"
+                >
+                  Receipts
+                </p>
+                <p className="mt-2 max-w-lg text-sm leading-relaxed text-dm-text">
+                  Take a photo of a receipt. We save the total so you can split it
+                  with housemates.
+                </p>
+              </div>
+
               {scanHref ? (
                 <Link
                   href={scanHref}
-                  className="inline-flex justify-center rounded-full bg-dm-electric px-8 py-3.5 text-center text-sm font-semibold text-white shadow-lg shadow-black/15 transition hover:brightness-105 active:scale-[0.99]"
+                  className="dm-scan-hero relative z-[1] inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-dm-electric px-8 py-4 text-center text-base font-bold tracking-tight text-white transition hover:brightness-110 active:scale-[0.99] lg:py-[1.125rem] lg:text-[1.0625rem]"
                 >
                   Scan receipt · AI
                 </Link>
@@ -207,11 +211,34 @@ export default async function DashboardOverviewPage() {
                 <button
                   type="button"
                   disabled
-                  className="rounded-full border border-[var(--dm-border-strong)] px-8 py-3.5 text-center text-sm font-medium text-dm-muted/70"
+                  className="w-full max-w-md rounded-2xl border border-[var(--dm-border-strong)] bg-dm-bg/50 px-8 py-4 text-center text-sm font-medium text-dm-muted"
                 >
-                  Pick a dorm to scan into
+                  Create a household first — then you can scan here.
                 </button>
               )}
+
+              <div className="max-w-md">
+                <ContextualActionChip
+                  householdsCount={households.length}
+                  receiptsCountAllTime={realReceiptCount}
+                  primaryHouseholdHasReceipts={firstHhReceipts > 0}
+                  scanReceiptHref={scanHref}
+                  createHouseholdHint={households.length === 0}
+                />
+              </div>
+
+              <div className="border-t border-[var(--dm-border-strong)] pt-6">
+                <p className="text-sm font-medium text-dm-text">
+                  You are owed{" "}
+                  <span className="font-mono text-2xl font-bold tabular-nums text-dm-accent lg:text-3xl">
+                    {owedPreview}
+                  </span>
+                </p>
+                <p className="mt-1.5 max-w-md text-sm text-dm-muted">
+                  Who owes what is coming next. For now, receipts land in Activity
+                  below.
+                </p>
+              </div>
             </div>
           </section>
 
@@ -225,7 +252,7 @@ export default async function DashboardOverviewPage() {
                   Activity
                 </h2>
                 <p className="mt-1 text-sm text-dm-muted">
-                  Latest receipts mixed with roadmap notes.
+                  Latest saved receipts.
                 </p>
               </div>
               {feedErr ? (
@@ -238,22 +265,9 @@ export default async function DashboardOverviewPage() {
           </section>
         </div>
 
-        <aside className="w-full shrink-0 space-y-6 xl:w-[min(100%,21rem)]">
-          <div
-            id="create-household"
-            className="scroll-mt-28 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
-          >
-            <h3 className="text-sm font-semibold text-dm-text">
-              Create a household
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-dm-muted">
-              One cockpit for groceries, slips, chores — teammates join when invites land.
-            </p>
-            <CreateHouseholdForm className="mt-5 space-y-4" />
-          </div>
-
-          {households.length > 0 ? (
-            <div className="rounded-3xl border border-[var(--dm-border)] bg-dm-surface/50 p-5 backdrop-blur-sm">
+        <aside className="order-last flex w-full shrink-0 flex-col gap-6 xl:order-none xl:w-[min(100%,21rem)]">
+          {hasHouseholds ? (
+            <div className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
                 Your spaces
               </p>
@@ -267,7 +281,7 @@ export default async function DashboardOverviewPage() {
                       <span className="truncate font-medium text-dm-text">
                         {h.name}
                       </span>
-                      <span className="shrink-0 rounded-full bg-[var(--dm-accent-soft)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-dm-accent-ink">
+                      <span className="shrink-0 rounded-full bg-[color-mix(in_srgb,var(--dm-electric)_12%,transparent)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-dm-electric">
                         {h.role}
                       </span>
                     </Link>
@@ -276,6 +290,23 @@ export default async function DashboardOverviewPage() {
               </ul>
             </div>
           ) : null}
+
+          <div
+            id="create-household"
+            className={`scroll-mt-28 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8 ${
+              hasHouseholds ? "ring-1 ring-[var(--dm-border)]" : ""
+            }`}
+          >
+            <h3 className="text-sm font-semibold text-dm-text">
+              {hasHouseholds ? "Add another household" : "Create a household"}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+              {hasHouseholds
+                ? "Optional — for a second dorm or sublet group."
+                : "Name your flat or dorm so tasks and receipts have a home."}
+            </p>
+            <CreateHouseholdForm className="mt-5 space-y-5" />
+          </div>
         </aside>
       </div>
     </div>

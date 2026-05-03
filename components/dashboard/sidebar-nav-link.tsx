@@ -21,7 +21,7 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
     <Link
       href={href}
       className={[
-        "group flex rounded-xl px-3 py-2.5 text-[14px] transition",
+        "group flex rounded-xl px-3 py-3.5 text-[14px] transition",
         active
           ? "bg-[color-mix(in_srgb,var(--dm-electric)_12%,transparent)] font-semibold text-dm-text ring-1 ring-[var(--dm-border-strong)]"
           : "text-dm-muted hover:bg-dm-surface hover:text-dm-text",

@@ -34,7 +34,7 @@ export function DashboardShell({
               <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-dm-muted/90">
                 Main
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2.5">
                 <SidebarNavLink
                   href="/dashboard"
                   title="Home"
@@ -61,7 +61,7 @@ export function DashboardShell({
               <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-dm-muted/90">
                 Households
               </p>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 {households.map((h) => (
                   <SidebarNavLink
                     key={h.id}
