@@ -24,7 +24,7 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
         "group flex rounded-xl px-3 py-2 text-sm transition",
         active
           ? "bg-teal-600/15 font-medium text-teal-950 ring-1 ring-teal-600/25 dark:bg-teal-500/15 dark:text-teal-50 dark:ring-teal-400/30"
-          : "text-stone-600 hover:bg-amber-50/90 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100",
+          : "text-stone-600 hover:bg-stone-100/90 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100",
       ].join(" ")}
     >
       <div className="min-w-0 flex-1">

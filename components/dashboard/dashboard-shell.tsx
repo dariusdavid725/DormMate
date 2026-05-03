@@ -20,7 +20,7 @@ export function DashboardShell({
   const stripItems = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-amber-50/80 via-[#faf8f5] to-white dark:from-stone-950 dark:via-stone-950 dark:to-stone-950">
+    <div className="flex min-h-screen flex-col bg-[#fafafa] dark:bg-stone-950">
       <WorkspaceHeader email={email} />
       <MobileHouseholdStrip households={stripItems} />
       <div className="flex flex-1 min-h-0">

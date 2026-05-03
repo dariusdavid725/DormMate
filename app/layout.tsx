@@ -19,16 +19,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: tryGetMetadataBase(),
   title: {
-    default: "DormMate — Less awkward shared living",
+    default: "DormMate — Shared household finance",
     template: "%s · DormMate",
   },
   description:
-    "Fair splits, shared staples, and receipt scans — built for roommates & student flats who’d rather live together than negotiate in spreadsheets.",
+    "Receipts, splits, and household basics in one workspace — for roommates and shared flats.",
   openGraph: {
     url: process.env.NEXT_PUBLIC_SITE_URL ? getSiteUrl() : undefined,
     title: "DormMate",
     description:
-      "Shared housing tools that feel human — money, groceries, chores.",
+      "Receipts, splits, and household basics in one workspace.",
     type: "website",
   },
 };
