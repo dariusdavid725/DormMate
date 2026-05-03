@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-stone-200/90 bg-[#fafafa] dark:border-stone-800 dark:bg-stone-950">
+    <footer className="border-t border-stone-200/90 bg-[#f7f6f4]">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-xs text-stone-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:text-stone-500">
         <p>© {new Date().getFullYear()} DormMate</p>
         <div className="flex gap-6">

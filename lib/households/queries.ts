@@ -20,6 +20,8 @@ export type HouseholdMemberRow = {
   userId: string;
   role: string;
   joinedAt: string;
+  displayName: string | null;
+  avatarUrl: string | null;
 };
 
 export const loadHouseholdSummaries = cache(async (userId: string) => {
@@ -140,7 +142,13 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     return { error: error.message };
   }
 
-  type RpcRow = { user_id: string; role: string; joined_at: string };
+  type RpcRow = {
+    user_id: string;
+    role: string;
+    joined_at: string;
+    display_name: string | null;
+    avatar_url: string | null;
+  };
 
   const rows = (data ?? []) as RpcRow[];
 
@@ -148,5 +156,7 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     userId: r.user_id,
     role: r.role,
     joinedAt: r.joined_at,
+    displayName: r.display_name,
+    avatarUrl: r.avatar_url,
   }));
 }

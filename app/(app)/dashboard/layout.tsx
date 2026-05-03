@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
+import { isPlatformSuperAdmin } from "@/lib/platform-admin";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardLayout({
@@ -21,6 +22,7 @@ export default async function DashboardLayout({
   return (
     <DashboardShell
       email={user.email ?? ""}
+      showAdmin={isPlatformSuperAdmin(user.email)}
       households={households}
       listError={error}
     >

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { RenameHouseholdForm } from "@/components/dashboard/rename-household-form";
+import { HouseholdMembersPanel } from "@/components/household/household-members-panel";
 import { ReceiptList } from "@/components/receipts/receipt-list";
 import { ReceiptScannerPanel } from "@/components/receipts/receipt-scanner-panel";
 import {
@@ -95,63 +96,63 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl pb-16">
-      <nav aria-label="Breadcrumb" className="mb-6 text-xs text-zinc-500 dark:text-zinc-400">
+      <nav aria-label="Breadcrumb" className="mb-6 text-xs text-stone-500">
         <ol className="flex flex-wrap items-center gap-1">
           <li>
             <Link
               href="/dashboard"
-              className="font-medium text-zinc-600 hover:text-emerald-700 hover:underline dark:text-zinc-400 dark:hover:text-emerald-400"
+              className="font-medium text-stone-600 underline-offset-4 hover:text-teal-800 hover:underline"
             >
               Overview
             </Link>
           </li>
-          <li aria-hidden className="text-zinc-300 dark:text-zinc-600">
+          <li aria-hidden className="text-stone-300">
             /
           </li>
-          <li className="truncate font-medium text-zinc-800 dark:text-zinc-200">
+          <li className="truncate font-medium text-stone-800">
             {household.name}
           </li>
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-6 border-b border-zinc-200 pb-8 dark:border-zinc-800">
+      <div className="flex flex-wrap items-start justify-between gap-6 border-b border-stone-200 pb-8">
         <div className="min-w-0 max-w-xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-400">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-teal-800">
             Household
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white md:text-[2rem]">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900 md:text-[2rem]">
             {household.name}
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
+          <p className="mt-3 text-[15px] leading-relaxed text-stone-600">
             Your role{" "}
-            <span className="font-semibold capitalize text-zinc-800 dark:text-zinc-200">
+            <span className="font-semibold capitalize text-stone-800">
               {memberRole}
             </span>
             . Created {formatDate(household.createdAt)}.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          <span className="inline-flex rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+          <span className="inline-flex rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-700 shadow-sm">
             {households.length} space{households.length === 1 ? "" : "s"}
           </span>
           <Link
             href="/dashboard"
-            className="inline-flex rounded-full border border-zinc-300 bg-transparent px-3 py-1 text-xs font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="inline-flex rounded-full border border-stone-300 bg-transparent px-3 py-1 text-xs font-semibold text-stone-700 transition hover:bg-stone-100"
           >
             All households
           </Link>
         </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-2 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="mt-8 flex flex-wrap gap-2 border-b border-stone-200">
         <Link
           href={tabBase}
           scroll={false}
           className={[
             "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
             view === "overview"
-              ? "border border-b-0 border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-              : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200",
+              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
+              : "text-stone-500 hover:text-stone-800",
           ].join(" ")}
         >
           Overview
@@ -162,8 +163,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
           className={[
             "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
             view === "members"
-              ? "border border-b-0 border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-              : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200",
+              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
+              : "text-stone-500 hover:text-stone-800",
           ].join(" ")}
         >
           Members
@@ -174,8 +175,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
           className={[
             "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
             view === "receipts"
-              ? "border border-b-0 border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-              : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200",
+              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
+              : "text-stone-500 hover:text-stone-800",
           ].join(" ")}
         >
           Receipts
@@ -188,19 +189,19 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="group flex flex-col rounded-3xl border border-teal-200/80 bg-gradient-to-br from-teal-50 via-white to-amber-50 p-6 shadow-sm ring-1 ring-teal-600/10 transition hover:shadow-md dark:border-teal-900/50 dark:from-teal-950/40 dark:via-stone-950 dark:to-amber-950/30 dark:ring-teal-400/15"
+              className="group flex flex-col rounded-3xl border border-teal-200/80 bg-gradient-to-br from-teal-50 via-white to-stone-50 p-6 shadow-sm ring-1 ring-teal-600/10 transition hover:shadow-md"
             >
               <span className="w-fit rounded-full bg-teal-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                 Beta
               </span>
-              <h2 className="mt-4 text-lg font-semibold text-stone-900 group-hover:text-teal-900 dark:text-stone-50 dark:group-hover:text-teal-200">
+              <h2 className="mt-4 text-lg font-semibold text-stone-900 group-hover:text-teal-900">
                 Receipts & splits
               </h2>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
                 Snap grocery runs — we read totals so nobody re-types chaos from a
                 crumpled slip.
               </p>
-              <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-700 group-hover:gap-2 dark:text-teal-300">
+              <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-700 group-hover:gap-2">
                 Open receipts tab
                 <span aria-hidden>→</span>
               </span>
@@ -219,26 +220,26 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ].map((card) => (
               <article
                 key={card.title}
-                className="flex flex-col rounded-3xl border border-stone-200 bg-white/90 p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950/50"
+                className="flex flex-col rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
               >
-                <span className="w-fit rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-600 dark:bg-stone-800 dark:text-stone-400">
+                <span className="w-fit rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-600">
                   {card.status}
                 </span>
-                <h2 className="mt-4 text-base font-semibold text-stone-900 dark:text-stone-50">
+                <h2 className="mt-4 text-base font-semibold text-stone-900">
                   {card.title}
                 </h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
                   {card.desc}
                 </p>
               </article>
             ))}
           </div>
 
-          <section className="mt-12 rounded-3xl border border-stone-200 bg-white p-8 shadow-sm dark:border-stone-800 dark:bg-stone-950/35">
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
+          <section className="mt-12 rounded-3xl border border-stone-200 bg-white p-8 shadow-sm">
+            <h2 className="text-lg font-semibold text-stone-900">
               Settings
             </h2>
-            <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
+            <p className="mt-2 text-sm text-stone-600">
               {canRename
                 ? "Rename is available to whoever created this household."
                 : "Only the creator can rename this household. Ask them to adjust the display name."}
@@ -253,96 +254,55 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </>
       ) : view === "members" ? (
         <section className="mt-10">
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40">
-            <div className="border-b border-zinc-100 px-6 py-4 dark:border-zinc-800">
-              <h2 className="font-semibold text-zinc-900 dark:text-white">
-                Who&apos;s here
-              </h2>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                Members you share this household with — profiles and invitations
-                will enrich this view next.
-              </p>
+          {membersResult && "error" in membersResult ? (
+            <div
+              role="alert"
+              className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-900"
+            >
+              Could not load members.{" "}
+              {shouldExposeSupabaseError() ? (
+                <>
+                  Run{" "}
+                  <code className="rounded bg-red-100 px-1 font-mono text-xs">
+                    supabase/schema.sql
+                  </code>{" "}
+                  in Supabase so{" "}
+                  <code className="rounded bg-red-100 px-1 font-mono text-xs">
+                    list_household_members_for_user
+                  </code>{" "}
+                  (with profiles) is applied.
+                </>
+              ) : (
+                PUBLIC_TRY_AGAIN
+              )}
             </div>
-            {membersResult && "error" in membersResult ? (
-              <p className="px-6 py-6 text-sm text-red-700 dark:text-red-300">
-                Could not load members.{" "}
-                {shouldExposeSupabaseError() ? (
-                  <>
-                    Run{" "}
-                    <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">
-                      supabase/schema.sql
-                    </code>{" "}
-                    in Supabase so{" "}
-                    <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">
-                      list_household_members_for_user
-                    </code>{" "}
-                    exists.
-                  </>
-                ) : (
-                  PUBLIC_TRY_AGAIN
-                )}
-              </p>
-            ) : (
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-zinc-50 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400">
-                  <tr>
-                    <th scope="col" className="px-6 py-3">
-                      Member
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Role
-                    </th>
-                    <th scope="col" className="hidden px-6 py-3 sm:table-cell">
-                      Joined
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                  {(membersResult as HouseholdMemberRow[]).map((m) => (
-                    <tr key={m.userId} className="text-zinc-800 dark:text-zinc-100">
-                      <td className="px-6 py-3.5 font-mono text-[13px]">
-                        <span className="font-semibold tabular-nums">
-                          {m.userId.slice(0, 8)}
-                        </span>
-                        <span className="text-zinc-400 dark:text-zinc-500">
-                          …{m.userId.slice(-4)}
-                        </span>
-                        {m.userId === user.id ? (
-                          <span className="ml-2 rounded-md bg-emerald-600/12 px-1.5 py-0.5 text-[11px] font-semibold uppercase text-emerald-900 dark:bg-emerald-500/15 dark:text-emerald-50">
-                            You
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="px-6 py-3.5 capitalize">{m.role}</td>
-                      <td className="hidden px-6 py-3.5 text-zinc-600 sm:table-cell dark:text-zinc-400">
-                        {formatDate(m.joinedAt)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+          ) : (
+            <HouseholdMembersPanel
+              members={membersResult as HouseholdMemberRow[]}
+              currentUserId={user.id}
+              householdId={id}
+            />
+          )}
         </section>
       ) : (
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
+            <h2 className="text-lg font-semibold text-stone-900">
               Saved receipts
             </h2>
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
+            <p className="mt-1 text-sm text-stone-600">
               Everyone in this household can see these — transparency beats awkward
               guessing about who paid what.
             </p>
             {receiptsPayload?.error ? (
-              <p className="mt-4 text-sm text-rose-700 dark:text-rose-300">
+              <p className="mt-4 text-sm text-rose-700">
                 Could not load receipts. Run the latest{" "}
-                <code className="rounded bg-stone-100 px-1 dark:bg-stone-800">
+                <code className="rounded bg-stone-100 px-1 font-mono text-xs">
                   supabase/schema.sql
                 </code>{" "}
                 so the{" "}
-                <code className="rounded bg-stone-100 px-1 dark:bg-stone-800">
+                <code className="rounded bg-stone-100 px-1 font-mono text-xs">
                   receipts
                 </code>{" "}
                 table exists.

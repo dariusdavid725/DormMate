@@ -40,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${geistMono.variable} h-full`}>
-      <body className="flex min-h-full flex-col bg-[var(--background)] font-sans text-stone-900 antialiased dark:bg-stone-950 dark:text-stone-50">
+      <body className="flex min-h-full flex-col bg-[var(--background)] font-sans text-stone-900 antialiased">
         {children}
       </body>
     </html>

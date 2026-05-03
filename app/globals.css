@@ -4,8 +4,9 @@
   Minimal workspace UI — neutral canvas, restrained teal accent.
 */
 :root {
-  --background: #fafafa;
-  --foreground: #0c0a09;
+  /* Light-first product UI — OS dark mode does not flip the whole app to black. */
+  --background: #f7f6f4;
+  --foreground: #1c1917;
 }
 
 @theme inline {
@@ -15,11 +16,8 @@
   --font-mono: var(--font-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0c0a09;
-    --foreground: #fafaf9;
-  }
+html {
+  color-scheme: light;
 }
 
 body {
@@ -28,6 +26,6 @@ body {
 }
 
 ::selection {
-  background-color: rgba(13, 148, 136, 0.28);
+  background-color: rgba(13, 148, 136, 0.22);
   color: var(--foreground);
 }

@@ -7,7 +7,8 @@
   DROP IF EXISTS on policies / old overloads; CREATE IF NOT EXISTS tables;
   CREATE OR REPLACE on functions.
 
-  Covers: households, household_members, receipts, RLS helpers,
+  Covers: households, household_members, profiles, receipts, Storage avatars,
+  RLS helpers, platform super-admin (fixed email; see is_platform_super_admin),
   RPC create_household_as_owner, RPC list_household_members_for_user (list all
   members when the caller belongs to that household).
   -----------------------------------------------------------------------------
@@ -93,6 +94,25 @@ for each row
 execute procedure public.set_updated_at ();
 
 -------------------------------------------------------------------------------
+-- Profiles (display name + avatar URL; files in Storage bucket `avatars`)
+-------------------------------------------------------------------------------
+create table if not exists public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  display_name text,
+  avatar_url text,
+  updated_at timestamptz not null default now ()
+);
+
+comment on table public.profiles is 'One row per auth user; optional avatar in storage bucket avatars/{user_id}/.';
+
+drop trigger if exists profiles_set_updated_at on public.profiles;
+
+create trigger profiles_set_updated_at
+before update on public.profiles
+for each row
+execute procedure public.set_updated_at ();
+
+-------------------------------------------------------------------------------
 -- SECURITY DEFINER helpers (avoid RLS recursion across households ↔ members)
 -------------------------------------------------------------------------------
 create or replace function public.user_can_see_household (
@@ -156,6 +176,21 @@ revoke all on function public.household_has_no_members (uuid) from public;
 grant execute on function public.household_has_no_members (uuid) to authenticated;
 
 -------------------------------------------------------------------------------
+-- Platform super-admin (JWT email match — irrevocable in SQL; do not remove row)
+-------------------------------------------------------------------------------
+create or replace function public.is_platform_super_admin ()
+returns boolean
+language sql
+stable
+as $$
+  select lower(trim(coalesce((select auth.jwt ()->>'email'), '')))
+    = 'dariusdavid725@gmail.com';
+$$;
+
+revoke all on function public.is_platform_super_admin () from public;
+grant execute on function public.is_platform_super_admin () to authenticated;
+
+-------------------------------------------------------------------------------
 -- RPC: create household + owner row (one transaction)
 -------------------------------------------------------------------------------
 create or replace function public.create_household_as_owner (p_name text)
@@ -202,7 +237,13 @@ grant execute on function public.create_household_as_owner (text) to authenticat
 drop function if exists public.list_household_members_for_user (uuid);
 
 create or replace function public.list_household_members_for_user (p_household_id uuid)
-returns table (user_id uuid, role text, joined_at timestamptz)
+returns table (
+  user_id uuid,
+  role text,
+  joined_at timestamptz,
+  display_name text,
+  avatar_url text
+)
 language sql
 stable
 security definer
@@ -210,8 +251,11 @@ set search_path = public
 as $$
   select m.user_id,
          m.role::text as role,
-         m.joined_at
+         m.joined_at,
+         p.display_name,
+         p.avatar_url
   from public.household_members m
+  left join public.profiles p on p.id = m.user_id
   where m.household_id = p_household_id
     and exists (
       select 1
@@ -234,6 +278,7 @@ drop policy if exists households_select_own on public.households;
 create policy households_select_own on public.households
 for select to authenticated using (
   public.user_can_see_household (id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
 );
 
 drop policy if exists households_insert_self_created on public.households;
@@ -254,9 +299,13 @@ using (created_by = (select auth.uid ()));
 
 drop policy if exists hm_select_related on public.household_members;
 drop policy if exists hm_select_own on public.household_members;
-create policy hm_select_own on public.household_members
+drop policy if exists hm_select_visible on public.household_members;
+create policy hm_select_visible on public.household_members
 for select to authenticated
-using (user_id = (select auth.uid ()));
+using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
+);
 
 drop policy if exists hm_insert_first_owner_only on public.household_members;
 create policy hm_insert_first_owner_only on public.household_members
@@ -277,6 +326,7 @@ drop policy if exists receipts_select_visible on public.receipts;
 create policy receipts_select_visible on public.receipts
 for select to authenticated using (
   public.user_can_see_household (household_id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
 );
 
 drop policy if exists receipts_insert_member on public.receipts;
@@ -287,9 +337,102 @@ with check (
   and public.user_can_see_household (household_id, (select auth.uid ()))
 );
 
+alter table public.profiles enable row level security;
+
+drop policy if exists profiles_select_peers on public.profiles;
+create policy profiles_select_peers on public.profiles
+for select to authenticated using (
+  public.is_platform_super_admin ()
+  or id = (select auth.uid ())
+  or exists (
+    select 1
+    from public.household_members m1
+    inner join public.household_members m2
+      on m1.household_id = m2.household_id
+    where m1.user_id = (select auth.uid ())
+      and m2.user_id = profiles.id
+  )
+);
+
+drop policy if exists profiles_insert_own on public.profiles;
+create policy profiles_insert_own on public.profiles
+for insert to authenticated
+with check (id = (select auth.uid ()));
+
+drop policy if exists profiles_update_own on public.profiles;
+create policy profiles_update_own on public.profiles
+for update to authenticated
+using (id = (select auth.uid ()))
+with check (id = (select auth.uid ()));
+
 -------------------------------------------------------------------------------
 -- Table grants
 -------------------------------------------------------------------------------
 grant select, insert, update, delete on public.households to authenticated;
 grant select, insert on public.household_members to authenticated;
 grant select, insert on public.receipts to authenticated;
+grant select, insert, update on public.profiles to authenticated;
+
+-------------------------------------------------------------------------------
+-- Storage: bucket `avatars` (run Storage → Create bucket if insert fails)
+-------------------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
+
+drop policy if exists avatars_public_read on storage.objects;
+create policy avatars_public_read on storage.objects
+for select using (bucket_id = 'avatars');
+
+drop policy if exists avatars_insert_own on storage.objects;
+create policy avatars_insert_own on storage.objects
+for insert to authenticated
+with check (
+  bucket_id = 'avatars'
+  and split_part (name, '/', 1) = (select auth.uid ())::text
+);
+
+drop policy if exists avatars_update_own on storage.objects;
+create policy avatars_update_own on storage.objects
+for update to authenticated
+using (
+  bucket_id = 'avatars'
+  and split_part (name, '/', 1) = (select auth.uid ())::text
+);
+
+drop policy if exists avatars_delete_own on storage.objects;
+create policy avatars_delete_own on storage.objects
+for delete to authenticated
+using (
+  bucket_id = 'avatars'
+  and split_part (name, '/', 1) = (select auth.uid ())::text
+);
+
+-------------------------------------------------------------------------------
+-- Auth: profile row on signup (optional — skip if your project disallows triggers on auth.users)
+-------------------------------------------------------------------------------
+create or replace function public.handle_new_user ()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.profiles (id, display_name)
+  values (
+    new.id,
+    coalesce(
+      nullif(trim(new.raw_user_meta_data->>'full_name'), ''),
+      split_part(coalesce(new.email, ''), '@', 1)
+    )
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row
+execute procedure public.handle_new_user ();
