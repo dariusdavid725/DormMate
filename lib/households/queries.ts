@@ -22,6 +22,7 @@ export type HouseholdMemberRow = {
   joinedAt: string;
   displayName: string | null;
   avatarUrl: string | null;
+  rewardPoints: number;
 };
 
 export const loadHouseholdSummaries = cache(async (userId: string) => {
@@ -148,6 +149,7 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     joined_at: string;
     display_name: string | null;
     avatar_url: string | null;
+    reward_points?: number | null;
   };
 
   const rows = (data ?? []) as RpcRow[];
@@ -158,5 +160,6 @@ export async function loadHouseholdMembers(householdId: string): Promise<
     joinedAt: r.joined_at,
     displayName: r.display_name,
     avatarUrl: r.avatar_url,
+    rewardPoints: Math.max(0, Math.floor(Number(r.reward_points ?? 0))),
   }));
 }

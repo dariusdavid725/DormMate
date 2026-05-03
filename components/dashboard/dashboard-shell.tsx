@@ -37,8 +37,14 @@ export function DashboardShell({
               <div className="flex flex-col gap-1">
                 <SidebarNavLink
                   href="/dashboard"
-                  title="Pulse"
-                  hint="Overview"
+                  title="Home"
+                  hint="Overview & activity"
+                  exact
+                />
+                <SidebarNavLink
+                  href="/dashboard/tasks"
+                  title="Tasks"
+                  hint="Chores & rewards"
                   exact
                 />
                 {showAdmin ? (
@@ -66,7 +72,7 @@ export function DashboardShell({
                 ))}
                 {households.length === 0 ? (
                   <p className="rounded-xl border border-dashed border-[var(--dm-border-strong)] px-3 py-4 text-xs leading-relaxed text-dm-muted">
-                    No households yet — create one from Pulse (column on wide screens).
+                    No households yet — create one from Home (right column on desktop).
                   </p>
                 ) : null}
               </div>

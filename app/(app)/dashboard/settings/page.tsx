@@ -47,7 +47,7 @@ export default async function SettingsPage() {
           href="/dashboard"
           className="rounded-full bg-dm-electric px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-110"
         >
-          Pulse
+          Home
         </Link>
         <Link href="/privacy" className="rounded-full px-4 py-2.5 text-sm font-medium text-dm-muted hover:text-dm-electric">
           Privacy

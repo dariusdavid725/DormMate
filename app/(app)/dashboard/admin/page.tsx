@@ -56,7 +56,7 @@ export default async function AdminDashboardPage() {
     <div className="mx-auto w-full max-w-6xl pb-[7rem] lg:pb-10">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-dm-muted">
         <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
-          Pulse
+          Home
         </Link>
         <span className="mx-2 opacity-40">/</span>
         <span className="text-dm-text">Admin</span>

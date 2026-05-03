@@ -7,7 +7,8 @@
   DROP IF EXISTS on policies / old overloads; CREATE IF NOT EXISTS tables;
   CREATE OR REPLACE on functions.
 
-  Covers: households, household_members, profiles, receipts, Storage avatars,
+  Covers: households, household_members (incl. reward_points), profiles,
+  receipts, household_tasks + complete_household_task RPC, Storage avatars,
   RLS helpers, platform super-admin (fixed email; see is_platform_super_admin),
   RPC create_household_as_owner, RPC list_household_members_for_user (list all
   members when the caller belongs to that household).
@@ -72,6 +73,35 @@ comment on table public.receipts is 'Scanned receipts / AI extraction payloads p
 create index if not exists receipts_household_id_idx on public.receipts (household_id);
 
 create index if not exists receipts_created_at_idx on public.receipts (created_at desc);
+
+-------------------------------------------------------------------------------
+-- Household tasks (chores) + reward points per member row
+-------------------------------------------------------------------------------
+alter table public.household_members
+  add column if not exists reward_points integer not null default 0;
+
+comment on column public.household_members.reward_points is 'Points gained by completing chores in-app; informational / playful';
+
+create table if not exists public.household_tasks (
+  id uuid primary key default gen_random_uuid (),
+  household_id uuid not null references public.households (id) on delete cascade,
+  title text not null check (length (trim(title)) between 1 and 140),
+  notes text,
+  reward_points integer not null default 10 check (reward_points >= 1 and reward_points <= 500),
+  reward_label text,
+  status text not null default 'open' check (status in ('open', 'done')),
+  created_by uuid not null references auth.users (id) on delete cascade,
+  completed_by uuid references auth.users (id) on delete set null,
+  completed_at timestamptz,
+  created_at timestamptz not null default now ()
+);
+
+comment on table public.household_tasks is 'Shared flat chores — complete for reward points tracked on household_members.';
+
+create index if not exists household_tasks_household_id_idx on public.household_tasks (household_id);
+
+create index if not exists household_tasks_open_idx on public.household_tasks (household_id)
+  where status = 'open';
 
 -------------------------------------------------------------------------------
 -- Trigger: households.updated_at
@@ -242,7 +272,8 @@ returns table (
   role text,
   joined_at timestamptz,
   display_name text,
-  avatar_url text
+  avatar_url text,
+  reward_points integer
 )
 language sql
 stable
@@ -253,7 +284,8 @@ as $$
          m.role::text as role,
          m.joined_at,
          p.display_name,
-         p.avatar_url
+         p.avatar_url,
+         m.reward_points
   from public.household_members m
   left join public.profiles p on p.id = m.user_id
   where m.household_id = p_household_id
@@ -267,6 +299,55 @@ $$;
 
 revoke all on function public.list_household_members_for_user (uuid) from public;
 grant execute on function public.list_household_members_for_user (uuid) to authenticated;
+
+-------------------------------------------------------------------------------
+-- RPC: mark chore done + credit reward points (atomic)
+-------------------------------------------------------------------------------
+create or replace function public.complete_household_task (p_task_id uuid)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  t public.household_tasks%rowtype;
+  uid uuid := auth.uid ();
+begin
+  if uid is null then
+    raise exception 'not authenticated' using errcode = '42501';
+  end if;
+
+  select ht.*
+    into t
+    from public.household_tasks ht
+   where ht.id = p_task_id
+     and public.user_can_see_household (ht.household_id, uid)
+   for update;
+
+  if not found then
+    raise exception 'task not found' using errcode = '42501';
+  end if;
+
+  if t.status <> 'open' then
+    return;
+  end if;
+
+  update public.household_tasks
+     set status = 'done',
+         completed_by = uid,
+         completed_at = now ()
+   where id = p_task_id;
+
+  update public.household_members
+     set reward_points = reward_points + t.reward_points
+   where household_id = t.household_id
+     and user_id = uid;
+end;
+$$;
+
+revoke all on function public.complete_household_task (uuid) from public;
+grant execute on function public.complete_household_task (uuid) to authenticated;
 
 -------------------------------------------------------------------------------
 -- RLS + policies
@@ -337,6 +418,23 @@ with check (
   and public.user_can_see_household (household_id, (select auth.uid ()))
 );
 
+alter table public.household_tasks enable row level security;
+
+drop policy if exists household_tasks_select_visible on public.household_tasks;
+create policy household_tasks_select_visible on public.household_tasks
+for select to authenticated using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
+);
+
+drop policy if exists household_tasks_insert_member on public.household_tasks;
+create policy household_tasks_insert_member on public.household_tasks
+for insert to authenticated
+with check (
+  created_by = (select auth.uid ())
+  and public.user_can_see_household (household_id, (select auth.uid ()))
+);
+
 alter table public.profiles enable row level security;
 
 drop policy if exists profiles_select_peers on public.profiles;
@@ -371,6 +469,7 @@ with check (id = (select auth.uid ()));
 grant select, insert, update, delete on public.households to authenticated;
 grant select, insert on public.household_members to authenticated;
 grant select, insert on public.receipts to authenticated;
+grant select, insert on public.household_tasks to authenticated;
 grant select, insert, update on public.profiles to authenticated;
 
 -------------------------------------------------------------------------------

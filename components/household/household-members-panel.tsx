@@ -145,6 +145,10 @@ export function HouseholdMembersPanel({
                     </span>
                     <span className="mx-2 opacity-35">·</span>
                     joined {formatJoined(m.joinedAt)}
+                    <span className="mx-2 opacity-35">·</span>
+                    <span className="inline-flex skew-x-[-4deg] rounded-sm bg-[color-mix(in_srgb,var(--dm-construct-yellow)_26%,transparent)] px-1.5 py-px text-[11px] font-bold normal-case text-[var(--dm-construct-ink)] dark:text-dm-text dark:ring-1 dark:ring-white/20">
+                      {m.rewardPoints} pts
+                    </span>
                   </p>
                 </div>
               </article>

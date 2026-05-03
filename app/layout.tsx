@@ -19,15 +19,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: tryGetMetadataBase(),
   title: {
-    default: "DormMate — Shared household finance",
+    default: "DormMate — Shared homes, fair splits",
     template: "%s · DormMate",
   },
   description:
-    "Receipts, splits, and dorm clarity — AI-ready, mobile-first.",
+    "Chores with tiny rewards, receipts, and groceries — built for dorms and flats.",
   openGraph: {
     url: process.env.NEXT_PUBLIC_SITE_URL ? getSiteUrl() : undefined,
     title: "DormMate",
-    description: "Clean-tech shared housing pulse — receipts to settle-up.",
+    description:
+      "Chores with tiny rewards, receipts, and groceries — built for dorms and flats.",
     type: "website",
   },
 };

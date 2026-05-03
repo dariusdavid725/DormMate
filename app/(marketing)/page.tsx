@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: {
-    default: "DormMate — Shared costs, quieter chats",
+    default: "DormMate — Chores worth points · splits without drama",
     template: "%s · DormMate",
   },
   description:
-    "Household receipts and balances tuned for shared flats — readable on the phone between classes.",
+    "Shared kitchens: post chores with rewards, scan receipts for fair money, groceries on deck — readable between classes.",
 };
 
 export default async function Home() {
@@ -28,36 +28,45 @@ export default async function Home() {
     <div className="flex flex-1 flex-col">
       <section className="relative">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:grid lg:grid-cols-[1fr,0.92fr] lg:items-center lg:gap-14 lg:py-28">
-          <div>
-            <p className="text-xs font-medium tracking-wide text-dm-muted">
-              Housemates · Receipts · Clarity
+          <div className="dm-construct-accent pl-6 sm:pl-8">
+            <p className="inline-flex skew-x-[-10deg] bg-[var(--dm-construct-yellow)] px-4 py-1 text-[11px] font-black uppercase tracking-[0.28em] text-black">
+              Dorm ops
             </p>
-            <h1 className="mt-5 max-w-[18ch] text-balance text-[2.65rem] font-semibold leading-[1.05] tracking-tight text-dm-text sm:text-[3.35rem]">
-              Money stays fair without the spreadsheet vibes.
+            <h1 className="mt-6 max-w-[20ch] text-balance text-[2.65rem] font-extrabold leading-[1.05] tracking-tight text-dm-text sm:text-[3.35rem]">
+              One room: chores earn rewards, receipts keep cash honest.
             </h1>
             <p className="mt-6 max-w-md text-[17px] leading-relaxed text-dm-muted">
-              Scan slips, surface what matters, and stop replaying „who bought
-              what“ in your head — built for cramped kitchens and slim budgets.
+              Post tasks for trash runs, resets, errands — mates claim them for fun
+              points. Money tools stay tucked behind when you&apos;re settling who
+              fronted Tesco.
             </p>
             <div className="mt-11 flex flex-wrap items-center gap-4">
               {userLoggedIn ? (
-                <Link
-                  href="/dashboard"
-                  className="rounded-full bg-[var(--dm-accent)] px-8 py-3.5 text-sm font-semibold text-[var(--dm-accent-ink)] shadow-lg shadow-black/10 transition hover:brightness-105 active:scale-[0.99]"
-                >
-                  Open Pulse
-                </Link>
+                <>
+                  <Link
+                    href="/dashboard/tasks"
+                    className="dm-construct-angle inline-flex bg-[var(--dm-construct-red)] px-9 py-3.5 text-sm font-black uppercase tracking-[0.08em] text-white shadow-xl shadow-black/25 transition hover:brightness-105 active:scale-[0.99]"
+                  >
+                    Tasks & rewards
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center border-b-2 border-[var(--dm-construct-ink)] pb-0.5 text-sm font-bold text-dm-text dark:border-white"
+                  >
+                    Home overview
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link
                     href="/signup"
-                    className="rounded-full bg-dm-electric px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-black/15 transition hover:brightness-110 active:scale-[0.99]"
+                    className="dm-construct-angle inline-flex bg-[var(--dm-construct-red)] px-8 py-3.5 text-sm font-black uppercase tracking-[0.06em] text-white shadow-xl shadow-black/25 transition hover:brightness-105 active:scale-[0.99]"
                   >
                     Get started
                   </Link>
                   <Link
                     href="/login"
-                    className="rounded-full border border-[var(--dm-border-strong)] bg-dm-surface/75 px-7 py-3.5 text-sm font-semibold text-dm-text backdrop-blur-sm transition hover:border-dm-electric/50 hover:bg-dm-surface"
+                    className="rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-dm-electric px-7 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 dark:border-white"
                   >
                     Log in
                   </Link>
@@ -67,20 +76,25 @@ export default async function Home() {
           </div>
 
           <div className="mt-14 space-y-4 lg:mt-0">
-            <figure className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/70 p-6 shadow-xl shadow-black/[0.04] backdrop-blur-md sm:p-8">
-              <figcaption className="text-xs font-semibold text-dm-electric">
+            <figure className="relative rotate-[0.75deg] overflow-hidden rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-[color-mix(in_srgb,var(--dm-construct-yellow)_18%,var(--dm-surface))] p-6 shadow-2xl dark:border-white/60 sm:p-8">
+              <div
+                aria-hidden
+                className="absolute inset-y-8 right-0 w-24 translate-x-1/3 rotate-[-18deg] bg-[var(--dm-construct-red)] opacity-20"
+              />
+              <figcaption className="relative text-[11px] font-black uppercase tracking-[0.25em] text-[var(--dm-construct-ink)] dark:text-white">
+                Construct lane
+              </figcaption>
+              <p className="relative mt-4 text-[15px] font-medium leading-relaxed text-[var(--dm-construct-ink)]/90 dark:text-dm-muted">
+                Yellow signal bars, vermillion CTAs, electric blue wayfinding — the UI
+                shifts register so living together never feels like one grey admin panel.
+              </p>
+            </figure>
+            <figure className="-rotate-[0.5deg] rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/75 p-6 shadow-xl shadow-black/[0.04] backdrop-blur-md sm:p-8">
+              <figcaption className="text-xs font-bold text-dm-electric">
                 Receipt intelligence
               </figcaption>
               <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-                Model reads totals and merchants so nobody re-keys smudgy paper tapes at midnight.
-              </p>
-            </figure>
-            <figure className="rounded-3xl border border-[var(--dm-border)] bg-dm-surface/55 p-6 backdrop-blur-sm sm:p-8">
-              <figcaption className="text-xs font-semibold text-dm-text">
-                Night mode that doesn’t yell
-              </figcaption>
-              <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-                Deep navy when your OS prefers dark — less glare reviewing rent splits.
+                AI lifts totals and merchants so nobody re-keys smudgy tapes at midnight.
               </p>
             </figure>
           </div>

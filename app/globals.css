@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /*
-  Refined clean-tech: electric blue + mint energy, submarine navy dark.
-  Surfaces breathe — hairline divides, soft radii, depth via glow not hard offset blocks.
+  Clean-tech + constructivist accents: electric blue, mint, submarine navy,
+  punctuated with bold diagonals / vermillion / signal yellow (not full brutalism).
 */
 
 :root {
@@ -21,6 +21,26 @@
   --dm-border-strong: rgba(15, 23, 42, 0.16);
   --dm-accent-warn-bg: #fff7d6;
   --dm-accent-warn-text: #5c3d05;
+  /* Constructivist accent layer (use sparingly vs electric/mint) */
+  --dm-construct-red: #d82222;
+  --dm-construct-yellow: #ecbc00;
+  --dm-construct-ink: #101318;
+  --dm-body-fill:
+    repeating-linear-gradient(
+      -32deg,
+      transparent 0 18px,
+      color-mix(in srgb, var(--dm-construct-red) 5%, transparent) 18px 19px
+    ),
+    radial-gradient(
+      ellipse 120% 80% at 0% -30%,
+      color-mix(in srgb, var(--dm-electric) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 60% at 100% 0%,
+      color-mix(in srgb, var(--dm-accent) 10%, transparent),
+      transparent 50%
+    );
 
   --background: var(--dm-bg);
   --foreground: var(--dm-text);
@@ -47,6 +67,20 @@
     --dm-border-strong: rgba(238, 244, 255, 0.16);
     --dm-accent-warn-bg: rgba(254, 240, 138, 0.12);
     --dm-accent-warn-text: #fde68a;
+    --dm-construct-red: #ff5a4a;
+    --dm-construct-yellow: #ffe14a;
+    --dm-construct-ink: #f4f7ff;
+    --dm-body-fill:
+      radial-gradient(
+        ellipse 120% 80% at 0% -30%,
+        color-mix(in srgb, var(--dm-electric) 16%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        ellipse 85% 55% at 100% -5%,
+        color-mix(in srgb, var(--dm-accent) 14%, transparent),
+        transparent 48%
+      );
 
     --background: var(--dm-bg);
     --foreground: var(--dm-text);
@@ -70,6 +104,9 @@
   --color-dm-danger: var(--dm-danger);
   --color-dm-accent-warn-bg: var(--dm-accent-warn-bg);
   --color-dm-accent-warn-text: var(--dm-accent-warn-text);
+  --color-dm-construct-red: var(--dm-construct-red);
+  --color-dm-construct-yellow: var(--dm-construct-yellow);
+  --color-dm-construct-ink: var(--dm-construct-ink);
 }
 
 html {
@@ -78,19 +115,17 @@ html {
 
 body {
   background-color: var(--dm-bg);
-  background-image:
-    radial-gradient(
-      ellipse 120% 80% at 0% -30%,
-      color-mix(in srgb, var(--dm-electric) 14%, transparent),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 90% 60% at 100% 0%,
-      color-mix(in srgb, var(--dm-accent) 10%, transparent),
-      transparent 50%
-    );
+  background-image: var(--dm-body-fill);
   background-attachment: fixed;
   color: var(--dm-text);
+}
+
+.dm-construct-angle {
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 4% 100%);
+}
+
+.dm-construct-accent {
+  border-left: 4px solid var(--dm-construct-red);
 }
 
 ::selection {

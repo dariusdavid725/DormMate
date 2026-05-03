@@ -44,7 +44,7 @@ export default async function InventoryPage() {
         href="/dashboard"
         className="inline-flex text-sm font-semibold text-dm-electric hover:underline"
       >
-        ← Back to Pulse
+        ← Back to dashboard
       </Link>
     </div>
   );

@@ -6,6 +6,8 @@ import { RenameHouseholdForm } from "@/components/dashboard/rename-household-for
 import { HouseholdMembersPanel } from "@/components/household/household-members-panel";
 import { ReceiptList } from "@/components/receipts/receipt-list";
 import { ReceiptScannerPanel } from "@/components/receipts/receipt-scanner-panel";
+import { CreateHouseholdTaskForm } from "@/components/tasks/create-household-task-form";
+import { HouseholdTaskList } from "@/components/tasks/household-task-list";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
@@ -17,6 +19,7 @@ import {
   loadHouseholdSummaries,
 } from "@/lib/households/queries";
 import { loadReceiptsForHousehold } from "@/lib/receipts/queries";
+import { loadOpenTasksForHousehold } from "@/lib/tasks/queries";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +67,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
       ? "members"
       : rawView === "receipts"
         ? "receipts"
-        : "overview";
+        : rawView === "tasks"
+          ? "tasks"
+          : "overview";
 
   const supabase = await createClient();
   const {
@@ -90,6 +95,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const receiptsPayload =
     view === "receipts" ? await loadReceiptsForHousehold(id) : null;
 
+  const tasksPayload =
+    view === "tasks" ? await loadOpenTasksForHousehold(id) : null;
+
   const canRename = household.createdBy === user.id;
 
   const tabBase = `/dashboard/household/${id}`;
@@ -100,7 +108,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <ol className="flex flex-wrap items-center gap-2">
           <li>
             <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
-              Pulse
+              Home
             </Link>
           </li>
           <li aria-hidden className="opacity-35">
@@ -134,17 +142,18 @@ export default async function HouseholdDetailPage(props: PageProps) {
             href="/dashboard"
             className="inline-flex rounded-full border border-[var(--dm-border-strong)] px-4 py-1.5 text-xs font-semibold text-dm-muted transition hover:border-dm-electric hover:text-dm-electric"
           >
-            Pulse
+            Home
           </Link>
         </div>
       </div>
 
-      <div className="mt-8 flex gap-2 rounded-full bg-dm-surface/60 p-1 ring-1 ring-[var(--dm-border-strong)] backdrop-blur-sm">
+      <div className="mt-8 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
+        <div className="flex min-w-0 shrink-0 gap-2 rounded-full bg-dm-surface/60 p-1 ring-1 ring-[var(--dm-border-strong)] backdrop-blur-sm">
         <Link
           href={tabBase}
           scroll={false}
           className={[
-            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
+            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "overview"
               ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
               : "text-dm-muted hover:text-dm-text",
@@ -153,10 +162,22 @@ export default async function HouseholdDetailPage(props: PageProps) {
           Overview
         </Link>
         <Link
+          href={`${tabBase}?view=tasks`}
+          scroll={false}
+          className={[
+            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
+            view === "tasks"
+              ? "bg-[color-mix(in_srgb,var(--dm-construct-red)_16%,transparent)] font-bold text-[var(--dm-construct-red)] ring-1 ring-[var(--dm-construct-red)]/30 dark:bg-[color-mix(in_srgb,var(--dm-construct-red)_26%,transparent)] dark:text-orange-300"
+              : "text-dm-muted hover:text-dm-text",
+          ].join(" ")}
+        >
+          Tasks
+        </Link>
+        <Link
           href={`${tabBase}?view=members`}
           scroll={false}
           className={[
-            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
+            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "members"
               ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
               : "text-dm-muted hover:text-dm-text",
@@ -168,7 +189,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=receipts`}
           scroll={false}
           className={[
-            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
+            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "receipts"
               ? "bg-[var(--dm-accent-soft)] text-[var(--dm-accent-ink)] ring-1 ring-emerald-400/30"
               : "text-dm-muted hover:text-dm-accent-ink",
@@ -176,6 +197,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         >
           Receipts
         </Link>
+        </div>
       </div>
 
       {view === "overview" ? (
@@ -205,11 +227,6 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 desc: "Shared TP, milk, spices — low-stock cues without passive aggression.",
                 status: "Soon",
               },
-              {
-                title: "Chores & quiet hours",
-                desc: "Fair rotations and gentle signal when someone’s heads-down.",
-                status: "Soon",
-              },
             ].map((card) => (
               <article
                 key={card.title}
@@ -226,6 +243,24 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 </p>
               </article>
             ))}
+            <Link
+              href={`${tabBase}?view=tasks`}
+              scroll={false}
+              className="flex flex-col rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-[color-mix(in_srgb,var(--dm-construct-yellow)_16%,transparent)] p-7 shadow-lg transition hover:brightness-[1.03] dark:border-white/65"
+            >
+              <span className="inline-flex w-fit skew-x-[-9deg] bg-[var(--dm-construct-red)] px-3 py-0.5 text-[11px] font-black uppercase tracking-wider text-white">
+                Live
+              </span>
+              <h2 className="mt-4 text-lg font-extrabold tracking-tight text-[var(--dm-construct-ink)] dark:text-dm-text">
+                Chores & rewards
+              </h2>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--dm-construct-ink)]/90 dark:text-dm-muted">
+                Drop rotations, pickups, errands — mates claim chores for playful points (+ optional perks you invent).
+              </p>
+              <span className="mt-6 text-sm font-bold text-[var(--dm-construct-red)] dark:text-orange-400">
+                Open tasks →
+              </span>
+            </Link>
           </div>
 
           <section className="mt-12 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-8 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
@@ -245,6 +280,36 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ) : null}
           </section>
         </>
+      ) : view === "tasks" ? (
+        <section className="mt-10 space-y-10">
+          {tasksPayload?.error ? (
+            <div
+              role="alert"
+              className="rounded-2xl border border-amber-400/45 bg-[var(--dm-accent-warn-bg)] px-5 py-4 text-sm text-[var(--dm-accent-warn-text)]"
+            >
+              Chore list unavailable — rerun{" "}
+              <code className="rounded border border-amber-500/35 px-1 font-mono">
+                schema.sql
+              </code>{" "}
+              in Supabase ({tasksPayload.error}) so{" "}
+              <code className="font-mono">household_tasks</code> exists.
+            </div>
+          ) : (
+            <>
+              <div className="rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-dm-surface/80 p-6 shadow-inner dark:border-white/50 sm:p-8">
+                <h2 className="text-[11px] font-black uppercase tracking-[0.28em] text-[var(--dm-construct-red)] dark:text-orange-400">
+                  New chore
+                </h2>
+                <CreateHouseholdTaskForm
+                  className="mt-6 space-y-4"
+                  households={[{ id: household.id, name: household.name }]}
+                  fixedHouseholdId={id}
+                />
+              </div>
+              <HouseholdTaskList tasks={tasksPayload?.tasks ?? []} />
+            </>
+          )}
+        </section>
       ) : view === "members" ? (
         <section className="mt-10">
           {membersResult && "error" in membersResult ? (

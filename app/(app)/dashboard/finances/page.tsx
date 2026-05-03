@@ -58,7 +58,7 @@ export default async function FinancesPage() {
                 <td className="px-5 py-12 text-center text-dm-muted" colSpan={4}>
                   Anchor a dorm from{" "}
                   <Link className="font-semibold text-dm-electric" href="/dashboard">
-                    Pulse
+                    Home
                   </Link>
                   .
                 </td>
