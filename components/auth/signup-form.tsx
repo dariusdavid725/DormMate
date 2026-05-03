@@ -15,16 +15,16 @@ export function SignupForm() {
     return (
       <div
         role="status"
-        className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-100"
+        className="dm-card-surface dm-fade-in-up rounded-xl p-6 text-sm text-dm-text ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_35%,transparent)]"
       >
-        <p className="font-medium">Almost there.</p>
-        <p className="mt-1">{state.message}</p>
-        <p className="mt-4">
+        <p className="font-black text-dm-accent">Almost dorm official.</p>
+        <p className="mt-2 leading-relaxed text-dm-muted">{state.message}</p>
+        <p className="mt-5">
           <Link
             href="/login"
-            className="font-medium text-emerald-800 underline dark:text-emerald-300"
+            className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
           >
-            Continue to login
+            Continue to login →
           </Link>
         </p>
       </div>
@@ -36,17 +36,14 @@ export function SignupForm() {
       {state?.error && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/60 dark:text-red-200"
+          className="dm-fade-in-up rounded-xl border border-dm-danger/45 bg-[color-mix(in_srgb,var(--dm-danger)_10%,transparent)] px-4 py-3 text-sm font-medium text-dm-danger"
         >
           {state.error}
         </div>
       )}
 
       <div>
-        <label
-          htmlFor="signup-email"
-          className="mb-1.5 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
-        >
+        <label htmlFor="signup-email" className="dm-field-label">
           Email
         </label>
         <input
@@ -56,14 +53,11 @@ export function SignupForm() {
           autoComplete="email"
           required
           placeholder="you@university.edu"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm outline-none ring-emerald-500/30 placeholder:text-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-500"
+          className="dm-field-input"
         />
       </div>
       <div>
-        <label
-          htmlFor="signup-password"
-          className="mb-1.5 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
-        >
+        <label htmlFor="signup-password" className="dm-field-label">
           Password
         </label>
         <input
@@ -73,15 +67,12 @@ export function SignupForm() {
           autoComplete="new-password"
           required
           minLength={8}
-          placeholder="At least 8 characters"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm outline-none ring-emerald-500/30 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
+          placeholder="At least 8 spicy characters"
+          className="dm-field-input"
         />
       </div>
       <div>
-        <label
-          htmlFor="signup-confirm"
-          className="mb-1.5 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
-        >
+        <label htmlFor="signup-confirm" className="dm-field-label">
           Confirm password
         </label>
         <input
@@ -91,19 +82,22 @@ export function SignupForm() {
           autoComplete="new-password"
           required
           minLength={8}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm outline-none ring-emerald-500/30 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
+          className="dm-field-input"
         />
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-70"
+        className="dm-btn-primary dm-hover-tap mt-2 w-full !py-3 !text-[15px] disabled:pointer-events-none disabled:opacity-50"
       >
-        {pending ? "Creating account…" : "Create account"}
+        {pending ? "Summoning roommate OS…" : "Create dorm profile"}
       </button>
-      <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Already have an account?{" "}
-        <Link href="/login" className="font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+      <p className="text-center text-sm text-dm-muted">
+        Already initiated?{" "}
+        <Link
+          href="/login"
+          className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
+        >
           Log in
         </Link>
       </p>

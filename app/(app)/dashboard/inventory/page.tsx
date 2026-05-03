@@ -20,31 +20,31 @@ export default async function InventoryPage() {
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-8 pb-[7rem] lg:pb-10">
+    <div className="mx-auto max-w-xl space-y-7 pb-24 lg:pb-9">
       <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-          Inventory
+        <p className="text-[11px] font-black uppercase tracking-[0.26em] text-dm-accent">
+          Pantry vibes
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
-          Groceries
+        <h1 className="mt-1.5 text-[2rem] font-black tracking-tight text-dm-text">
+          Groceries beta
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
-          Pantry optics will merge with receipts so coffee filters don&apos;t silently vanish.
+          Receipts whisper what runs low · future-you won&apos;t yell about vanished oat milk again.
         </p>
       </header>
 
-      <div className="rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-[var(--dm-accent-soft)] to-dm-surface/80 p-7 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
-        <p className="text-sm font-semibold text-dm-text">Quietly queued</p>
+      <div className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-7 ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_22%,transparent)]">
+        <p className="text-sm font-black text-dm-text">Quietly assembling 🛒✨</p>
         <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-          Staples radar + roommate-friendly nudges are slotted behind receipt intelligence — boring supply chains done right deserve UI that doesn&apos;t shout.
+          Staples radar + roommate-safe nudges queue behind sharper receipt intel — chaotic good for shared kitchens incoming.
         </p>
       </div>
 
       <Link
         href="/dashboard"
-        className="inline-flex text-sm font-semibold text-dm-electric hover:underline"
+        className="inline-flex text-sm font-bold text-dm-electric underline decoration-dm-electric/45 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
       >
-        ← Back to dashboard
+        ← Back to HQ
       </Link>
     </div>
   );

@@ -45,8 +45,8 @@ export function HouseholdMembersPanel({
 
   return (
     <div className="space-y-10">
-      <section className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/75 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md sm:p-8">
-        <h3 className="text-base font-semibold text-dm-text">Your profile</h3>
+      <section className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-6 sm:p-8">
+        <h3 className="text-base font-black text-dm-text">Your profile</h3>
         <p className="mt-2 text-sm leading-relaxed text-dm-muted">
           How you show up inside this dorm — avatar is optional comfort, not runway.
         </p>
@@ -112,7 +112,7 @@ export function HouseholdMembersPanel({
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => (
             <li key={m.userId}>
-              <article className="flex gap-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/65 p-5 shadow-md shadow-black/[0.035] backdrop-blur-sm transition hover:bg-dm-surface">
+              <article className="dm-card-surface dm-card-interactive flex gap-4 rounded-[1.15rem] p-5">
                 <div className="relative shrink-0">
                   {m.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element -- Supabase CDN

@@ -74,7 +74,7 @@ export default async function AdminDashboardPage() {
         </p>
       </header>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      <div className="mt-9 grid gap-4 sm:grid-cols-3">
         {[
           { label: "Households", value: householdCount ?? 0 },
           { label: "Profiles", value: profileCount ?? 0 },
@@ -82,12 +82,12 @@ export default async function AdminDashboardPage() {
         ].map((card) => (
           <div
             key={card.label}
-            className="rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 px-5 py-5 shadow-lg shadow-black/[0.04] backdrop-blur-sm"
+            className="dm-card-surface dm-card-interactive rounded-[1.15rem] px-5 py-5"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
               {card.label}
             </p>
-            <p className="mt-3 font-mono text-3xl font-semibold tabular-nums text-dm-text">
+            <p className="mt-3 font-mono text-3xl font-black tabular-nums text-dm-electric">
               {card.value}
             </p>
           </div>
@@ -98,7 +98,7 @@ export default async function AdminDashboardPage() {
         <h2 className="text-lg font-semibold text-dm-text">
           Recent households
         </h2>
-        <div className="mt-6 overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 shadow-xl shadow-black/[0.04] backdrop-blur-sm">
+        <div className="dm-card-surface mt-6 overflow-hidden rounded-[1.25rem]">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg/60 text-xs font-semibold uppercase tracking-wide text-dm-muted">
               <tr>

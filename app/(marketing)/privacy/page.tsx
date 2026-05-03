@@ -7,18 +7,21 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
+      <h1 className="text-[2rem] font-black tracking-tight text-dm-text">
         Privacy policy
       </h1>
-      <p className="mt-6 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+      <p className="mt-6 text-sm leading-relaxed text-dm-muted">
         DormMate is under active development. We use Supabase for authentication and
         data hosting. When you sign up, account data is processed according to the
         Supabase and hosting providers&apos; policies. Contact the operator of this
         deployment for deletion requests once a formal policy is published.
       </p>
       <p className="mt-10">
-        <Link href="/" className="text-sm font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+        <Link
+          href="/"
+          className="text-sm font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
+        >
           ← Home
         </Link>
       </p>

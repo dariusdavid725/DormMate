@@ -41,9 +41,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full`}
+      className={`dm-force-dark h-full ${inter.variable} ${geistMono.variable}`}
     >
-      <body className="flex min-h-full flex-col bg-dm-bg font-sans antialiased">
+      <body className="dm-app-body flex min-h-full flex-col bg-dm-bg font-sans antialiased">
         {children}
       </body>
     </html>

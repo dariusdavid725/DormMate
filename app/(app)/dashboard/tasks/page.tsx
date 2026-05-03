@@ -34,35 +34,31 @@ export default async function DashboardTasksPage() {
   const householdOptions = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-10 pb-[7.5rem] lg:max-w-4xl lg:pb-10">
-      <header className="relative overflow-hidden border border-[var(--dm-border-strong)] border-l-[3px] border-l-dm-electric bg-dm-surface/72 p-6 shadow-xl shadow-black/[0.05] backdrop-blur-md sm:p-8">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-[-12%] top-[-30%] h-52 w-[55%] bg-[var(--dm-electric-glow)] opacity-60 blur-3xl dark:opacity-80"
-        />
-        <p className="relative text-[11px] font-bold uppercase tracking-[0.25em] text-dm-electric">
-          Tasks
+    <div className="mx-auto w-full max-w-2xl space-y-8 pb-24 lg:max-w-[58rem] lg:pb-9">
+      <header className="dm-panel-ribbon dm-card-interactive overflow-hidden rounded-[1.35rem] p-5 sm:p-7">
+        <p className="text-[11px] font-black uppercase tracking-[0.26em] text-dm-electric">
+          Chore arcade
         </p>
-        <h1 className="relative mt-3 text-3xl font-extrabold tracking-tight text-dm-text md:text-[2.15rem]">
-          Tasks with tiny rewards — not spreadsheets.
+        <h1 className="mt-2 text-[1.95rem] font-black leading-[1.1] tracking-tight text-dm-text md:text-[2.25rem]">
+          Tasks · tiny bribery, giant peace
         </h1>
-        <p className="relative mt-4 max-w-prose text-[15px] leading-relaxed text-dm-muted">
-          Drop work for your dorm or flat. Whoever clears it earns the points you
-          set — good for karma, coffees, first pick at movie nights.
+        <p className="relative mt-3 max-w-prose text-[15px] leading-relaxed text-dm-muted">
+          Drop jobs for your dorm squad. Finishers snag the shine (and literal points
+          toward whatever your flat bans or rewards).
         </p>
-        <p className="relative mt-4 text-xs text-dm-muted">
-          <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
+        <p className="relative mt-4 text-[12px] font-semibold text-dm-muted">
+          <Link href="/dashboard" className="text-dm-electric underline decoration-dm-electric/40 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40">
             ← Dashboard
           </Link>
-          <span className="mx-2 opacity-30">/</span>
-          <span>Shared money stays on Receipts · Finances</span>
+          <span className="mx-2 opacity-35">·</span>
+          <span>Dollars live under Money / Receipts when you&apos;re reconciling ramen economics.</span>
         </p>
       </header>
 
       {hhErr ? (
         <div
           role="alert"
-          className="rounded-2xl border border-dm-danger/35 bg-red-500/[0.06] px-4 py-3 text-sm text-dm-danger"
+          className="dm-fade-in-up rounded-2xl border border-dm-danger/40 bg-[color-mix(in_srgb,var(--dm-danger)_8%,transparent)] px-4 py-3 text-sm text-dm-danger"
         >
           {shouldExposeSupabaseError() ? hhErr : PUBLIC_TRY_AGAIN}
         </div>
@@ -71,7 +67,7 @@ export default async function DashboardTasksPage() {
       {taskErr ? (
         <div
           role="alert"
-          className="rounded-2xl border border-amber-400/35 bg-[var(--dm-accent-warn-bg)] px-4 py-3 text-sm text-[var(--dm-accent-warn-text)]"
+          className="dm-fade-in-up rounded-2xl border border-[color-mix(in_srgb,var(--dm-fun)_45%,transparent)] bg-[var(--dm-accent-warn-bg)] px-4 py-3 text-sm text-[var(--dm-accent-warn-text)]"
         >
           Chore list didn&apos;t load — run{" "}
           <code className="font-mono text-xs">schema.sql</code> tasks section in
@@ -80,29 +76,29 @@ export default async function DashboardTasksPage() {
         </div>
       ) : null}
 
-      <section className="grid gap-10 lg:grid-cols-[1fr,minmax(280px,0.92fr)]">
-        <div className="space-y-4">
-          <h2 className="text-xs font-black uppercase tracking-[0.2em] text-dm-muted">
-            Open chores
+      <section className="grid gap-8 lg:grid-cols-[1fr,minmax(280px,380px)]">
+        <div className="space-y-3">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.26em] text-dm-muted">
+            Open chores · claim your legend
           </h2>
           <HouseholdTaskList tasks={tasks} />
         </div>
 
-        <div className="rounded-2xl border border-[var(--dm-border-strong)] bg-[color-mix(in_srgb,var(--dm-fun)_12%,transparent)] p-6 shadow-inner dark:bg-dm-surface/40 lg:p-8">
-          <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-dm-text">
-            New chore
+        <div className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-6 lg:p-7">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.22em] text-dm-text">
+            New chore drop
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-dm-muted">
-            Short headline, optional perk — teammates claim it when they crush it.
+            One spicy title, juicy points — your crew raids it whenever adulting strikes.
           </p>
           {householdOptions.length === 0 ? (
-            <p className="mt-6 text-sm font-medium leading-relaxed text-dm-muted">
-              Create a space first — then chores unlock.{" "}
+            <p className="mt-6 rounded-xl border border-dashed border-[color-mix(in_srgb,var(--dm-electric)_24%,transparent)] bg-[color-mix(in_srgb,var(--dm-bg)_78%,transparent)] px-4 py-4 text-sm font-medium leading-relaxed text-dm-muted">
+              No crib yet · manifest one on Home, then hustle back here.{" "}
               <Link
                 href="/dashboard#create-household"
-                className="font-semibold text-dm-electric underline decoration-dm-electric/40 underline-offset-2"
+                className="font-bold text-dm-electric underline decoration-dm-electric/45 underline-offset-2"
               >
-                Jump to Home
+                Jump shortcut
               </Link>
               .
             </p>

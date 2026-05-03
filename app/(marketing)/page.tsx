@@ -45,13 +45,13 @@ export default async function Home() {
                 <>
                   <Link
                     href="/dashboard"
-                    className="dm-scan-hero inline-flex rounded-xl bg-dm-electric px-8 py-3.5 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.99]"
+                    className="dm-scan-hero dm-hover-tap inline-flex rounded-xl px-8 py-3.5 text-sm font-black text-[#071018] transition hover:brightness-110 active:scale-[0.99]"
                   >
                     Open dashboard
                   </Link>
                   <Link
                     href="/dashboard/tasks"
-                    className="inline-flex rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/85 px-6 py-3.5 text-sm font-semibold text-dm-text backdrop-blur-sm transition hover:border-dm-electric/40"
+                    className="dm-btn-secondary dm-hover-tap !px-6 !py-3.5 !text-sm"
                   >
                     Tasks & rewards
                   </Link>
@@ -60,13 +60,13 @@ export default async function Home() {
                 <>
                   <Link
                     href="/signup"
-                    className="dm-scan-hero inline-flex rounded-xl bg-dm-electric px-8 py-3.5 text-sm font-bold text-white transition hover:brightness-110 active:scale-[0.99]"
+                    className="dm-scan-hero dm-hover-tap inline-flex rounded-xl px-8 py-3.5 text-sm font-black text-[#071018] transition hover:brightness-110 active:scale-[0.99]"
                   >
                     Get started
                   </Link>
                   <Link
                     href="/login"
-                    className="inline-flex rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/85 px-7 py-3.5 text-sm font-semibold text-dm-text backdrop-blur-sm transition hover:border-dm-electric/45"
+                    className="dm-btn-secondary dm-hover-tap !px-7 !py-3.5 !text-sm"
                   >
                     Log in
                   </Link>
@@ -76,7 +76,7 @@ export default async function Home() {
           </div>
 
           <div className="mt-14 space-y-4 lg:mt-6">
-            <figure className="overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/82 p-6 shadow-xl shadow-black/[0.05] backdrop-blur-md sm:p-7">
+            <figure className="dm-card-surface dm-card-interactive overflow-hidden rounded-[1.25rem] p-6 sm:p-7">
               <figcaption className="text-xs font-semibold uppercase tracking-wider text-dm-electric">
                 Chores you can claim
               </figcaption>
@@ -86,7 +86,7 @@ export default async function Home() {
                 vibe, bragging rights).
               </p>
             </figure>
-            <figure className="overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/75 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md sm:p-7">
+            <figure className="dm-card-surface dm-card-interactive overflow-hidden rounded-[1.25rem] p-6 sm:p-7">
               <figcaption className="text-xs font-semibold uppercase tracking-wider text-dm-accent">
                 Receipt intelligence
               </figcaption>

@@ -20,39 +20,37 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-xl space-y-10 pb-[7rem] lg:pb-10">
+    <div className="mx-auto max-w-xl space-y-9 pb-24 lg:pb-9">
       <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-          Account
+        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-dm-muted">
+          Account nook
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
-          You
+        <h1 className="mt-1.5 text-[2rem] font-black tracking-tight text-dm-text">
+          You HQ
         </h1>
       </header>
 
-      <section className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md">
-        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-          Signed in
+      <section className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-6 lg:p-7">
+        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
+          Signed in sparkle
         </p>
-        <p className="mt-3 break-all text-sm font-medium text-dm-text">
-          {user.email}
-        </p>
+        <p className="mt-4 break-all text-sm font-bold text-dm-text">{user.email}</p>
         <p className="mt-5 text-sm leading-relaxed text-dm-muted">
-          Theme follows OS lighting — submarine navy after dark saves retinas reviewing rent math.
+          DormMate ships in cinematic dark navy — softer on sleepy eyes skim-reading rent math at 00:43.
         </p>
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <Link
-          href="/dashboard"
-          className="rounded-full bg-dm-electric px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-110"
-        >
+        <Link href="/dashboard" className="dm-btn-primary dm-hover-tap !text-sm">
           Home
         </Link>
-        <Link href="/privacy" className="rounded-full px-4 py-2.5 text-sm font-medium text-dm-muted hover:text-dm-electric">
+        <Link
+          href="/privacy"
+          className="dm-btn-secondary dm-hover-tap !text-sm"
+        >
           Privacy
         </Link>
-        <Link href="/terms" className="rounded-full px-4 py-2.5 text-sm font-medium text-dm-muted hover:text-dm-electric">
+        <Link href="/terms" className="dm-btn-secondary dm-hover-tap !text-sm">
           Terms
         </Link>
       </div>

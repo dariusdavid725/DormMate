@@ -104,7 +104,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl pb-28 lg:pb-16">
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-dm-muted">
+      <nav aria-label="Breadcrumb" className="mb-5 text-[13px] font-medium text-dm-muted">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
             <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
@@ -118,7 +118,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--dm-border-strong)] pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-5 border-b border-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
             Household
@@ -147,8 +147,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </div>
       </div>
 
-      <div className="mt-8 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-0 shrink-0 gap-2 rounded-full bg-dm-surface/60 p-1 ring-1 ring-[var(--dm-border-strong)] backdrop-blur-sm">
+      <div className="mt-7 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
+        <div className="dm-panel-ribbon flex min-w-0 shrink-0 gap-1 rounded-[999px] p-1 backdrop-blur-sm">
         <Link
           href={tabBase}
           scroll={false}
@@ -202,11 +202,11 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
       {view === "overview" ? (
         <>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="flex flex-col rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-[var(--dm-accent-soft)] to-dm-surface/80 p-7 shadow-lg shadow-black/[0.04] transition hover:shadow-xl"
+              className="dm-card-surface dm-card-interactive flex flex-col rounded-[1.35rem] bg-gradient-to-b from-[var(--dm-accent-soft)] to-transparent p-7 ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_22%,transparent)]"
             >
               <span className="w-fit rounded-full bg-[var(--dm-accent)] px-3 py-1 text-[11px] font-semibold text-[var(--dm-accent-ink)]">
                 AI scanning
@@ -230,7 +230,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ].map((card) => (
               <article
                 key={card.title}
-                className="flex flex-col rounded-3xl border border-[var(--dm-border)] bg-dm-surface/70 p-7 shadow-md shadow-black/[0.03]"
+                className="dm-card-surface flex flex-col rounded-[1.35rem] p-7 opacity-[0.88]"
               >
                 <span className="w-fit rounded-full bg-dm-bg px-3 py-0.5 text-[11px] font-semibold text-dm-muted">
                   {card.status}
@@ -246,7 +246,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <Link
               href={`${tabBase}?view=tasks`}
               scroll={false}
-              className="flex flex-col rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/80 p-7 shadow-lg shadow-black/[0.05] transition hover:border-dm-electric/35"
+              className="dm-card-surface dm-card-interactive flex flex-col rounded-[1.35rem] border-[color-mix(in_srgb,var(--dm-fun)_15%,transparent)] bg-gradient-to-b from-[color-mix(in_srgb,var(--dm-fun)_10%,transparent)] to-transparent p-7"
             >
               <span className="inline-flex w-fit rounded-full bg-[color-mix(in_srgb,var(--dm-fun)_22%,transparent)] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-dm-text">
                 Live
@@ -263,7 +263,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </Link>
           </div>
 
-          <section className="mt-12 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-8 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
+          <section className="dm-card-surface dm-card-interactive mt-10 rounded-[1.35rem] p-8">
             <h2 className="text-base font-semibold text-dm-text">
               Settings
             </h2>
@@ -296,7 +296,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </div>
           ) : (
             <>
-              <div className="rounded-2xl border border-[var(--dm-border-strong)] border-l-[3px] border-l-dm-electric bg-dm-surface/80 p-6 shadow-inner sm:p-8">
+              <div className="dm-panel-ribbon dm-card-interactive rounded-[1.25rem] p-6 shadow-inner sm:p-8">
                 <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-dm-electric">
                   New chore
                 </h2>

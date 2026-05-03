@@ -12,20 +12,26 @@ export const metadata: Metadata = {
 export default function SignupPage() {
   return (
     <>
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">
-          Create your DormMate account
+      <div className="mb-7 text-center">
+        <p className="text-[11px] font-black uppercase tracking-[0.32em] text-dm-accent">
+          New flat lease (digital edition)
+        </p>
+        <h1 className="mt-2 text-3xl font-black tracking-tight text-dm-text">
+          Claim your DormMate key
         </h1>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Invite roommates later from the dashboard.
+        <p className="mt-2 text-sm font-medium leading-relaxed text-dm-muted">
+          Pull roomies in once you&apos;re parked on the dashboard.
         </p>
       </div>
-      <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+      <div className="dm-card-surface dm-fade-in-up rounded-[1.35rem] p-8 lg:p-10">
         <SignupForm />
       </div>
-      <p className="mt-6 text-center text-sm text-zinc-500">
-        <Link href="/login" className="font-medium text-emerald-700 hover:underline dark:text-emerald-400">
-          Already have an account?
+      <p className="mt-7 text-center text-sm text-dm-muted">
+        <Link
+          href="/login"
+          className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
+        >
+          Already rolling with us? Log in
         </Link>
       </p>
     </>

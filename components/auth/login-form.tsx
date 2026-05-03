@@ -23,17 +23,14 @@ export function LoginForm({ nextHref, urlError }: Props) {
       {(urlError || state?.error) && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/60 dark:text-red-200"
+          className="dm-fade-in-up rounded-xl border border-dm-danger/45 bg-[color-mix(in_srgb,var(--dm-danger)_10%,transparent)] px-4 py-3 text-sm font-medium text-dm-danger"
         >
           {urlError ?? state?.error}
         </div>
       )}
 
       <div>
-        <label
-          htmlFor="email"
-          className="mb-1.5 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
-        >
+        <label htmlFor="email" className="dm-field-label">
           Email
         </label>
         <input
@@ -43,14 +40,11 @@ export function LoginForm({ nextHref, urlError }: Props) {
           autoComplete="email"
           required
           placeholder="you@university.edu"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm outline-none ring-emerald-500/30 placeholder:text-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-500"
+          className="dm-field-input"
         />
       </div>
       <div>
-        <label
-          htmlFor="password"
-          className="mb-1.5 block text-sm font-medium text-zinc-800 dark:text-zinc-200"
-        >
+        <label htmlFor="password" className="dm-field-label">
           Password
         </label>
         <input
@@ -60,20 +54,23 @@ export function LoginForm({ nextHref, urlError }: Props) {
           autoComplete="current-password"
           required
           placeholder="••••••••"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 shadow-sm outline-none ring-emerald-500/30 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
+          className="dm-field-input"
         />
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-70"
+        className="dm-btn-primary dm-hover-tap mt-1 w-full !py-3 !text-[15px] disabled:pointer-events-none disabled:opacity-50"
       >
-        {pending ? "Signing in…" : "Log in"}
+        {pending ? "Signing in…" : "Beam me in"}
       </button>
-      <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-        No account?{" "}
-        <Link href="/signup" className="font-medium text-emerald-700 hover:underline dark:text-emerald-400">
-          Create one
+      <p className="text-center text-sm text-dm-muted">
+        Fresh on campus?{" "}
+        <Link
+          href="/signup"
+          className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
+        >
+          Spawn an account
         </Link>
       </p>
     </form>

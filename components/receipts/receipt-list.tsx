@@ -32,36 +32,37 @@ export function ReceiptList({
 }) {
   if (receipts.length === 0) {
     return (
-      <p className="dm-fade-in-up rounded-2xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/55 px-6 py-10 text-center text-sm leading-relaxed text-dm-muted">
-        {emptyHint}
-      </p>
+      <div className="dm-fade-in-up dm-card-surface rounded-[1.25rem] border-dashed border-[color-mix(in_srgb,var(--dm-electric)_28%,transparent)] px-7 py-12 text-center">
+        <p className="text-sm font-semibold leading-relaxed text-dm-text">{emptyHint}</p>
+        <p className="mx-auto mt-3 max-w-sm text-[13px] leading-relaxed text-dm-muted">
+          Future split math thrives on crumbs of truth — snag a blurry pic anyway, we flirt with pixels for you ✨
+        </p>
+      </div>
     );
   }
 
   return (
-    <ul className="divide-y divide-[var(--dm-border)] overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 shadow-sm backdrop-blur-sm">
+    <ul className="dm-card-surface dm-fade-in-up divide-y divide-[var(--dm-border)] overflow-hidden rounded-[1.25rem]">
       {receipts.map((r, i) => (
         <li
           key={r.id}
-          className="dm-fade-in-up flex flex-wrap items-start justify-between gap-4 px-5 py-4"
-          style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
+          className="dm-hover-tap dm-fade-in-up flex flex-wrap items-start justify-between gap-4 px-5 py-4 transition-[background-color] duration-150 hover:bg-[color-mix(in_srgb,var(--dm-surface-mid)_76%,transparent)]"
+          style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
         >
           <div className="min-w-0">
-            <p className="truncate font-medium text-dm-text">
-              {r.merchant ?? "Unknown shop"}
-            </p>
-            <p className="mt-1 text-xs text-dm-muted">
+            <p className="truncate font-bold text-dm-text">{r.merchant ?? "Unknown shop"}</p>
+            <p className="mt-1 text-xs font-medium text-dm-muted">
               Added {fmtWhen(r.created_at)}
               {r.source_filename ? ` · ${r.source_filename}` : ""}
             </p>
           </div>
           <div className="text-right">
-            <p className="font-semibold tabular-nums text-dm-accent">
+            <p className="font-mono text-base font-black tabular-nums text-dm-accent">
               {fmtMoney(r.total_amount, r.currency)}
             </p>
             {r.purchased_at ? (
-              <p className="text-[11px] text-dm-muted">
-                Receipt date ·{" "}
+              <p className="mt-1 text-[11px] text-dm-muted">
+                Receipt ·{" "}
                 {new Intl.DateTimeFormat(undefined, {
                   dateStyle: "medium",
                 }).format(new Date(r.purchased_at))}

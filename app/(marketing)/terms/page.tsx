@@ -7,18 +7,21 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
+      <h1 className="text-[2rem] font-black tracking-tight text-dm-text">
         Terms of use
       </h1>
-      <p className="mt-6 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+      <p className="mt-6 text-sm leading-relaxed text-dm-muted">
         DormMate is provided “as is” during early access. Availability and features may
         change. Do not use the preview for regulated financial obligations without
         independent verification; expense splits are informational tools, not legal
         or tax advice. A full agreement will supersede this page before general release.
       </p>
       <p className="mt-10">
-        <Link href="/" className="text-sm font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+        <Link
+          href="/"
+          className="text-sm font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
+        >
           ← Home
         </Link>
       </p>

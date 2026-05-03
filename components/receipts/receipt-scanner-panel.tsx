@@ -82,20 +82,20 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-surface)_95%,transparent),color-mix(in_srgb,var(--dm-accent)_6%,transparent))] p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
+    <div className="dm-card-surface overflow-hidden rounded-[1.35rem] p-6 lg:p-7 ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_18%,transparent)]">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-lg font-semibold text-dm-text">Snap a receipt</h3>
+          <h3 className="text-xl font-black text-dm-text">Beam that receipt 📸</h3>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-dm-muted">
-            Decent light, flat-ish slip — we yank totals so nobody re-types after
-            a grocery run with cold hands.
+            Straight-ish angles, forgiving light — we decode totals fast so thumbs don&apos;t
+            ice over retyping ketchup prices.
           </p>
         </div>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={phase === "reading"}
-          className="dm-hover-tap dm-scan-hero shrink-0 rounded-2xl bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[filter] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-50"
+          className="dm-hover-tap dm-scan-hero shrink-0 rounded-2xl px-5 py-2.5 text-sm font-black tracking-tight text-[#071018] transition-[filter,transform] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-50"
         >
           {phase === "reading" ? "Reading…" : "Upload image"}
         </button>
@@ -187,7 +187,7 @@ function ReceiptPreview({
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/82 p-5 shadow-inner backdrop-blur-sm"
+      className="dm-card-surface space-y-4 rounded-[1.2rem] p-5 lg:p-6"
     >
       <input type="hidden" name="household_id" value={householdId} />
       <input type="hidden" name="filename" value={filename} />
@@ -246,14 +246,14 @@ function ReceiptPreview({
         <button
           type="submit"
           disabled={pending}
-          className="dm-hover-tap rounded-xl bg-dm-accent px-4 py-2.5 text-sm font-semibold text-dm-accent-ink shadow-sm transition-[filter] duration-200 hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
+          className="dm-hover-tap rounded-xl bg-gradient-to-br from-dm-accent to-[color-mix(in_srgb,var(--dm-accent)_70%,var(--dm-electric))] px-4 py-2.5 text-sm font-black text-[var(--dm-accent-ink)] shadow-[0_14px_40px_-14px_color-mix(in_srgb,var(--dm-accent)_50%,transparent)] transition-[filter] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-55"
         >
           {pending ? "Saving…" : "Save to household"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="dm-hover-tap rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-2.5 text-sm font-semibold text-dm-muted transition-colors duration-200 hover:border-dm-electric/40 hover:text-dm-text"
+          className="dm-btn-secondary dm-hover-tap text-sm font-bold"
         >
           Discard
         </button>
