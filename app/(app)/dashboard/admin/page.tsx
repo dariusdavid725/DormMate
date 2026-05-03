@@ -62,19 +62,16 @@ export default async function AdminDashboardPage() {
         <span className="text-dm-text">Admin</span>
       </nav>
 
-      <header className="border-b border-[var(--dm-border-strong)] pb-8">
-        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-          Platform ops
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
-          Overview
+      <header className="border-b border-[var(--dm-border-strong)] pb-6">
+        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
+          Admin
         </h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-dm-muted">
-          Read-only roll-up across households · JWT-gated roster.
+        <p className="mt-1 text-[13px] text-dm-muted">
+          Read-only counts and recent households.
         </p>
       </header>
 
-      <div className="mt-9 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
           { label: "Households", value: householdCount ?? 0 },
           { label: "Profiles", value: profileCount ?? 0 },
@@ -82,12 +79,12 @@ export default async function AdminDashboardPage() {
         ].map((card) => (
           <div
             key={card.label}
-            className="dm-card-surface dm-card-interactive rounded-[1.15rem] px-5 py-5"
+            className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-4"
           >
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
               {card.label}
             </p>
-            <p className="mt-3 font-mono text-3xl font-black tabular-nums text-dm-electric">
+            <p className="mt-2 font-mono text-2xl font-semibold tabular-nums text-dm-text">
               {card.value}
             </p>
           </div>
@@ -98,7 +95,7 @@ export default async function AdminDashboardPage() {
         <h2 className="text-lg font-semibold text-dm-text">
           Recent households
         </h2>
-        <div className="dm-card-surface mt-6 overflow-hidden rounded-[1.25rem]">
+        <div className="mt-6 overflow-hidden rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg/60 text-xs font-semibold uppercase tracking-wide text-dm-muted">
               <tr>

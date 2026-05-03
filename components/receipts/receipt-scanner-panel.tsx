@@ -82,20 +82,19 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   }
 
   return (
-    <div className="dm-card-surface overflow-hidden rounded-[1.35rem] p-6 lg:p-7 ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_18%,transparent)]">
+    <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-xl font-black text-dm-text">Beam that receipt 📸</h3>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-dm-muted">
-            Straight-ish angles, forgiving light — we decode totals fast so thumbs don&apos;t
-            ice over retyping ketchup prices.
+          <h3 className="text-base font-semibold text-dm-text">Scan receipt</h3>
+          <p className="mt-1 max-w-md text-[13px] text-dm-muted">
+            Upload a photo. We extract the total for your household log.
           </p>
         </div>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={phase === "reading"}
-          className="dm-hover-tap dm-scan-hero shrink-0 rounded-2xl px-5 py-2.5 text-sm font-black tracking-tight text-[#071018] transition-[filter,transform] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-50"
+          className="shrink-0 rounded-md bg-dm-electric px-4 py-2 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105 disabled:pointer-events-none disabled:opacity-50"
         >
           {phase === "reading" ? "Reading…" : "Upload image"}
         </button>
@@ -141,17 +140,9 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
         <div
           role="status"
           aria-live="polite"
-          className="dm-fade-in-up mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--dm-accent)_45%,var(--dm-border))] bg-[color-mix(in_srgb,var(--dm-accent)_10%,transparent)] px-4 py-3 text-sm font-medium text-dm-text"
+          className="mt-4 rounded-md border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-sm text-dm-text"
         >
-          <span
-            className="dm-flash-check flex h-8 w-8 items-center justify-center rounded-full bg-dm-accent text-sm font-bold text-dm-accent-ink"
-            aria-hidden
-          >
-            ✓
-          </span>
-          <span>
-            Saved — it&apos;ll show up in House activity right away on Home.
-          </span>
+          Saved. It appears under Home · Recent activity.
         </div>
       ) : null}
     </div>
@@ -187,7 +178,7 @@ function ReceiptPreview({
   return (
     <form
       action={formAction}
-      className="dm-card-surface space-y-4 rounded-[1.2rem] p-5 lg:p-6"
+      className="space-y-4 rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg p-4"
     >
       <input type="hidden" name="household_id" value={householdId} />
       <input type="hidden" name="filename" value={filename} />
@@ -246,14 +237,14 @@ function ReceiptPreview({
         <button
           type="submit"
           disabled={pending}
-          className="dm-hover-tap rounded-xl bg-gradient-to-br from-dm-accent to-[color-mix(in_srgb,var(--dm-accent)_70%,var(--dm-electric))] px-4 py-2.5 text-sm font-black text-[var(--dm-accent-ink)] shadow-[0_14px_40px_-14px_color-mix(in_srgb,var(--dm-accent)_50%,transparent)] transition-[filter] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-55"
+          className="rounded-md bg-dm-electric px-4 py-2 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
         >
           {pending ? "Saving…" : "Save to household"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="dm-btn-secondary dm-hover-tap text-sm font-bold"
+          className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
         >
           Discard
         </button>

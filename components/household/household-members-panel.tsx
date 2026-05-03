@@ -45,10 +45,10 @@ export function HouseholdMembersPanel({
 
   return (
     <div className="space-y-10">
-      <section className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-6 sm:p-8">
-        <h3 className="text-base font-black text-dm-text">Your profile</h3>
-        <p className="mt-2 text-sm leading-relaxed text-dm-muted">
-          How you show up inside this dorm — avatar is optional comfort, not runway.
+      <section className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5 sm:p-6">
+        <h3 className="text-sm font-medium text-dm-text">Your profile</h3>
+        <p className="mt-1 text-[13px] text-dm-muted">
+          Display name and optional avatar for this household.
         </p>
         <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
           <input type="hidden" name="household_id" value={householdId} />
@@ -68,7 +68,7 @@ export function HouseholdMembersPanel({
           />
           <button
             type="submit"
-            className="rounded-full bg-[var(--dm-accent)] px-6 py-2.5 text-sm font-semibold text-[var(--dm-accent-ink)] shadow-sm hover:brightness-105"
+            className="rounded-md bg-dm-electric px-5 py-2.5 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105"
           >
             <SubmitPending idle="Save" />
           </button>
@@ -105,14 +105,12 @@ export function HouseholdMembersPanel({
       </section>
 
       <div>
-        <h3 className="text-sm font-semibold text-dm-text">Everyone here</h3>
-        <p className="mt-2 text-xs text-dm-muted">
-          {members.length} teammate{members.length === 1 ? "" : "s"} on this lease.
-        </p>
+        <h3 className="text-sm font-medium text-dm-text">Members</h3>
+        <p className="mt-1 text-[12px] text-dm-muted">{members.length} total.</p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => (
             <li key={m.userId}>
-              <article className="dm-card-surface dm-card-interactive flex gap-4 rounded-[1.15rem] p-5">
+              <article className="flex gap-4 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-4">
                 <div className="relative shrink-0">
                   {m.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element -- Supabase CDN

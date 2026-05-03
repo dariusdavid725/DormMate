@@ -24,28 +24,24 @@ export default async function FinancesPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8 pb-24 lg:pb-9">
-      <header className="dm-fade-in-up border-b border-[color-mix(in_srgb,var(--dm-accent)_28%,transparent)] pb-6">
-        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-dm-accent">
-          Ledger · vibes loading
-        </p>
-        <h1 className="mt-1.5 text-[2.05rem] font-black tracking-tight text-dm-text">
-          Money desk
+      <header className="border-b border-[var(--dm-border-strong)] pb-6">
+        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
+          Finances
         </h1>
-        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-dm-muted">
-          Balances thicken when splits ship — meanwhile this grid is your Receipt Mission
-          Control preview.
+        <p className="mt-1 max-w-xl text-[13px] text-dm-muted">
+          Balances preview per household (splits upcoming).
         </p>
       </header>
 
       {error ? (
-        <div className="dm-fade-in-up rounded-2xl border border-dm-danger/40 bg-[color-mix(in_srgb,var(--dm-danger)_8%,transparent)] px-4 py-3 text-sm text-dm-danger">
+        <div className="rounded-lg border border-dm-danger/35 px-4 py-3 text-sm text-dm-danger">
           {error}
         </div>
       ) : null}
 
-      <div className="dm-card-surface dm-fade-in-up overflow-hidden rounded-[1.35rem]">
+      <div className="overflow-hidden rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface">
         <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-[var(--dm-border-strong)] bg-[color-mix(in_srgb,var(--dm-surface-mid)_94%,transparent)] text-[11px] font-black uppercase tracking-[0.16em] text-dm-muted">
+          <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg text-[11px] font-medium uppercase tracking-wide text-dm-muted">
             <tr>
               <th className="px-5 py-3.5">Household</th>
               <th className="px-5 py-3.5">Role</th>
@@ -57,11 +53,11 @@ export default async function FinancesPage() {
             {households.length === 0 ? (
               <tr>
                 <td className="px-5 py-12 text-center text-dm-muted" colSpan={4}>
-                  Ledger&apos;s dormant — carve a dorm from{" "}
-                  <Link className="font-bold text-dm-electric underline" href="/dashboard">
+                  Add a household from{" "}
+                  <Link className="text-dm-electric hover:underline" href="/dashboard">
                     Home
                   </Link>
-                  {" "}and watch these rows wake up ✨
+                  .
                 </td>
               </tr>
             ) : (
@@ -70,21 +66,17 @@ export default async function FinancesPage() {
                   key={h.id}
                   className="border-b border-[var(--dm-border)] last:border-b-0 transition-colors hover:bg-[color-mix(in_srgb,var(--dm-surface-mid)_55%,transparent)]"
                 >
-                  <td className="px-5 py-4 font-bold text-dm-text">{h.name}</td>
-                  <td className="px-5 py-4">
-                    <span className="rounded-full bg-[var(--dm-accent-soft)] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[var(--dm-accent-ink)] ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_38%,transparent)]">
-                      {h.role}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 font-mono text-lg font-black tabular-nums text-dm-accent">
+                  <td className="px-5 py-3.5 font-medium text-dm-text">{h.name}</td>
+                  <td className="px-5 py-3.5 text-dm-muted">{h.role}</td>
+                  <td className="px-5 py-3.5 font-mono tabular-nums text-dm-text">
                     €0.00
                   </td>
-                  <td className="hidden px-5 py-4 sm:table-cell">
+                  <td className="hidden px-5 py-3.5 sm:table-cell">
                     <Link
-                      className="text-sm font-bold text-dm-electric hover:underline"
+                      className="text-sm text-dm-electric hover:underline"
                       href={`/dashboard/household/${h.id}?view=receipts`}
                     >
-                      Dump receipts →
+                      Receipts
                     </Link>
                   </td>
                 </tr>

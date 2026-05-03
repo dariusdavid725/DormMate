@@ -13,7 +13,7 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto border-b border-[color-mix(in_srgb,var(--dm-electric)_14%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_88%,transparent)] px-4 py-2 backdrop-blur-lg lg:hidden">
+    <div className="flex gap-2 overflow-x-auto border-b border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2 lg:hidden">
       {households.map((h) => {
         const href = `/dashboard/household/${h.id}`;
         const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -23,10 +23,10 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
             href={href}
             prefetch
             className={[
-              "shrink-0 rounded-full px-4 py-1.5 text-xs font-bold transition duration-200",
+              "shrink-0 rounded-md px-3 py-1 text-xs font-medium",
               active
-                ? "bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] text-dm-electric ring-1 ring-[color-mix(in_srgb,var(--dm-electric)_32%,transparent)] shadow-[0_0_26px_-10px_var(--dm-electric-glow)]"
-                : "bg-[color-mix(in_srgb,var(--dm-bg)_65%,transparent)] text-dm-muted hover:text-dm-text",
+                ? "bg-[color-mix(in_srgb,var(--dm-electric)_12%,transparent)] text-dm-electric"
+                : "text-dm-muted hover:text-dm-text",
             ].join(" ")}
           >
             {h.name}

@@ -33,7 +33,7 @@ export async function SiteHeader() {
               </span>
               <Link
                 href="/dashboard"
-                className="dm-scan-hero rounded-full px-4 py-2 text-xs font-black text-[#071018] transition hover:brightness-110"
+                className="rounded-md bg-dm-electric px-4 py-2 text-xs font-medium text-[var(--dm-accent-ink)] hover:brightness-105"
               >
                 Dashboard
               </Link>
@@ -56,7 +56,7 @@ export async function SiteHeader() {
               </Link>
               <Link
                 href="/signup"
-                className="dm-scan-hero rounded-full px-4 py-2 text-sm font-black text-[#071018] shadow-sm transition hover:brightness-110"
+                className="rounded-md bg-dm-electric px-4 py-2 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105"
               >
                 Start
               </Link>

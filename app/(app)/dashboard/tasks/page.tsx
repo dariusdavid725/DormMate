@@ -34,24 +34,16 @@ export default async function DashboardTasksPage() {
   const householdOptions = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-8 pb-24 lg:max-w-[58rem] lg:pb-9">
-      <header className="dm-panel-ribbon dm-card-interactive overflow-hidden rounded-[1.35rem] p-5 sm:p-7">
-        <p className="text-[11px] font-black uppercase tracking-[0.26em] text-dm-electric">
-          Chore arcade
-        </p>
-        <h1 className="mt-2 text-[1.95rem] font-black leading-[1.1] tracking-tight text-dm-text md:text-[2.25rem]">
-          Tasks · tiny bribery, giant peace
+    <div className="mx-auto w-full max-w-2xl space-y-8 pb-24 lg:max-w-[56rem] lg:pb-10">
+      <header className="border-b border-[var(--dm-border-strong)] pb-6">
+        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
+          Tasks
         </h1>
-        <p className="relative mt-3 max-w-prose text-[15px] leading-relaxed text-dm-muted">
-          Drop jobs for your dorm squad. Finishers snag the shine (and literal points
-          toward whatever your flat bans or rewards).
-        </p>
-        <p className="relative mt-4 text-[12px] font-semibold text-dm-muted">
-          <Link href="/dashboard" className="text-dm-electric underline decoration-dm-electric/40 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40">
-            ← Dashboard
+        <p className="mt-1 text-[13px] text-dm-muted">
+          Shared chores and points.&nbsp;
+          <Link href="/dashboard" className="text-dm-electric hover:underline">
+            Home
           </Link>
-          <span className="mx-2 opacity-35">·</span>
-          <span>Dollars live under Money / Receipts when you&apos;re reconciling ramen economics.</span>
         </p>
       </header>
 
@@ -77,30 +69,23 @@ export default async function DashboardTasksPage() {
       ) : null}
 
       <section className="grid gap-8 lg:grid-cols-[1fr,minmax(280px,380px)]">
-        <div className="space-y-3">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.26em] text-dm-muted">
-            Open chores · claim your legend
-          </h2>
+        <div className="space-y-2">
+          <h2 className="text-[13px] font-medium text-dm-muted">Open</h2>
           <HouseholdTaskList tasks={tasks} />
         </div>
 
-        <div className="dm-card-surface dm-card-interactive rounded-[1.35rem] p-6 lg:p-7">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.22em] text-dm-text">
-            New chore drop
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-dm-muted">
-            One spicy title, juicy points — your crew raids it whenever adulting strikes.
+        <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
+          <h2 className="text-sm font-medium text-dm-text">New task</h2>
+          <p className="mt-1 text-[13px] text-dm-muted">
+            Title, points, optional note.
           </p>
           {householdOptions.length === 0 ? (
-            <p className="mt-6 rounded-xl border border-dashed border-[color-mix(in_srgb,var(--dm-electric)_24%,transparent)] bg-[color-mix(in_srgb,var(--dm-bg)_78%,transparent)] px-4 py-4 text-sm font-medium leading-relaxed text-dm-muted">
-              No crib yet · manifest one on Home, then hustle back here.{" "}
-              <Link
-                href="/dashboard#create-household"
-                className="font-bold text-dm-electric underline decoration-dm-electric/45 underline-offset-2"
-              >
-                Jump shortcut
-              </Link>
-              .
+            <p className="mt-4 rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-3 text-[13px] text-dm-muted">
+              Create a household on{" "}
+              <Link href="/dashboard" className="text-dm-electric hover:underline">
+                Home
+              </Link>{" "}
+              first.
             </p>
           ) : (
             <CreateHouseholdTaskForm

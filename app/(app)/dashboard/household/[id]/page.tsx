@@ -148,7 +148,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
       </div>
 
       <div className="mt-7 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
-        <div className="dm-panel-ribbon flex min-w-0 shrink-0 gap-1 rounded-[999px] p-1 backdrop-blur-sm">
+        <div className="flex min-w-0 shrink-0 gap-1 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-1">
         <Link
           href={tabBase}
           scroll={false}
@@ -202,68 +202,24 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
       {view === "overview" ? (
         <>
-          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 space-y-2">
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="dm-card-surface dm-card-interactive flex flex-col rounded-[1.35rem] bg-gradient-to-b from-[var(--dm-accent-soft)] to-transparent p-7 ring-1 ring-[color-mix(in_srgb,var(--dm-accent)_22%,transparent)]"
+              className="block rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
             >
-              <span className="w-fit rounded-full bg-[var(--dm-accent)] px-3 py-1 text-[11px] font-semibold text-[var(--dm-accent-ink)]">
-                AI scanning
-              </span>
-              <h2 className="mt-4 text-lg font-semibold tracking-tight text-dm-text">
-                Receipts
-              </h2>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
-                Upload slips — we lift totals without retyping blurry photos.
-              </p>
-              <span className="mt-6 text-sm font-semibold text-dm-electric">
-                Open receipts →
-              </span>
+              Receipts — scan & list
             </Link>
-            {[
-              {
-                title: "Pantry & staples",
-                desc: "Shared TP, milk, spices — low-stock cues without passive aggression.",
-                status: "Soon",
-              },
-            ].map((card) => (
-              <article
-                key={card.title}
-                className="dm-card-surface flex flex-col rounded-[1.35rem] p-7 opacity-[0.88]"
-              >
-                <span className="w-fit rounded-full bg-dm-bg px-3 py-0.5 text-[11px] font-semibold text-dm-muted">
-                  {card.status}
-                </span>
-                <h2 className="mt-4 text-base font-semibold text-dm-text">
-                  {card.title}
-                </h2>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
-                  {card.desc}
-                </p>
-              </article>
-            ))}
             <Link
               href={`${tabBase}?view=tasks`}
               scroll={false}
-              className="dm-card-surface dm-card-interactive flex flex-col rounded-[1.35rem] border-[color-mix(in_srgb,var(--dm-fun)_15%,transparent)] bg-gradient-to-b from-[color-mix(in_srgb,var(--dm-fun)_10%,transparent)] to-transparent p-7"
+              className="block rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
             >
-              <span className="inline-flex w-fit rounded-full bg-[color-mix(in_srgb,var(--dm-fun)_22%,transparent)] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-dm-text">
-                Live
-              </span>
-              <h2 className="mt-4 text-lg font-bold tracking-tight text-dm-text">
-                Chores & rewards
-              </h2>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
-                Post jobs, set points, let housemates claim wins — keep it light.
-              </p>
-              <span className="mt-6 text-sm font-semibold text-dm-electric">
-                Open tasks →
-              </span>
+              Tasks — shared chores
             </Link>
           </div>
 
-          <section className="dm-card-surface dm-card-interactive mt-10 rounded-[1.35rem] p-8">
+          <section className="mt-8 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
             <h2 className="text-base font-semibold text-dm-text">
               Settings
             </h2>
@@ -296,10 +252,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </div>
           ) : (
             <>
-              <div className="dm-panel-ribbon dm-card-interactive rounded-[1.25rem] p-6 shadow-inner sm:p-8">
-                <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-dm-electric">
-                  New chore
-                </h2>
+              <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5 sm:p-6">
+                <h2 className="text-sm font-medium text-dm-text">New task</h2>
                 <CreateHouseholdTaskForm
                   className="mt-6 space-y-4"
                   households={[{ id: household.id, name: household.name }]}
@@ -341,12 +295,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="text-base font-semibold text-dm-text">
-              Saved receipts
-            </h2>
-            <p className="mt-2 text-sm text-dm-muted">
-              Everyone in this household can see these — transparency beats awkward
-              guessing about who paid what.
+            <h2 className="text-sm font-medium text-dm-text">Receipts</h2>
+            <p className="mt-1 text-[13px] text-dm-muted">
+              Visible to all members of this household.
             </p>
             {receiptsPayload?.error ? (
               <p className="mt-4 text-sm font-medium text-dm-danger">
