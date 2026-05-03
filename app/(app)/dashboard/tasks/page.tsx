@@ -35,13 +35,13 @@ export default async function DashboardTasksPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-10 pb-[7.5rem] lg:max-w-4xl lg:pb-10">
-      <header className="relative overflow-hidden border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-xl shadow-black/[0.05] backdrop-blur-md dm-construct-accent sm:p-8">
+      <header className="relative overflow-hidden border border-[var(--dm-border-strong)] border-l-[3px] border-l-dm-electric bg-dm-surface/72 p-6 shadow-xl shadow-black/[0.05] backdrop-blur-md sm:p-8">
         <div
           aria-hidden
-          className="pointer-events-none absolute right-[-12%] top-[-30%] h-52 w-[55%] rotate-[-8deg] bg-[var(--dm-construct-red)] opacity-[0.12] blur-3xl dark:opacity-[0.18]"
+          className="pointer-events-none absolute right-[-12%] top-[-30%] h-52 w-[55%] bg-[var(--dm-electric-glow)] opacity-60 blur-3xl dark:opacity-80"
         />
-        <p className="relative text-[11px] font-black uppercase tracking-[0.35em] text-[var(--dm-construct-red)] dark:text-orange-400">
-          Chores lane
+        <p className="relative text-[11px] font-bold uppercase tracking-[0.25em] text-dm-electric">
+          Tasks
         </p>
         <h1 className="relative mt-3 text-3xl font-extrabold tracking-tight text-dm-text md:text-[2.15rem]">
           Tasks with tiny rewards — not spreadsheets.
@@ -88,21 +88,21 @@ export default async function DashboardTasksPage() {
           <HouseholdTaskList tasks={tasks} />
         </div>
 
-        <div className="rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-[color-mix(in_srgb,var(--dm-construct-yellow)_14%,transparent)] p-6 shadow-inner dark:border-white/55 dark:bg-white/[0.06] lg:p-8">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-[var(--dm-construct-ink)] dark:text-white">
-            Spawn task
+        <div className="rounded-2xl border border-[var(--dm-border-strong)] bg-[color-mix(in_srgb,var(--dm-fun)_12%,transparent)] p-6 shadow-inner dark:bg-dm-surface/40 lg:p-8">
+          <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-dm-text">
+            New chore
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-[var(--dm-construct-ink)]/85 dark:text-dm-muted">
-            Write it like a sticky on the fridge — short, human, with a sweetener.
+          <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+            Short headline, optional perk — teammates claim it when they crush it.
           </p>
           {householdOptions.length === 0 ? (
-            <p className="mt-6 text-sm font-medium leading-relaxed text-[var(--dm-construct-ink)]/90 dark:text-dm-muted">
+            <p className="mt-6 text-sm font-medium leading-relaxed text-dm-muted">
               Create a space first — then chores unlock.{" "}
               <Link
                 href="/dashboard#create-household"
-                className="font-bold text-[var(--dm-construct-red)] underline decoration-2 underline-offset-2 dark:text-orange-400"
+                className="font-semibold text-dm-electric underline decoration-dm-electric/40 underline-offset-2"
               >
-                Jump to Dashboard
+                Jump to Home
               </Link>
               .
             </p>

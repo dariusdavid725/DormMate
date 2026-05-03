@@ -52,13 +52,13 @@ export function CreateHouseholdTaskForm({
         <input type="hidden" name="household_id" value={fixed} />
       ) : households.length > 1 ? (
         <label className="block">
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--dm-construct-ink)] dark:text-[var(--dm-construct-yellow)]">
+          <span className="text-xs font-bold uppercase tracking-wider text-dm-muted">
             Space
           </span>
           <select
             name="household_id"
             required
-            className="mt-2 w-full rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-sm text-dm-text outline-none focus-visible:ring-2 focus-visible:ring-[var(--dm-construct-red)]"
+            className="mt-2 w-full rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-sm text-dm-text outline-none focus-visible:ring-2 focus-visible:ring-dm-electric/35"
             defaultValue={households[0]?.id}
           >
             {households.map((h) => (
@@ -141,7 +141,7 @@ export function CreateHouseholdTaskForm({
 
       <button
         type="submit"
-        className="mt-6 w-full rounded-sm bg-[var(--dm-construct-red)] px-6 py-3 text-sm font-extrabold uppercase tracking-[0.12em] text-white shadow-lg shadow-black/25 transition hover:brightness-105 sm:w-auto dm-construct-angle"
+        className="dm-scan-hero mt-6 w-full rounded-xl bg-dm-electric px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:brightness-110 sm:w-auto"
       >
         <SubmitPending idle="Drop task for the room" />
       </button>

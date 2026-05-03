@@ -167,7 +167,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           className={[
             "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "tasks"
-              ? "bg-[color-mix(in_srgb,var(--dm-construct-red)_16%,transparent)] font-bold text-[var(--dm-construct-red)] ring-1 ring-[var(--dm-construct-red)]/30 dark:bg-[color-mix(in_srgb,var(--dm-construct-red)_26%,transparent)] dark:text-orange-300"
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] font-semibold text-dm-electric ring-1 ring-[var(--dm-border)]"
               : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
@@ -246,18 +246,18 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <Link
               href={`${tabBase}?view=tasks`}
               scroll={false}
-              className="flex flex-col rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-[color-mix(in_srgb,var(--dm-construct-yellow)_16%,transparent)] p-7 shadow-lg transition hover:brightness-[1.03] dark:border-white/65"
+              className="flex flex-col rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/80 p-7 shadow-lg shadow-black/[0.05] transition hover:border-dm-electric/35"
             >
-              <span className="inline-flex w-fit skew-x-[-9deg] bg-[var(--dm-construct-red)] px-3 py-0.5 text-[11px] font-black uppercase tracking-wider text-white">
+              <span className="inline-flex w-fit rounded-full bg-[color-mix(in_srgb,var(--dm-fun)_22%,transparent)] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-dm-text">
                 Live
               </span>
-              <h2 className="mt-4 text-lg font-extrabold tracking-tight text-[var(--dm-construct-ink)] dark:text-dm-text">
+              <h2 className="mt-4 text-lg font-bold tracking-tight text-dm-text">
                 Chores & rewards
               </h2>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--dm-construct-ink)]/90 dark:text-dm-muted">
-                Drop rotations, pickups, errands — mates claim chores for playful points (+ optional perks you invent).
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
+                Post jobs, set points, let housemates claim wins — keep it light.
               </p>
-              <span className="mt-6 text-sm font-bold text-[var(--dm-construct-red)] dark:text-orange-400">
+              <span className="mt-6 text-sm font-semibold text-dm-electric">
                 Open tasks →
               </span>
             </Link>
@@ -296,8 +296,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </div>
           ) : (
             <>
-              <div className="rounded-sm border-[3px] border-[var(--dm-construct-ink)] bg-dm-surface/80 p-6 shadow-inner dark:border-white/50 sm:p-8">
-                <h2 className="text-[11px] font-black uppercase tracking-[0.28em] text-[var(--dm-construct-red)] dark:text-orange-400">
+              <div className="rounded-2xl border border-[var(--dm-border-strong)] border-l-[3px] border-l-dm-electric bg-dm-surface/80 p-6 shadow-inner sm:p-8">
+                <h2 className="text-[11px] font-bold uppercase tracking-[0.22em] text-dm-electric">
                   New chore
                 </h2>
                 <CreateHouseholdTaskForm

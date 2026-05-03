@@ -6,12 +6,17 @@ import { ContextualActionChip } from "@/components/dashboard/contextual-action-c
 import { DashboardFeed } from "@/components/dashboard/dashboard-feed";
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
 import { DormStatusRing } from "@/components/dashboard/dorm-status-ring";
+import { TodayStrip } from "@/components/dashboard/today-strip";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
 import { loadReceiptFeedPreview } from "@/lib/receipts/feed-queries";
+import {
+  countReceiptsSince,
+  loadDistinctHousemateCount,
+} from "@/lib/dashboard/home-metrics";
 import { loadOpenTasksForUser } from "@/lib/tasks/queries";
 import { createClient } from "@/lib/supabase/server";
 
@@ -51,6 +56,13 @@ export default async function DashboardOverviewPage() {
     households,
   );
 
+  const householdIds = households.map((h) => h.id);
+  const flatmatePeers = await loadDistinctHousemateCount(
+    householdIds,
+    user.id,
+  );
+  const receiptsLast7d = countReceiptsSince(receiptFeed, 7);
+
   const realReceiptCount = receiptFeed.length;
   const firstHhReceipts = primaryId
     ? receiptFeed.filter((x) => x.householdId === primaryId).length
@@ -82,7 +94,8 @@ export default async function DashboardOverviewPage() {
             Home
           </h1>
           <p className="mt-2 text-base leading-snug text-dm-text/90 sm:text-lg sm:leading-normal">
-            Chores and shared money for your flat.
+            Keep chores, receipts, and roommate money under control — without the
+            spreadsheet energy.
           </p>
         </div>
         <DormStatusRing
@@ -104,8 +117,18 @@ export default async function DashboardOverviewPage() {
         </div>
       ) : null}
 
-      <div className="mt-10 flex flex-col gap-14 xl:flex-row xl:gap-16">
-        <div className="min-w-0 flex-1 space-y-14">
+      <div className="mt-9">
+        <TodayStrip
+          choresDue={openTasks.length}
+          owedLabel={owedPreview}
+          receiptsRecent={receiptsLast7d}
+          flatmatesOthers={flatmatePeers}
+          hasHouseholds={hasHouseholds}
+        />
+      </div>
+
+      <div className="mt-12 flex flex-col gap-12 xl:flex-row xl:gap-14">
+        <div className="min-w-0 flex-1 space-y-10">
           <section
             aria-labelledby="open-chores"
             className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/78 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
@@ -146,7 +169,7 @@ export default async function DashboardOverviewPage() {
               </p>
             ) : openTasks.length === 0 ? (
               <p className="relative mt-6 text-sm font-medium text-dm-text">
-                No open tasks right now.
+                All clear — nothing open on the board.
               </p>
             ) : (
               <ul className="relative mt-6 space-y-2.5">
@@ -180,30 +203,45 @@ export default async function DashboardOverviewPage() {
 
           <section
             aria-labelledby="cash-strip"
-            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface via-dm-surface to-dm-surface/80 p-6 shadow-xl shadow-black/[0.04] lg:p-9"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface via-dm-surface to-dm-surface/82 p-6 shadow-xl shadow-black/[0.04] lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:items-start lg:gap-12 lg:p-8"
           >
             <div
               aria-hidden
               className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-[var(--dm-electric-glow)] blur-3xl"
             />
-            <div className="relative space-y-7">
-              <div>
-                <p
-                  id="cash-strip"
-                  className="text-xs font-bold uppercase tracking-wider text-dm-electric"
-                >
-                  Receipts
+            <div className="relative">
+              <p
+                id="cash-strip"
+                className="text-xs font-bold uppercase tracking-wider text-dm-electric"
+              >
+                Receipts
+              </p>
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-dm-text">
+                Photo-first. Totals extracted so receipts don&apos;t live in dusty
+                group chats forever.
+              </p>
+              <div className="mt-10 border-t border-[var(--dm-border)] pt-6 lg:mt-14">
+                <p className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+                  Balance preview
                 </p>
-                <p className="mt-2 max-w-lg text-sm leading-relaxed text-dm-text">
-                  Take a photo of a receipt. We save the total so you can split it
-                  with housemates.
+                <p className="mt-2 text-sm font-medium text-dm-text">
+                  You are owed{" "}
+                  <span className="font-mono text-2xl font-bold tabular-nums text-dm-accent lg:text-[1.85rem]">
+                    {owedPreview}
+                  </span>
+                </p>
+                <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-dm-muted">
+                  Full IOUs arrive with split math — everything you scan still shows up
+                  in House activity underneath.
                 </p>
               </div>
+            </div>
 
+            <div className="relative mt-8 flex flex-col gap-5 lg:mt-0">
               {scanHref ? (
                 <Link
                   href={scanHref}
-                  className="dm-scan-hero relative z-[1] inline-flex w-full max-w-md items-center justify-center rounded-2xl bg-dm-electric px-8 py-4 text-center text-base font-bold tracking-tight text-white transition hover:brightness-110 active:scale-[0.99] lg:py-[1.125rem] lg:text-[1.0625rem]"
+                  className="dm-scan-hero z-[1] inline-flex w-full items-center justify-center rounded-2xl bg-dm-electric px-7 py-[1.15rem] text-center text-base font-bold tracking-tight text-white transition hover:brightness-110 active:scale-[0.99] lg:text-[1.065rem]"
                 >
                   Scan receipt · AI
                 </Link>
@@ -211,34 +249,43 @@ export default async function DashboardOverviewPage() {
                 <button
                   type="button"
                   disabled
-                  className="w-full max-w-md rounded-2xl border border-[var(--dm-border-strong)] bg-dm-bg/50 px-8 py-4 text-center text-sm font-medium text-dm-muted"
+                  className="w-full rounded-2xl border border-[var(--dm-border-strong)] bg-dm-bg/50 px-8 py-4 text-center text-sm font-medium text-dm-muted"
                 >
-                  Create a household first — then you can scan here.
+                  Create a household — then scans unlock here.
                 </button>
               )}
 
-              <div className="max-w-md">
-                <ContextualActionChip
-                  householdsCount={households.length}
-                  receiptsCountAllTime={realReceiptCount}
-                  primaryHouseholdHasReceipts={firstHhReceipts > 0}
-                  scanReceiptHref={scanHref}
-                  createHouseholdHint={households.length === 0}
-                />
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/dashboard/finances"
+                  title="Detailed ledger tooling is on the way"
+                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                >
+                  Add expense
+                </Link>
+                <Link
+                  href="/dashboard/finances"
+                  title="Even splits launching soon"
+                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                >
+                  Split bill
+                </Link>
+                <Link
+                  href="/dashboard/finances"
+                  title="Per-household balances next"
+                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                >
+                  Balances
+                </Link>
               </div>
 
-              <div className="border-t border-[var(--dm-border-strong)] pt-6">
-                <p className="text-sm font-medium text-dm-text">
-                  You are owed{" "}
-                  <span className="font-mono text-2xl font-bold tabular-nums text-dm-accent lg:text-3xl">
-                    {owedPreview}
-                  </span>
-                </p>
-                <p className="mt-1.5 max-w-md text-sm text-dm-muted">
-                  Who owes what is coming next. For now, receipts land in Activity
-                  below.
-                </p>
-              </div>
+              <ContextualActionChip
+                householdsCount={households.length}
+                receiptsCountAllTime={realReceiptCount}
+                primaryHouseholdHasReceipts={firstHhReceipts > 0}
+                scanReceiptHref={scanHref}
+                createHouseholdHint={households.length === 0}
+              />
             </div>
           </section>
 
@@ -249,10 +296,11 @@ export default async function DashboardOverviewPage() {
                   id="activity-feed"
                   className="text-lg font-semibold tracking-tight text-dm-text"
                 >
-                  Activity
+                  House activity
                 </h2>
                 <p className="mt-1 text-sm text-dm-muted">
-                  Latest saved receipts.
+                  Who logged what lately — mixes receipts with coming-soon roommate
+                  pings.
                 </p>
               </div>
               {feedErr ? (

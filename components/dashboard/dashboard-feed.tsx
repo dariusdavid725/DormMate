@@ -26,89 +26,78 @@ function formatWhen(iso: string) {
   }
 }
 
-const DEMO_FEED = [
-  {
-    icon: "🧹",
-    title: "Chores without the drama thread",
-    subtitle: "Rotations tied to chores — onboarding soon.",
-    key: "demo-chore",
-  },
-  {
-    icon: "↔️",
-    title: "Quiet settle-ups",
-    subtitle: "When split math launches, confirmations glow mint.",
-    key: "demo-pay",
-  },
-] as const;
-
 export function DashboardFeed({
   receipts,
 }: {
   receipts: ReceiptFeedPreviewItem[];
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/58 backdrop-blur-sm">
+    <div className="overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 backdrop-blur-sm">
+      {receipts.length === 0 ? (
+        <p className="px-6 py-8 text-center text-sm leading-relaxed text-dm-muted">
+          Quiet here — scans and chores will stack up soon. Nudge flatmates if you
+          split something big.
+        </p>
+      ) : null}
+
       {receipts.map((r) => (
         <article
           key={r.id}
-          className="border-b border-[var(--dm-border)] px-5 py-5 last:border-b-0 sm:px-6"
+          className="border-t border-[var(--dm-border)] first:border-t-0 px-5 py-4 sm:px-6"
         >
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--dm-accent-soft)] text-lg shadow-inner shadow-black/[0.04]"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--dm-accent-soft)] text-[15px]"
               aria-hidden
             >
-              🤖
+              🧾
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[12px] text-dm-muted">
-                <span className="font-semibold tracking-tight text-dm-text">
-                  AI
-                </span>{" "}
-                · {formatWhen(r.createdAt)} ·{" "}
-                <span className="text-dm-text/85">{r.householdName}</span>
+              <p className="text-[13px] leading-snug text-dm-text">
+                <span className="font-semibold">{r.savedByLabel}</span>{" "}
+                <span className="font-normal text-dm-muted">
+                  logged a receipt · {r.householdName}
+                </span>
               </p>
-              <p className="mt-1.5 text-[15px] font-semibold leading-snug text-dm-text">
-                Receipt · {r.merchant?.trim() || "merchant"}
+              <p className="mt-1 text-[13px] text-dm-muted">
+                <span>{r.merchant?.trim() || "Retail"}</span>
+                {" · "}
+                <span className="font-mono font-semibold tabular-nums text-dm-accent">
+                  {formatMoney(r.totalAmount, r.currency)}
+                </span>
               </p>
-              <p className="mt-2 font-mono text-sm tabular-nums text-dm-electric">
-                {formatMoney(r.totalAmount, r.currency)}
+              <p className="mt-2 text-[11px] text-dm-muted">
+                {formatWhen(r.createdAt)}
               </p>
               <Link
                 href={`/dashboard/household/${r.householdId}?view=receipts`}
-                className="mt-3 inline-flex text-sm font-semibold text-dm-electric hover:underline"
+                className="mt-2 inline-flex text-xs font-semibold text-dm-electric hover:underline"
               >
-                View receipts
+                Open receipt stash
               </Link>
             </div>
           </div>
         </article>
       ))}
 
-      {DEMO_FEED.map((d, i) => (
-        <article
-          key={d.key}
-          className={`border-b border-[var(--dm-border)] px-5 py-5 last:border-b-0 sm:px-6 ${receipts.length === 0 && i === 0 ? "" : "opacity-[0.93]"}`}
-        >
-          <div className="flex gap-4">
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-dm-bg text-lg ring-1 ring-[var(--dm-border)]"
-              aria-hidden
-            >
-              {d.icon}
-            </div>
-            <div className="min-w-0">
-              <p className="text-[12px] font-medium text-dm-muted">
-                Coming next
-              </p>
-              <p className="mt-1.5 font-semibold text-dm-text">{d.title}</p>
-              <p className="mt-1 text-[14px] leading-relaxed text-dm-muted">
-                {d.subtitle}
-              </p>
-            </div>
+      <article className="border-t border-[var(--dm-border-strong)] px-5 py-4 sm:px-6">
+        <div className="flex gap-3">
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[color-mix(in_srgb,var(--dm-fun)_55%,var(--dm-border))] bg-[color-mix(in_srgb,var(--dm-fun)_12%,var(--dm-surface))] text-[15px]"
+            aria-hidden
+          >
+            ✨
           </div>
-        </article>
-      ))}
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+              Soon
+            </p>
+            <p className="mt-1 text-[13px] font-medium leading-snug text-dm-text">
+              Shared pizza votes & split bills — without the 40-message group chat.
+            </p>
+          </div>
+        </div>
+      </article>
     </div>
   );
 }

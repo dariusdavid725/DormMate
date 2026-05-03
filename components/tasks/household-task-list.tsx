@@ -33,7 +33,7 @@ export function HouseholdTaskList({
           <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-4 shadow-md shadow-black/[0.04] backdrop-blur-sm md:p-5">
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <div className="inline-flex skew-x-[-6deg] bg-[var(--dm-construct-yellow)] px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-black">
+                <div className="inline-flex rounded-md bg-[color-mix(in_srgb,var(--dm-fun)_22%,transparent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-dm-text">
                   +{t.rewardPoints}
                 </div>
                 <h4 className="text-[15px] font-semibold text-dm-text">{t.title}</h4>
@@ -42,7 +42,7 @@ export function HouseholdTaskList({
                 <p className="mt-2 text-sm leading-relaxed text-dm-muted">{t.notes}</p>
               ) : null}
               {t.rewardLabel ? (
-                <p className="mt-2 inline-flex skew-x-[-3deg] text-xs font-semibold italic text-[var(--dm-construct-red)] dark:text-orange-400">
+                <p className="mt-2 text-xs font-semibold italic text-dm-accent">
                   {t.rewardLabel}
                 </p>
               ) : null}

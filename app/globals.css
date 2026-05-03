@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 /*
-  Clean-tech + constructivist accents: electric blue, mint, submarine navy,
-  punctuated with bold diagonals / vermillion / signal yellow (not full brutalism).
+  DormMate brand (cohesive app + marketing):
+  · Primary action: electric/cyan (--dm-electric)
+  · Money & rewards: mint/teal (--dm-accent)
+  · Fun / highlights / streaks: sparse yellow (--dm-fun)
+  · Problems & destructive: red-rose (--dm-danger) — not a marketing accent
 */
 
 :root {
@@ -21,15 +24,15 @@
   --dm-border-strong: rgba(15, 23, 42, 0.16);
   --dm-accent-warn-bg: #fff7d6;
   --dm-accent-warn-text: #5c3d05;
-  /* Constructivist accent layer (use sparingly vs electric/mint) */
-  --dm-construct-red: #d82222;
-  --dm-construct-yellow: #ecbc00;
-  --dm-construct-ink: #101318;
+  --dm-fun: #e0aa00;
+  --dm-construct-red: var(--dm-danger);
+  --dm-construct-yellow: var(--dm-fun);
+  --dm-construct-ink: var(--dm-text);
   --dm-body-fill:
     repeating-linear-gradient(
       -32deg,
       transparent 0 18px,
-      color-mix(in srgb, var(--dm-construct-red) 5%, transparent) 18px 19px
+      color-mix(in srgb, var(--dm-electric) 5%, transparent) 18px 19px
     ),
     radial-gradient(
       ellipse 120% 80% at 0% -30%,
@@ -52,9 +55,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --dm-bg: #060b16;
-    --dm-surface: #0f1729;
-    --dm-elevated: #162238;
+    --dm-bg: #06080f;
+    --dm-surface: #0c101c;
+    --dm-elevated: #151b2e;
     --dm-text: #eef4ff;
     --dm-muted: #93a4c9;
     --dm-electric: #53a9ff;
@@ -67,9 +70,10 @@
     --dm-border-strong: rgba(238, 244, 255, 0.16);
     --dm-accent-warn-bg: rgba(254, 240, 138, 0.12);
     --dm-accent-warn-text: #fde68a;
-    --dm-construct-red: #ff5a4a;
-    --dm-construct-yellow: #ffe14a;
-    --dm-construct-ink: #f4f7ff;
+    --dm-fun: #facc15;
+    --dm-construct-red: var(--dm-danger);
+    --dm-construct-yellow: var(--dm-fun);
+    --dm-construct-ink: var(--dm-text);
     --dm-body-fill:
       radial-gradient(
         ellipse 120% 80% at 0% -30%,
@@ -107,6 +111,7 @@
   --color-dm-construct-red: var(--dm-construct-red);
   --color-dm-construct-yellow: var(--dm-construct-yellow);
   --color-dm-construct-ink: var(--dm-construct-ink);
+  --color-dm-fun: var(--dm-fun);
 }
 
 html {
@@ -125,7 +130,7 @@ body {
 }
 
 .dm-construct-accent {
-  border-left: 4px solid var(--dm-construct-red);
+  border-left: 4px solid var(--dm-electric);
 }
 
 /* Primary CTA: receipt scan — one strong electric focal point */

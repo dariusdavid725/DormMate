@@ -146,7 +146,7 @@ export function HouseholdMembersPanel({
                     <span className="mx-2 opacity-35">·</span>
                     joined {formatJoined(m.joinedAt)}
                     <span className="mx-2 opacity-35">·</span>
-                    <span className="inline-flex skew-x-[-4deg] rounded-sm bg-[color-mix(in_srgb,var(--dm-construct-yellow)_26%,transparent)] px-1.5 py-px text-[11px] font-bold normal-case text-[var(--dm-construct-ink)] dark:text-dm-text dark:ring-1 dark:ring-white/20">
+                    <span className="inline-flex rounded-md bg-[color-mix(in_srgb,var(--dm-fun)_20%,transparent)] px-1.5 py-px text-[11px] font-semibold tabular-nums text-dm-text ring-1 ring-[var(--dm-border)]">
                       {m.rewardPoints} pts
                     </span>
                   </p>
