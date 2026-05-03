@@ -3,9 +3,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ContextualActionChip } from "@/components/dashboard/contextual-action-chip";
-import { DashboardFeed } from "@/components/dashboard/dashboard-feed";
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
 import { DormStatusRing } from "@/components/dashboard/dorm-status-ring";
+import { HouseActivityFeed } from "@/components/dashboard/house-activity-feed";
+import { DashboardQuickActions } from "@/components/dashboard/quick-actions";
 import { TodayStrip } from "@/components/dashboard/today-strip";
 import {
   PUBLIC_TRY_AGAIN,
@@ -13,6 +14,7 @@ import {
 } from "@/lib/errors/public";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
 import { loadReceiptFeedPreview } from "@/lib/receipts/feed-queries";
+import { loadHouseActivityItems } from "@/lib/dashboard/house-activity";
 import {
   countReceiptsSince,
   loadDistinctHousemateCount,
@@ -63,6 +65,12 @@ export default async function DashboardOverviewPage() {
   );
   const receiptsLast7d = countReceiptsSince(receiptFeed, 7);
 
+  const { items: houseActivity } = await loadHouseActivityItems(
+    households,
+    receiptFeed,
+    22,
+  );
+
   const realReceiptCount = receiptFeed.length;
   const firstHhReceipts = primaryId
     ? receiptFeed.filter((x) => x.householdId === primaryId).length
@@ -94,8 +102,8 @@ export default async function DashboardOverviewPage() {
             Home
           </h1>
           <p className="mt-2 text-base leading-snug text-dm-text/90 sm:text-lg sm:leading-normal">
-            Keep chores, receipts, and roommate money under control — without the
-            spreadsheet energy.
+            Chores, receipts, and who-owes-who — in one calm place. Less group-chat
+            detective work.
           </p>
         </div>
         <DormStatusRing
@@ -127,11 +135,18 @@ export default async function DashboardOverviewPage() {
         />
       </div>
 
+      <div className="mt-6">
+        <DashboardQuickActions
+          scanHref={scanHref}
+          hasHouseholds={hasHouseholds}
+        />
+      </div>
+
       <div className="mt-12 flex flex-col gap-12 xl:flex-row xl:gap-14">
         <div className="min-w-0 flex-1 space-y-10">
           <section
             aria-labelledby="open-chores"
-            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/78 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-surface)_88%,transparent),color-mix(in_srgb,var(--dm-electric)_5%,transparent))] p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
           >
             <div
               aria-hidden
@@ -158,7 +173,7 @@ export default async function DashboardOverviewPage() {
               </div>
               <Link
                 href="/dashboard/tasks"
-                className="inline-flex shrink-0 items-center justify-center rounded-full border border-dm-electric bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-dm-electric transition hover:bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)]"
+                className="dm-hover-tap inline-flex shrink-0 items-center justify-center rounded-full border border-dm-electric bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)] px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-dm-electric transition-colors duration-200 hover:bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)]"
               >
                 All tasks
               </Link>
@@ -168,8 +183,9 @@ export default async function DashboardOverviewPage() {
                 Tasks are off until the database migration is applied.
               </p>
             ) : openTasks.length === 0 ? (
-              <p className="relative mt-6 text-sm font-medium text-dm-text">
-                All clear — nothing open on the board.
+              <p className="relative mt-6 text-sm font-medium leading-relaxed text-dm-text">
+                All clear. Nobody&apos;s slacking today — at least on the task list
+                👀
               </p>
             ) : (
               <ul className="relative mt-6 space-y-2.5">
@@ -191,7 +207,7 @@ export default async function DashboardOverviewPage() {
                     </div>
                     <Link
                       href={`/dashboard/household/${t.householdId}?view=tasks`}
-                      className="rounded-full border border-dm-electric px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-dm-electric transition hover:bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)]"
+                      className="dm-hover-tap rounded-full border border-dm-electric px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide text-dm-electric transition-colors duration-200 hover:bg-[color-mix(in_srgb,var(--dm-electric)_10%,transparent)]"
                     >
                       Open
                     </Link>
@@ -203,7 +219,7 @@ export default async function DashboardOverviewPage() {
 
           <section
             aria-labelledby="cash-strip"
-            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface via-dm-surface to-dm-surface/82 p-6 shadow-xl shadow-black/[0.04] lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:items-start lg:gap-12 lg:p-8"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-[linear-gradient(180deg,var(--dm-surface),color-mix(in_srgb,var(--dm-electric)_4%,transparent))] p-6 shadow-xl shadow-black/[0.04] lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] lg:items-start lg:gap-12 lg:p-8"
           >
             <div
               aria-hidden
@@ -241,7 +257,7 @@ export default async function DashboardOverviewPage() {
               {scanHref ? (
                 <Link
                   href={scanHref}
-                  className="dm-scan-hero z-[1] inline-flex w-full items-center justify-center rounded-2xl bg-dm-electric px-7 py-[1.15rem] text-center text-base font-bold tracking-tight text-white transition hover:brightness-110 active:scale-[0.99] lg:text-[1.065rem]"
+                  className="dm-hover-tap dm-scan-hero z-[1] inline-flex w-full items-center justify-center rounded-2xl bg-dm-electric px-7 py-[1.15rem] text-center text-base font-bold tracking-tight text-white transition-[filter] duration-200 hover:brightness-110 lg:text-[1.065rem]"
                 >
                   Scan receipt · AI
                 </Link>
@@ -259,21 +275,21 @@ export default async function DashboardOverviewPage() {
                 <Link
                   href="/dashboard/finances"
                   title="Detailed ledger tooling is on the way"
-                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                  className="dm-hover-tap flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition-colors duration-200 hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
                 >
                   Add expense
                 </Link>
                 <Link
                   href="/dashboard/finances"
                   title="Even splits launching soon"
-                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                  className="dm-hover-tap flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition-colors duration-200 hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
                 >
                   Split bill
                 </Link>
                 <Link
                   href="/dashboard/finances"
                   title="Per-household balances next"
-                  className="flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
+                  className="dm-hover-tap flex-1 basis-[min(100%,10rem)] rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface/60 px-3 py-2.5 text-center text-xs font-semibold text-dm-text transition-colors duration-200 hover:border-dm-electric/40 hover:text-dm-electric md:flex-none md:basis-auto"
                 >
                   Balances
                 </Link>
@@ -299,17 +315,17 @@ export default async function DashboardOverviewPage() {
                   House activity
                 </h2>
                 <p className="mt-1 text-sm text-dm-muted">
-                  Who logged what lately — mixes receipts with coming-soon roommate
-                  pings.
+                  Live-ish feed: who scanned what, who crushed a chore — plus what’s
+                  landing next.
                 </p>
               </div>
               {feedErr ? (
                 <span className="rounded-full bg-dm-danger/10 px-3 py-1 text-xs font-semibold text-dm-danger">
-                  Feed partial
+                  Receipts partial
                 </span>
               ) : null}
             </div>
-            <DashboardFeed receipts={receiptFeed} />
+            <HouseActivityFeed items={houseActivity} />
           </section>
         </div>
 
@@ -324,7 +340,7 @@ export default async function DashboardOverviewPage() {
                   <li key={h.id}>
                     <Link
                       href={`/dashboard/household/${h.id}`}
-                      className="flex items-center justify-between gap-4 rounded-xl border border-transparent px-4 py-3 transition hover:border-[var(--dm-border-strong)] hover:bg-dm-surface"
+                      className="dm-hover-tap flex items-center justify-between gap-4 rounded-xl border border-transparent px-4 py-3 transition-colors duration-200 hover:border-[var(--dm-border-strong)] hover:bg-dm-surface"
                     >
                       <span className="truncate font-medium text-dm-text">
                         {h.name}

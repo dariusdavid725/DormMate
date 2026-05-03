@@ -7,7 +7,17 @@ import type { HouseholdTaskRow } from "@/lib/tasks/queries";
 
 function CompleteChip({ idle }: { idle: string }) {
   const { pending } = useFormStatus();
-  return <>{pending ? "…" : idle}</>;
+  if (pending) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide">
+        <span className="dm-flash-check text-sm leading-none" aria-hidden>
+          ✓
+        </span>
+        <span className="tabular-nums">Saved</span>
+      </span>
+    );
+  }
+  return <>{idle}</>;
 }
 
 export function HouseholdTaskList({
@@ -18,9 +28,11 @@ export function HouseholdTaskList({
   if (!tasks.length) {
     return (
       <div className="rounded-3xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/55 px-5 py-10 text-center backdrop-blur-sm">
-        <p className="text-sm font-medium text-dm-text">No chores in the queue.</p>
-        <p className="mt-2 text-sm text-dm-muted">
-          Post one above — mates see it instantly and snag the reward points.
+        <p className="text-sm font-medium leading-relaxed text-dm-text">
+          All clear. Nobody&apos;s slacking today — at least on chores 👀
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+          Drop the next job above and the flat gets pinged without a lecture.
         </p>
       </div>
     );
@@ -52,7 +64,7 @@ export function HouseholdTaskList({
               <input type="hidden" name="household_id" value={t.householdId} />
               <button
                 type="submit"
-                className="rounded-full bg-[var(--dm-accent)] px-5 py-2 text-xs font-bold uppercase tracking-wide text-[var(--dm-accent-ink)] shadow-sm transition hover:brightness-105 active:scale-[0.98]"
+                className="dm-hover-tap rounded-full bg-[var(--dm-accent)] px-5 py-2 text-xs font-bold uppercase tracking-wide text-[var(--dm-accent-ink)] shadow-sm transition-[filter] duration-200 hover:brightness-105"
               >
                 <CompleteChip idle="Claim" />
               </button>

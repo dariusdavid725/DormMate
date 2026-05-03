@@ -77,7 +77,7 @@ export function TodayStrip({
           <div
             key={c.label}
             className={[
-              "rounded-xl px-4 py-3.5 backdrop-blur-sm transition",
+              "rounded-xl px-4 py-3.5 backdrop-blur-sm transition-[transform,box-shadow] duration-200 ease-out motion-safe:hover:scale-[1.01]",
               ringTone(c.tone),
             ].join(" ")}
           >

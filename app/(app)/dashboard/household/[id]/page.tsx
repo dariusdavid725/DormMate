@@ -356,7 +356,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
               <div className="mt-6">
                 <ReceiptList
                   receipts={receiptsPayload?.receipts ?? []}
-                  emptyHint="No receipts saved yet — upload one above."
+                  emptyHint="No expenses yet — either you&apos;re all math wizards or someone still has the crumpled Tesco tape in their pocket. Toss it in above 😄"
                 />
               </div>
             )}

@@ -141,6 +141,73 @@ body {
     0 16px 48px -12px color-mix(in srgb, var(--dm-electric) 22%, transparent);
 }
 
+/* Subtle motion — keep under ~280ms, no layout thrash */
+@keyframes dm-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dm-check-pop {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.dm-fade-in-up {
+  animation: dm-fade-in-up 260ms ease-out both;
+}
+
+.dm-hover-tap {
+  transition: transform 200ms ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dm-hover-tap:hover {
+    transform: scale(1.02);
+  }
+
+  .dm-hover-tap:active {
+    transform: scale(0.98);
+  }
+}
+
+.dm-flash-check {
+  display: inline-block;
+  animation: dm-check-pop 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .dm-flash-check {
+    animation: none;
+  }
+
+  .dm-hover-tap:hover,
+  .dm-hover-tap:active {
+    transform: none;
+  }
+}
+
 ::selection {
   background-color: color-mix(in srgb, var(--dm-accent) 32%, transparent);
   color: var(--dm-text);

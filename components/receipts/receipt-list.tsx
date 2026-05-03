@@ -32,34 +32,35 @@ export function ReceiptList({
 }) {
   if (receipts.length === 0) {
     return (
-      <p className="rounded-2xl border border-dashed border-stone-300 bg-stone-50/80 px-6 py-10 text-center text-sm text-stone-600 dark:border-stone-700 dark:bg-stone-900/40 dark:text-stone-400">
+      <p className="dm-fade-in-up rounded-2xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/55 px-6 py-10 text-center text-sm leading-relaxed text-dm-muted">
         {emptyHint}
       </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200 bg-white shadow-sm dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-950/60">
-      {receipts.map((r) => (
+    <ul className="divide-y divide-[var(--dm-border)] overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 shadow-sm backdrop-blur-sm">
+      {receipts.map((r, i) => (
         <li
           key={r.id}
-          className="flex flex-wrap items-start justify-between gap-4 px-5 py-4"
+          className="dm-fade-in-up flex flex-wrap items-start justify-between gap-4 px-5 py-4"
+          style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
         >
           <div className="min-w-0">
-            <p className="truncate font-medium text-stone-900 dark:text-stone-50">
+            <p className="truncate font-medium text-dm-text">
               {r.merchant ?? "Unknown shop"}
             </p>
-            <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
+            <p className="mt-1 text-xs text-dm-muted">
               Added {fmtWhen(r.created_at)}
               {r.source_filename ? ` · ${r.source_filename}` : ""}
             </p>
           </div>
           <div className="text-right">
-            <p className="font-semibold tabular-nums text-stone-900 dark:text-stone-100">
+            <p className="font-semibold tabular-nums text-dm-accent">
               {fmtMoney(r.total_amount, r.currency)}
             </p>
             {r.purchased_at ? (
-              <p className="text-[11px] text-stone-500 dark:text-stone-400">
+              <p className="text-[11px] text-dm-muted">
                 Receipt date ·{" "}
                 {new Intl.DateTimeFormat(undefined, {
                   dateStyle: "medium",
