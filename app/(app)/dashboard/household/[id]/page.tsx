@@ -96,61 +96,58 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl pb-28 lg:pb-16">
-      <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-dm-muted">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link
-              href="/dashboard"
-              className="text-dm-electric underline underline-offset-2"
-            >
+            <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
               Pulse
             </Link>
           </li>
-          <li aria-hidden className="opacity-40">
+          <li aria-hidden className="opacity-35">
             /
           </li>
           <li className="truncate text-dm-text">{household.name}</li>
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-6 border-b-[3px] border-dm-electric pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-6 border-b border-[var(--dm-border-strong)] pb-8">
         <div className="min-w-0 max-w-xl">
-          <p className="font-mono text-[10px] font-black uppercase tracking-[0.26em] text-dm-muted">
-            Dorm node
+          <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
+            Household
           </p>
-          <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text md:text-[2rem]">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text md:text-[2rem]">
             {household.name}
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-            Role{" "}
-            <span className="font-mono font-bold uppercase text-dm-text">
+            You&apos;re{" "}
+            <span className="font-semibold capitalize text-dm-text">
               {memberRole}
             </span>
             · since {formatDate(household.createdAt)}.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">
-          <span className="inline-flex items-center border-[3px] border-dm-border-strong bg-dm-surface px-3 py-1.5 font-mono text-[10px] font-black uppercase text-dm-text shadow-[3px_3px_0_0_var(--dm-electric)]">
+          <span className="inline-flex rounded-full bg-dm-elevated/80 px-3 py-1.5 text-xs font-medium text-dm-text ring-1 ring-[var(--dm-border)]">
             {households.length} space{households.length === 1 ? "" : "s"}
           </span>
           <Link
             href="/dashboard"
-            className="inline-flex items-center border-[3px] border-dm-muted/40 px-4 py-1.5 font-mono text-[10px] font-black uppercase tracking-wide text-dm-muted transition hover:border-dm-electric hover:text-dm-electric"
+            className="inline-flex rounded-full border border-[var(--dm-border-strong)] px-4 py-1.5 text-xs font-semibold text-dm-muted transition hover:border-dm-electric hover:text-dm-electric"
           >
             Pulse
           </Link>
         </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-3 border-b-[3px] border-dm-border-strong/35">
+      <div className="mt-8 flex gap-2 rounded-full bg-dm-surface/60 p-1 ring-1 ring-[var(--dm-border-strong)] backdrop-blur-sm">
         <Link
           href={tabBase}
           scroll={false}
           className={[
-            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
+            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
             view === "overview"
-              ? "border-dm-electric bg-dm-electric text-white shadow-[4px_4px_0_0_var(--dm-border-strong)]"
-              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-electric hover:text-dm-text",
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
+              : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
           Overview
@@ -159,10 +156,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=members`}
           scroll={false}
           className={[
-            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
+            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
             view === "members"
-              ? "border-dm-electric bg-dm-electric text-white shadow-[4px_4px_0_0_var(--dm-border-strong)]"
-              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-electric hover:text-dm-text",
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
+              : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
           Members
@@ -171,10 +168,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=receipts`}
           scroll={false}
           className={[
-            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
+            "flex-1 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:min-w-[7rem]",
             view === "receipts"
-              ? "border-dm-accent bg-dm-accent text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)]"
-              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-accent hover:text-dm-accent-ink",
+              ? "bg-[var(--dm-accent-soft)] text-[var(--dm-accent-ink)] ring-1 ring-emerald-400/30"
+              : "text-dm-muted hover:text-dm-accent-ink",
           ].join(" ")}
         >
           Receipts
@@ -187,21 +184,19 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="group flex flex-col border-[3px] border-dm-accent bg-[color-mix(in_srgb,var(--dm-accent)_12%,transparent)] p-7 shadow-[6px_6px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px"
+              className="flex flex-col rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-[var(--dm-accent-soft)] to-dm-surface/80 p-7 shadow-lg shadow-black/[0.04] transition hover:shadow-xl"
             >
-              <span className="w-fit border-[3px] border-dm-accent-ink bg-dm-accent px-2.5 py-1 font-mono text-[10px] font-black uppercase text-dm-accent-ink">
-                AI lane live
+              <span className="w-fit rounded-full bg-[var(--dm-accent)] px-3 py-1 text-[11px] font-semibold text-[var(--dm-accent-ink)]">
+                AI scanning
               </span>
-              <h2 className="mt-5 text-lg font-black uppercase tracking-tight text-dm-text">
-                Receipt blast
+              <h2 className="mt-4 text-lg font-semibold tracking-tight text-dm-text">
+                Receipts
               </h2>
               <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
-                Vision pipeline reads slips · assignments drop into mint success
-                states.
+                Upload slips — we lift totals without retyping blurry photos.
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-wide text-dm-accent-ink">
-                Receipts cockpit
-                <span aria-hidden>→</span>
+              <span className="mt-6 text-sm font-semibold text-dm-electric">
+                Open receipts →
               </span>
             </Link>
             {[
@@ -218,12 +213,12 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ].map((card) => (
               <article
                 key={card.title}
-                className="flex flex-col border-[3px] border-dm-border-strong bg-dm-surface p-7 shadow-[5px_5px_0_0_var(--dm-electric)]"
+                className="flex flex-col rounded-3xl border border-[var(--dm-border)] bg-dm-surface/70 p-7 shadow-md shadow-black/[0.03]"
               >
-                <span className="w-fit border-[2px] border-dm-muted/50 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+                <span className="w-fit rounded-full bg-dm-bg px-3 py-0.5 text-[11px] font-semibold text-dm-muted">
                   {card.status}
                 </span>
-                <h2 className="mt-5 text-base font-black uppercase tracking-tight text-dm-text">
+                <h2 className="mt-4 text-base font-semibold text-dm-text">
                   {card.title}
                 </h2>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
@@ -233,11 +228,11 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ))}
           </div>
 
-          <section className="mt-12 border-[3px] border-dm-electric bg-dm-surface p-8 shadow-[8px_8px_0_0_var(--dm-border-strong)]">
-            <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
-              Node mutation
+          <section className="mt-12 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-8 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
+            <h2 className="text-base font-semibold text-dm-text">
+              Settings
             </h2>
-            <p className="mt-3 text-sm text-dm-muted">
+            <p className="mt-2 text-sm text-dm-muted">
               {canRename
                 ? "Rename is available to whoever created this household."
                 : "Only the creator can rename this household. Ask them to adjust the display name."}
@@ -255,7 +250,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           {membersResult && "error" in membersResult ? (
             <div
               role="alert"
-              className="border-[3px] border-dm-danger bg-dm-elevated px-5 py-4 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger"
+              className="rounded-2xl border border-dm-danger/35 bg-red-500/[0.05] px-5 py-4 text-sm text-dm-danger"
             >
               Could not load members.{" "}
               {shouldExposeSupabaseError() ? (
@@ -281,16 +276,16 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
-              Saved slips
+            <h2 className="text-base font-semibold text-dm-text">
+              Saved receipts
             </h2>
             <p className="mt-2 text-sm text-dm-muted">
               Everyone in this household can see these — transparency beats awkward
               guessing about who paid what.
             </p>
             {receiptsPayload?.error ? (
-              <p className="mt-4 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger">
-                Receipts table missing · run migration stack.
+              <p className="mt-4 text-sm font-medium text-dm-danger">
+                Couldn&apos;t load receipts · check the receipts table migration.
               </p>
             ) : (
               <div className="mt-6">

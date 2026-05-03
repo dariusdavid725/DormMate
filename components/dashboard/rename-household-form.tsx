@@ -22,13 +22,13 @@ export function RenameHouseholdForm({
   );
 
   return (
-    <form action={formAction} className="mt-6 max-w-lg space-y-5">
+    <form action={formAction} className="mt-6 max-w-lg space-y-4">
       <input type="hidden" name="household_id" value={householdId} />
 
       {state?.error ? (
         <div
           role="alert"
-          className="border-[3px] border-dm-danger bg-dm-elevated px-3 py-2 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger"
+          className="rounded-xl border border-dm-danger/30 bg-red-500/[0.06] px-3 py-2 text-sm font-medium text-dm-danger"
         >
           {state.error}
         </div>
@@ -37,9 +37,9 @@ export function RenameHouseholdForm({
       <div>
         <label
           htmlFor="rename-household"
-          className="mb-2 block font-mono text-[10px] font-black uppercase tracking-[0.22em] text-dm-muted"
+          className="mb-2 block text-xs font-semibold uppercase tracking-wide text-dm-muted"
         >
-          Node label
+          Display name
         </label>
         <input
           id="rename-household"
@@ -49,16 +49,16 @@ export function RenameHouseholdForm({
           minLength={1}
           maxLength={120}
           defaultValue={initialName}
-          className="w-full rounded-none border-[3px] border-dm-border-strong bg-dm-bg px-3 py-2.5 text-sm font-medium text-dm-text outline-none focus:border-dm-electric"
+          className="w-full rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-3 py-2.5 text-sm text-dm-text outline-none focus:border-dm-electric focus:ring-2 focus:ring-dm-electric/20"
         />
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)] disabled:opacity-60"
+        className="rounded-full bg-[var(--dm-accent)] px-6 py-2.5 text-sm font-semibold text-[var(--dm-accent-ink)] shadow-sm transition hover:brightness-105 disabled:opacity-55"
       >
-        {pending ? "Commit…" : "Commit rename"}
+        {pending ? "Saving…" : "Save name"}
       </button>
     </form>
   );

@@ -8,9 +8,6 @@ type Props = {
   createHouseholdHint: boolean;
 };
 
-/**
- * Lightweight “smart” cue — evolves with product data until a real ML signal exists.
- */
 export function ContextualActionChip({
   householdsCount,
   receiptsCountAllTime,
@@ -22,10 +19,12 @@ export function ContextualActionChip({
     return (
       <a
         href="#create-household"
-        className="inline-flex items-center gap-2 border-[3px] border-dm-border-strong bg-dm-accent-warn-bg px-3 py-2 text-xs font-black uppercase tracking-wide text-dm-accent-warn-text shadow-[4px_4px_0_0_var(--dm-electric)] transition hover:-translate-y-px"
+        className="inline-flex items-center gap-2 rounded-full border border-[var(--dm-accent-warn-text)]/25 bg-[var(--dm-accent-warn-bg)] px-4 py-2 text-[13px] font-medium text-[var(--dm-accent-warn-text)] shadow-sm shadow-black/[0.04] transition hover:brightness-[1.03]"
       >
-        <span aria-hidden>＋</span>
-        Anchor your dorm
+        <span aria-hidden className="text-base leading-none opacity-85">
+          ＋
+        </span>
+        Add your first dorm
       </a>
     );
   }
@@ -34,10 +33,10 @@ export function ContextualActionChip({
     return (
       <a
         href={scanReceiptHref}
-        className="inline-flex items-center gap-2 border-[3px] border-dm-border-strong bg-dm-accent-warn-bg px-3 py-2 text-xs font-black uppercase tracking-wide text-dm-accent-warn-text shadow-[4px_4px_0_0_var(--dm-electric)] transition hover:-translate-y-px"
+        className="inline-flex items-center gap-2 rounded-full border border-[var(--dm-accent-warn-text)]/25 bg-[var(--dm-accent-warn-bg)] px-4 py-2 text-[13px] font-medium text-[var(--dm-accent-warn-text)] shadow-sm shadow-black/[0.04] transition hover:brightness-[1.03]"
       >
         <span aria-hidden>📸</span>
-        First receipt? Scan now
+        Capture your first receipt
       </a>
     );
   }
@@ -46,18 +45,18 @@ export function ContextualActionChip({
     return (
       <a
         href={scanReceiptHref}
-        className="inline-flex items-center gap-2 border-[3px] border-dm-border-strong bg-dm-accent-warn-bg px-3 py-2 text-xs font-black uppercase tracking-wide text-dm-accent-warn-text shadow-[4px_4px_0_0_var(--dm-electric)] transition hover:-translate-y-px"
+        className="inline-flex items-center gap-2 rounded-full border border-amber-200/55 bg-dm-surface px-4 py-2 text-[13px] font-medium text-dm-muted shadow-sm transition hover:border-amber-300/70"
       >
         <span aria-hidden>☕</span>
-        Need coffee? Ping room first
+        Coffee run worth logging?
       </a>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-2 border-[3px] border-dm-electric bg-dm-elevated px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-dm-electric shadow-[3px_3px_0_0_var(--dm-border-strong)]">
-      <span aria-hidden>⚡</span>
-      Receipts syncing — splits next ship
+    <span className="inline-flex items-center gap-2 rounded-full border border-[var(--dm-border)] bg-dm-elevated/60 px-4 py-2 text-[13px] font-medium text-dm-muted">
+      <span aria-hidden className="text-dm-electric">⚡</span>
+      Receipt pipeline active — settles next phase
     </span>
   );
 }

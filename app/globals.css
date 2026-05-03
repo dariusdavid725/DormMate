@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 /*
-  Clean-tech brutal minimal: Electric Blue structural, mint/teal kinetic CTAs/success,
-  white paper light / submarine navy dark — student-grade contrast.
+  Refined clean-tech: electric blue + mint energy, submarine navy dark.
+  Surfaces breathe — hairline divides, soft radii, depth via glow not hard offset blocks.
 */
 
 :root {
-  --dm-bg: #f8fafc;
+  --dm-bg: #f6f8fc;
   --dm-surface: #ffffff;
-  --dm-elevated: #eef2ff;
-  --dm-text: #020617;
-  --dm-muted: #475569;
-  --dm-electric: #005bff;
-  --dm-electric-glow: #3d7bff;
-  --dm-accent: #20f3b1;
-  --dm-accent-ink: #003d2f;
+  --dm-elevated: #eef3ff;
+  --dm-text: #0f172a;
+  --dm-muted: #5c6b82;
+  --dm-electric: #0b6cff;
+  --dm-electric-glow: rgba(11, 108, 255, 0.18);
+  --dm-accent: #12d9a8;
+  --dm-accent-soft: rgba(18, 217, 168, 0.14);
+  --dm-accent-ink: #034e3f;
   --dm-danger: #e11d48;
-  --dm-border-strong: #020617;
-  --dm-accent-warn-bg: #fef08a;
-  --dm-accent-warn-text: #422006;
+  --dm-border: rgba(15, 23, 42, 0.1);
+  --dm-border-strong: rgba(15, 23, 42, 0.16);
+  --dm-accent-warn-bg: #fff7d6;
+  --dm-accent-warn-text: #5c3d05;
 
   --background: var(--dm-bg);
   --foreground: var(--dm-text);
@@ -30,19 +32,21 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --dm-bg: #030711;
-    --dm-surface: #0b1228;
-    --dm-elevated: #101b3a;
-    --dm-text: #e9f0ff;
-    --dm-muted: #8ba3cf;
-    --dm-electric: #4da3ff;
-    --dm-electric-glow: #9dc6ff;
-    --dm-accent: #34f5cb;
-    --dm-accent-ink: #08221c;
-    --dm-danger: #ff6b81;
-    --dm-border-strong: #274d82;
-    --dm-accent-warn-bg: #3b2f0a;
-    --dm-accent-warn-text: #fef9c3;
+    --dm-bg: #060b16;
+    --dm-surface: #0f1729;
+    --dm-elevated: #162238;
+    --dm-text: #eef4ff;
+    --dm-muted: #93a4c9;
+    --dm-electric: #53a9ff;
+    --dm-electric-glow: rgba(83, 169, 255, 0.2);
+    --dm-accent: #3ae8c6;
+    --dm-accent-soft: rgba(58, 232, 198, 0.12);
+    --dm-accent-ink: #062e28;
+    --dm-danger: #fb7185;
+    --dm-border: rgba(238, 244, 255, 0.1);
+    --dm-border-strong: rgba(238, 244, 255, 0.16);
+    --dm-accent-warn-bg: rgba(254, 240, 138, 0.12);
+    --dm-accent-warn-text: #fde68a;
 
     --background: var(--dm-bg);
     --foreground: var(--dm-text);
@@ -61,14 +65,11 @@
   --color-dm-text: var(--dm-text);
   --color-dm-muted: var(--dm-muted);
   --color-dm-electric: var(--dm-electric);
-  --color-dm-electric-glow: var(--dm-electric-glow);
   --color-dm-accent: var(--dm-accent);
   --color-dm-accent-ink: var(--dm-accent-ink);
   --color-dm-danger: var(--dm-danger);
   --color-dm-accent-warn-bg: var(--dm-accent-warn-bg);
   --color-dm-accent-warn-text: var(--dm-accent-warn-text);
-  /* Hard outline for neo-brutal shadows · maps to daylight/navy strokes */
-  --color-dm-border-strong: var(--dm-border-strong);
 }
 
 html {
@@ -76,11 +77,23 @@ html {
 }
 
 body {
-  background: var(--dm-bg);
+  background-color: var(--dm-bg);
+  background-image:
+    radial-gradient(
+      ellipse 120% 80% at 0% -30%,
+      color-mix(in srgb, var(--dm-electric) 14%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 60% at 100% 0%,
+      color-mix(in srgb, var(--dm-accent) 10%, transparent),
+      transparent 50%
+    );
+  background-attachment: fixed;
   color: var(--dm-text);
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--dm-accent) 35%, transparent);
+  background-color: color-mix(in srgb, var(--dm-accent) 32%, transparent);
   color: var(--dm-text);
 }

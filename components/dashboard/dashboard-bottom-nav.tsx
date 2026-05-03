@@ -11,9 +11,9 @@ type Item = {
 
 const NAV: readonly Item[] = [
   { href: "/dashboard", label: "Home", icon: "🏠" },
-  { href: "/dashboard/finances", label: "Finances", icon: "📊" },
-  { href: "/dashboard/inventory", label: "Grocery", icon: "🛒" },
-  { href: "/dashboard/settings", label: "Settings", icon: "⚙️" },
+  { href: "/dashboard/finances", label: "Finance", icon: "📊" },
+  { href: "/dashboard/inventory", label: "Groceries", icon: "🛒" },
+  { href: "/dashboard/settings", label: "You", icon: "⚙️" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -32,7 +32,7 @@ export function DashboardBottomNav() {
   return (
     <nav
       aria-label="Mobile primary"
-      className="fixed bottom-0 left-0 right-0 z-50 border-t-[3px] border-dm-electric bg-dm-surface/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--dm-border-strong)] bg-dm-surface/92 px-4 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_32px_-8px_var(--dm-electric-glow)] backdrop-blur-xl lg:hidden"
     >
       <ul className="mx-auto grid max-w-md grid-cols-4 gap-1">
         {NAV.map((item) => {
@@ -43,13 +43,13 @@ export function DashboardBottomNav() {
                 href={item.href}
                 prefetch
                 className={[
-                  "flex flex-col items-center gap-1 rounded-md py-2 text-[10px] font-semibold uppercase tracking-wide transition",
+                  "flex flex-col items-center gap-1 rounded-2xl py-2.5 text-[11px] font-medium transition active:scale-[0.97]",
                   active
-                    ? "bg-dm-electric text-white shadow-[3px_3px_0_0_var(--dm-border-strong)]"
-                    : "text-dm-muted hover:bg-dm-elevated hover:text-dm-text",
+                    ? "bg-[color-mix(in_srgb,var(--dm-electric)_14%,transparent)] text-dm-electric"
+                    : "text-dm-muted hover:text-dm-text",
                 ].join(" ")}
               >
-                <span className="text-lg leading-none" aria-hidden>
+                <span className="text-xl leading-none" aria-hidden>
                   {item.icon}
                 </span>
                 {item.label}

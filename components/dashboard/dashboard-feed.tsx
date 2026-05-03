@@ -29,14 +29,14 @@ function formatWhen(iso: string) {
 const DEMO_FEED = [
   {
     icon: "🧹",
-    title: "Rota teaser",
-    subtitle: "Shared chore board syncs soon — kitchens stay civil.",
+    title: "Chores without the drama thread",
+    subtitle: "Rotations tied to chores — onboarding soon.",
     key: "demo-chore",
   },
   {
-    icon: "👤",
-    title: "Settle-ups",
-    subtitle: "Venmo-equivalent settles land with Pro billing.",
+    icon: "↔️",
+    title: "Quiet settle-ups",
+    subtitle: "When split math launches, confirmations glow mint.",
     key: "demo-pay",
   },
 ] as const;
@@ -47,34 +47,38 @@ export function DashboardFeed({
   receipts: ReceiptFeedPreviewItem[];
 }) {
   return (
-    <div className="space-y-0">
+    <div className="overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/58 backdrop-blur-sm">
       {receipts.map((r) => (
         <article
           key={r.id}
-          className="border-b-[3px] border-dm-border-strong py-5 first:pt-0 last:border-b-0"
+          className="border-b border-[var(--dm-border)] px-5 py-5 last:border-b-0 sm:px-6"
         >
           <div className="flex gap-4">
-            <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border-[3px] border-dm-electric bg-dm-elevated text-lg shadow-[3px_3px_0_0_var(--dm-border-strong)]"
+            <div
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--dm-accent-soft)] text-lg shadow-inner shadow-black/[0.04]"
               aria-hidden
             >
               🤖
-            </span>
+            </div>
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-                {formatWhen(r.createdAt)} · {r.householdName}
+              <p className="text-[12px] text-dm-muted">
+                <span className="font-semibold tracking-tight text-dm-text">
+                  AI
+                </span>{" "}
+                · {formatWhen(r.createdAt)} ·{" "}
+                <span className="text-dm-text/85">{r.householdName}</span>
               </p>
-              <p className="mt-1 text-sm font-bold text-dm-text">
-                AI · Receipt from {r.merchant?.trim() || "merchant"}
+              <p className="mt-1.5 text-[15px] font-semibold leading-snug text-dm-text">
+                Receipt · {r.merchant?.trim() || "merchant"}
               </p>
               <p className="mt-2 font-mono text-sm tabular-nums text-dm-electric">
-                Total tracked {formatMoney(r.totalAmount, r.currency)}
+                {formatMoney(r.totalAmount, r.currency)}
               </p>
               <Link
                 href={`/dashboard/household/${r.householdId}?view=receipts`}
-                className="mt-3 inline-flex text-xs font-black uppercase tracking-wide text-dm-accent hover:underline"
+                className="mt-3 inline-flex text-sm font-semibold text-dm-electric hover:underline"
               >
-                Open receipts →
+                View receipts
               </Link>
             </div>
           </div>
@@ -84,22 +88,21 @@ export function DashboardFeed({
       {DEMO_FEED.map((d, i) => (
         <article
           key={d.key}
-          className="border-b-[3px] border-dm-border-strong py-5 last:border-b-0 opacity-90"
-          style={{ animationDelay: `${i * 80}ms` }}
+          className={`border-b border-[var(--dm-border)] px-5 py-5 last:border-b-0 sm:px-6 ${receipts.length === 0 && i === 0 ? "" : "opacity-[0.93]"}`}
         >
           <div className="flex gap-4">
-            <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border-[3px] border-dm-muted/40 bg-dm-bg text-lg"
+            <div
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-dm-bg text-lg ring-1 ring-[var(--dm-border)]"
               aria-hidden
             >
               {d.icon}
-            </span>
+            </div>
             <div className="min-w-0">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-                Preview
+              <p className="text-[12px] font-medium text-dm-muted">
+                Coming next
               </p>
-              <p className="mt-1 text-sm font-semibold text-dm-text">{d.title}</p>
-              <p className="mt-1 text-[13px] leading-relaxed text-dm-muted">
+              <p className="mt-1.5 font-semibold text-dm-text">{d.title}</p>
+              <p className="mt-1 text-[14px] leading-relaxed text-dm-muted">
                 {d.subtitle}
               </p>
             </div>

@@ -21,34 +21,30 @@ export default async function InventoryPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-8 pb-[7rem] lg:pb-10">
-      <header className="border-b-[3px] border-dm-electric pb-6">
-        <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-dm-muted">
-          inventory matrix
+      <header className="border-b border-[var(--dm-border-strong)] pb-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
+          Inventory
         </p>
-        <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text">
-          Grocery
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
+          Groceries
         </h1>
-        <p className="mt-3 text-sm text-dm-muted">
-          Pantry ontology + low-stock pings — flagged for Pro rollout. Receipt
-          SKU hints will hydrate this surface.
+        <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
+          Pantry optics will merge with receipts so coffee filters don&apos;t silently vanish.
         </p>
       </header>
 
-      <div className="border-[3px] border-dm-border-strong bg-dm-accent/15 p-6 shadow-[6px_6px_0_0_var(--dm-electric)]">
-        <p className="font-mono text-sm font-black uppercase text-dm-accent-ink">
-          Queue position · soon
-        </p>
+      <div className="rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-[var(--dm-accent-soft)] to-dm-surface/80 p-7 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
+        <p className="text-sm font-semibold text-dm-text">Quietly queued</p>
         <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-          You&apos;re early. Tie grocery velocity to roommate habits without shame
-          threads — barcode mode included.
+          Staples radar + roommate-friendly nudges are slotted behind receipt intelligence — boring supply chains done right deserve UI that doesn&apos;t shout.
         </p>
       </div>
 
       <Link
         href="/dashboard"
-        className="inline-flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-widest text-dm-electric underline"
+        className="inline-flex text-sm font-semibold text-dm-electric hover:underline"
       >
-        ← Pulse
+        ← Back to Pulse
       </Link>
     </div>
   );

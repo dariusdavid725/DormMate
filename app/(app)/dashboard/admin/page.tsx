@@ -54,46 +54,40 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl pb-[7rem] lg:pb-10">
-      <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
-        <ol className="flex flex-wrap items-center gap-2">
-          <li>
-            <Link href="/dashboard" className="text-dm-electric underline">
-              Pulse
-            </Link>
-          </li>
-          <li aria-hidden className="opacity-40">
-            /
-          </li>
-          <li className="text-dm-text">God mode</li>
-        </ol>
+      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-dm-muted">
+        <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
+          Pulse
+        </Link>
+        <span className="mx-2 opacity-40">/</span>
+        <span className="text-dm-text">Admin</span>
       </nav>
 
-      <header className="border-b-[3px] border-dm-electric pb-8">
-        <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-dm-muted">
-          Operations telemetry
+      <header className="border-b border-[var(--dm-border-strong)] pb-8">
+        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
+          Platform ops
         </p>
-        <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text">
-          Platform radar
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
+          Overview
         </h1>
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-dm-muted">
-          Read-only across households · restricted JWT lane.
+          Read-only roll-up across households · JWT-gated roster.
         </p>
       </header>
 
-      <div className="mt-10 grid gap-4 sm:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:grid-cols-3">
         {[
           { label: "Households", value: householdCount ?? 0 },
           { label: "Profiles", value: profileCount ?? 0 },
-          { label: "Receipts stored", value: receiptCount ?? 0 },
+          { label: "Receipts", value: receiptCount ?? 0 },
         ].map((card) => (
           <div
             key={card.label}
-            className="border-[3px] border-dm-border-strong bg-dm-surface px-5 py-5 shadow-[5px_5px_0_0_var(--dm-electric)]"
+            className="rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 px-5 py-5 shadow-lg shadow-black/[0.04] backdrop-blur-sm"
           >
-            <p className="font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+            <p className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
               {card.label}
             </p>
-            <p className="mt-3 font-mono text-4xl font-semibold tabular-nums tracking-tighter text-dm-text">
+            <p className="mt-3 font-mono text-3xl font-semibold tabular-nums text-dm-text">
               {card.value}
             </p>
           </div>
@@ -101,35 +95,32 @@ export default async function AdminDashboardPage() {
       </div>
 
       <section className="mt-12">
-        <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
-          Recent households · max 20
+        <h2 className="text-lg font-semibold text-dm-text">
+          Recent households
         </h2>
-        <div className="mt-6 overflow-hidden border-[3px] border-dm-border-strong bg-dm-surface shadow-[8px_8px_0_0_var(--dm-electric)]">
+        <div className="mt-6 overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/72 shadow-xl shadow-black/[0.04] backdrop-blur-sm">
           <table className="min-w-full text-left text-sm">
-            <thead className="border-b-[3px] border-dm-electric bg-dm-elevated font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+            <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg/60 text-xs font-semibold uppercase tracking-wide text-dm-muted">
               <tr>
-                <th className="px-5 py-3">Slug</th>
+                <th className="px-5 py-3">Name</th>
                 <th className="hidden px-5 py-3 sm:table-cell">Created</th>
-                <th className="hidden px-5 py-3 lg:table-cell">Creator UUID</th>
+                <th className="hidden px-5 py-3 lg:table-cell">Creator ID</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-5 py-10 text-center font-mono text-xs text-dm-muted">
-                    No households yet · quiet grid.
+                  <td className="px-5 py-10 text-center text-dm-muted" colSpan={3}>
+                    Quiet launch — nobody anchored yet.
                   </td>
                 </tr>
               ) : (
                 rows.map((r) => (
-                  <tr
-                    key={r.id}
-                    className="border-b-[3px] border-dm-border-strong/25 last:border-b-0 text-dm-text"
-                  >
+                  <tr key={r.id} className="border-b border-[var(--dm-border)] last:border-b-0">
                     <td className="px-5 py-4">
                       <Link
+                        className="font-semibold text-dm-electric hover:underline"
                         href={`/dashboard/household/${r.id}`}
-                        className="font-semibold text-dm-electric underline underline-offset-2 hover:text-dm-accent"
                       >
                         {r.name}
                       </Link>
@@ -137,7 +128,7 @@ export default async function AdminDashboardPage() {
                     <td className="hidden px-5 py-4 font-mono text-xs tabular-nums text-dm-muted sm:table-cell">
                       {formatTs(r.created_at)}
                     </td>
-                    <td className="hidden max-w-[12rem] truncate px-5 py-4 font-mono text-[11px] text-dm-muted lg:table-cell">
+                    <td className="hidden max-w-[13rem] truncate px-5 py-4 font-mono text-[11px] text-dm-muted lg:table-cell">
                       {r.created_by}
                     </td>
                   </tr>

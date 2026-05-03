@@ -25,7 +25,7 @@ function labelForMember(m: HouseholdMemberRow) {
 
 function SubmitPending({ idle }: { idle: string }) {
   const { pending } = useFormStatus();
-  return <>{pending ? "Staging…" : idle}</>;
+  return <>{pending ? "Saving…" : idle}</>;
 }
 
 export function HouseholdMembersPanel({
@@ -45,12 +45,10 @@ export function HouseholdMembersPanel({
 
   return (
     <div className="space-y-10">
-      <section className="border-[3px] border-dm-electric bg-dm-surface p-6 shadow-[6px_6px_0_0_var(--dm-border-strong)]">
-        <h3 className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-dm-muted">
-          Your cockpit ID
-        </h3>
-        <p className="mt-2 text-xs leading-relaxed text-dm-muted">
-          Visible inside this dorm only · photo stored in guarded Supabase lanes.
+      <section className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/75 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md sm:p-8">
+        <h3 className="text-base font-semibold text-dm-text">Your profile</h3>
+        <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+          How you show up inside this dorm — avatar is optional comfort, not runway.
         </p>
         <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
           <input type="hidden" name="household_id" value={householdId} />
@@ -62,79 +60,77 @@ export function HouseholdMembersPanel({
             name="display_name"
             type="text"
             maxLength={80}
-            placeholder="Alias · dorm-safe"
+            placeholder="Name as it should read on receipts"
             defaultValue={
               sorted.find((x) => x.userId === currentUserId)?.displayName ?? ""
             }
-            className="min-w-[12rem] flex-1 rounded-none border-[3px] border-dm-border-strong bg-dm-bg px-3 py-2.5 font-mono text-sm text-dm-text outline-none placeholder:text-dm-muted focus:border-dm-electric"
+            className="min-w-[12rem] flex-1 rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-4 py-2.5 text-sm text-dm-text outline-none focus:border-dm-electric focus:ring-2 focus:ring-dm-electric/15"
           />
           <button
             type="submit"
-            className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)] disabled:opacity-60"
+            className="rounded-full bg-[var(--dm-accent)] px-6 py-2.5 text-sm font-semibold text-[var(--dm-accent-ink)] shadow-sm hover:brightness-105"
           >
-            <SubmitPending idle="Commit name" />
+            <SubmitPending idle="Save" />
           </button>
         </form>
 
         <form
           action={uploadProfileAvatar}
           encType="multipart/form-data"
-          className="mt-8 flex flex-wrap items-end gap-4 border-t-[3px] border-dm-electric/30 pt-8"
+          className="mt-8 flex flex-wrap items-end gap-4 border-t border-[var(--dm-border)] pt-8"
         >
           <input type="hidden" name="household_id" value={householdId} />
           <div className="min-w-0 flex-1">
             <label
               htmlFor="avatar"
-              className="block font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted"
+              className="block text-xs font-semibold uppercase tracking-wide text-dm-muted"
             >
-              Telemetry portrait
+              Photo
             </label>
             <input
               id="avatar"
               name="avatar"
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
-              className="mt-3 block w-full max-w-xs text-[11px] text-dm-muted file:mr-3 file:border-[3px] file:border-dm-electric file:bg-dm-bg file:px-3 file:py-2 file:font-mono file:text-[10px] file:font-black file:uppercase file:tracking-wide file:text-dm-text"
+              className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
             />
           </div>
           <button
             type="submit"
-            className="rounded-none border-[3px] border-dm-border-strong bg-dm-elevated px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-text shadow-[4px_4px_0_0_var(--dm-electric)]"
+            className="rounded-full border border-[var(--dm-border-strong)] bg-dm-surface px-6 py-2.5 text-sm font-semibold text-dm-text shadow-sm hover:border-dm-electric"
           >
-            <SubmitPending idle="Pump photo" />
+            <SubmitPending idle="Upload" />
           </button>
         </form>
       </section>
 
       <div>
-        <h3 className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
-          Everyone here
-        </h3>
-        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-dm-muted">
-          {members.length} node{members.length === 1 ? "" : "s"} · mesh graph
+        <h3 className="text-sm font-semibold text-dm-text">Everyone here</h3>
+        <p className="mt-2 text-xs text-dm-muted">
+          {members.length} teammate{members.length === 1 ? "" : "s"} on this lease.
         </p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => (
             <li key={m.userId}>
-              <article className="group flex gap-4 border-[3px] border-dm-border-strong bg-dm-surface p-5 shadow-[4px_4px_0_0_var(--dm-electric)] transition hover:-translate-y-px">
+              <article className="flex gap-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/65 p-5 shadow-md shadow-black/[0.035] backdrop-blur-sm transition hover:bg-dm-surface">
                 <div className="relative shrink-0">
                   {m.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element -- Supabase CDN
                     <img
                       src={m.avatarUrl}
                       alt=""
-                      className="h-14 w-14 rounded-none border-[3px] border-dm-electric object-cover"
+                      className="h-14 w-14 rounded-2xl object-cover ring-1 ring-[var(--dm-border)]"
                     />
                   ) : (
                     <div
-                      className="flex h-14 w-14 items-center justify-center rounded-none border-[3px] border-dm-electric bg-dm-accent font-mono text-sm font-black text-dm-accent-ink"
+                      className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--dm-accent-soft)] text-sm font-semibold text-dm-accent-ink"
                       aria-hidden
                     >
                       {labelForMember(m).slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   {m.userId === currentUserId ? (
-                    <span className="absolute -bottom-1 -right-1 border-[2px] border-dm-border-strong bg-dm-electric px-1.5 py-0.5 font-mono text-[8px] font-black uppercase text-white">
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-dm-electric px-2 py-0.5 text-[10px] font-semibold uppercase text-white shadow-sm">
                       You
                     </span>
                   ) : null}
@@ -143,12 +139,12 @@ export function HouseholdMembersPanel({
                   <p className="truncate font-semibold text-dm-text">
                     {labelForMember(m)}
                   </p>
-                  <p className="mt-2 text-[11px] font-mono capitalize text-dm-muted">
-                    <span className="inline-flex border-[2px] border-dm-muted/40 px-2 py-0.5 font-semibold uppercase text-dm-muted">
+                  <p className="mt-2 text-[13px] text-dm-muted capitalize">
+                    <span className="rounded-full bg-dm-bg px-2 py-0.5 text-xs font-medium">
                       {m.role}
                     </span>
-                    <span className="mx-2 opacity-40">/</span>
-                    Joined {formatJoined(m.joinedAt)}
+                    <span className="mx-2 opacity-35">·</span>
+                    joined {formatJoined(m.joinedAt)}
                   </p>
                 </div>
               </article>

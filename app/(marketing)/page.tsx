@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: {
-    default: "DormMate · Dorm finance OS",
+    default: "DormMate — Shared costs, quieter chats",
     template: "%s · DormMate",
   },
   description:
-    "Mobile-first roommate ledger — receipts, AI scan lane, submarine dark mode.",
+    "Household receipts and balances tuned for shared flats — readable on the phone between classes.",
 };
 
 export default async function Home() {
@@ -26,92 +26,63 @@ export default async function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <section className="relative border-b-[3px] border-dm-electric">
-        <div className="mx-auto grid max-w-7xl gap-0 lg:min-h-[min(640px,calc(100vh-10rem))] lg:grid-cols-[1fr,44%]">
-          <div className="relative flex flex-col justify-center overflow-hidden px-6 py-16 sm:px-12 lg:border-r-[3px] lg:border-dm-electric lg:py-24">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-[0.07]"
-              style={{
-                backgroundImage: `linear-gradient(135deg, var(--dm-electric) 12px, transparent 12px)`,
-                backgroundSize: "24px 24px",
-              }}
-            />
-            <div className="relative border-[3px] border-dm-border-strong bg-dm-surface p-8 shadow-[8px_8px_0_0_var(--dm-electric)] sm:p-12">
-              <p className="font-mono text-[10px] font-black uppercase tracking-[0.3em] text-dm-muted">
-                Clean brutal · Receipt AI
-              </p>
-              <h1 className="mt-6 max-w-lg text-pretty font-sans text-4xl font-black uppercase leading-[0.95] tracking-tighter text-dm-text sm:text-5xl">
-                Electricity for shared money.
-              </h1>
-              <p className="mt-8 max-w-md text-[15px] font-medium leading-relaxed text-dm-muted">
-                Neon mint hits when you nail a split. Navy holds your night-shift
-                focus. Receipt scan is the gravitational center — everything else orbits clarity.
-              </p>
-              <div className="mt-12 flex flex-wrap gap-4">
-                {userLoggedIn ? (
+      <section className="relative">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:grid lg:grid-cols-[1fr,0.92fr] lg:items-center lg:gap-14 lg:py-28">
+          <div>
+            <p className="text-xs font-medium tracking-wide text-dm-muted">
+              Housemates · Receipts · Clarity
+            </p>
+            <h1 className="mt-5 max-w-[18ch] text-balance text-[2.65rem] font-semibold leading-[1.05] tracking-tight text-dm-text sm:text-[3.35rem]">
+              Money stays fair without the spreadsheet vibes.
+            </h1>
+            <p className="mt-6 max-w-md text-[17px] leading-relaxed text-dm-muted">
+              Scan slips, surface what matters, and stop replaying „who bought
+              what“ in your head — built for cramped kitchens and slim budgets.
+            </p>
+            <div className="mt-11 flex flex-wrap items-center gap-4">
+              {userLoggedIn ? (
+                <Link
+                  href="/dashboard"
+                  className="rounded-full bg-[var(--dm-accent)] px-8 py-3.5 text-sm font-semibold text-[var(--dm-accent-ink)] shadow-lg shadow-black/10 transition hover:brightness-105 active:scale-[0.99]"
+                >
+                  Open Pulse
+                </Link>
+              ) : (
+                <>
                   <Link
-                    href="/dashboard"
-                    className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-dm-accent-ink shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px"
+                    href="/signup"
+                    className="rounded-full bg-dm-electric px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-black/15 transition hover:brightness-110 active:scale-[0.99]"
                   >
-                    Open pulse
+                    Get started
                   </Link>
-                ) : (
-                  <>
-                    <Link
-                      href="/signup"
-                      className="rounded-none border-[3px] border-dm-electric bg-dm-electric px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-white shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:bg-dm-electric-glow"
-                    >
-                      Create account
-                    </Link>
-                    <Link
-                      href="/login"
-                      className="rounded-none border-[3px] border-dm-border-strong bg-dm-surface px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-dm-text shadow-[5px_5px_0_0_var(--dm-electric)] transition hover:bg-dm-elevated"
-                    >
-                      Log in
-                    </Link>
-                  </>
-                )}
-              </div>
+                  <Link
+                    href="/login"
+                    className="rounded-full border border-[var(--dm-border-strong)] bg-dm-surface/75 px-7 py-3.5 text-sm font-semibold text-dm-text backdrop-blur-sm transition hover:border-dm-electric/50 hover:bg-dm-surface"
+                  >
+                    Log in
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col justify-center px-6 py-14 lg:px-12">
-            <div className="space-y-6 font-mono text-xs font-bold uppercase tracking-widest text-dm-muted">
-              <div className="flex items-start gap-4 border-[3px] border-dm-electric bg-dm-bg p-5 shadow-[6px_6px_0_0_var(--dm-border-strong)]">
-                <span className="text-lg" aria-hidden>
-                  ⚡
-                </span>
-                <div>
-                  <p className="text-dm-text">Electric truth layer</p>
-                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
-                    Live receipt reads · settlement graph incoming
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4 border-[3px] border-dm-muted/40 bg-dm-surface p-5">
-                <span className="text-lg" aria-hidden>
-                  ◆
-                </span>
-                <div>
-                  <p className="text-dm-text">Submarine OLED dark</p>
-                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
-                    Auto night stack for ramen-hour accounting
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4 border-[3px] border-dm-accent bg-dm-accent/10 p-5">
-                <span className="text-lg text-dm-accent-ink" aria-hidden>
-                  ✚
-                </span>
-                <div>
-                  <p className="text-dm-text">Mint only for kinetic wins</p>
-                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
-                    Pays / confirmations / triumphant settles
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="mt-14 space-y-4 lg:mt-0">
+            <figure className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/70 p-6 shadow-xl shadow-black/[0.04] backdrop-blur-md sm:p-8">
+              <figcaption className="text-xs font-semibold text-dm-electric">
+                Receipt intelligence
+              </figcaption>
+              <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
+                Model reads totals and merchants so nobody re-keys smudgy paper tapes at midnight.
+              </p>
+            </figure>
+            <figure className="rounded-3xl border border-[var(--dm-border)] bg-dm-surface/55 p-6 backdrop-blur-sm sm:p-8">
+              <figcaption className="text-xs font-semibold text-dm-text">
+                Night mode that doesn’t yell
+              </figcaption>
+              <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
+                Deep navy when your OS prefers dark — less glare reviewing rent splits.
+              </p>
+            </figure>
           </div>
         </div>
       </section>

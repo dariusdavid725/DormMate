@@ -13,7 +13,7 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto border-b-[3px] border-dm-electric bg-dm-surface px-4 py-3 lg:hidden">
+    <div className="flex gap-2 overflow-x-auto border-b border-[var(--dm-border-strong)] bg-dm-surface/70 px-4 py-2.5 backdrop-blur-md lg:hidden">
       {households.map((h) => {
         const href = `/dashboard/household/${h.id}`;
         const active =
@@ -24,10 +24,10 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
             href={href}
             prefetch
             className={[
-              "shrink-0 border-[3px] px-3 py-2 font-mono text-[11px] font-bold uppercase tracking-wide transition",
+              "shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition",
               active
-                ? "border-dm-electric bg-dm-electric font-black text-white shadow-[3px_3px_0_0_var(--dm-border-strong)]"
-                : "border-dm-muted/35 bg-dm-bg text-dm-muted hover:border-dm-electric hover:text-dm-text",
+                ? "bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border-strong)]"
+                : "text-dm-muted hover:bg-dm-bg hover:text-dm-text",
             ].join(" ")}
           >
             {h.name}

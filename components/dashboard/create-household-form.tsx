@@ -24,7 +24,7 @@ export function CreateHouseholdForm({
       {state?.error && (
         <div
           role="alert"
-          className="border-[3px] border-dm-danger bg-dm-elevated px-3 py-2 text-sm font-medium text-dm-danger"
+          className="rounded-xl border border-dm-danger/30 bg-red-500/[0.06] px-3 py-2 text-sm font-medium text-dm-danger"
         >
           {state.error}
         </div>
@@ -32,9 +32,9 @@ export function CreateHouseholdForm({
       <div>
         <label
           htmlFor="household-name"
-          className="mb-1.5 block font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted"
+          className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-dm-muted"
         >
-          Household name
+          Name
         </label>
         <input
           id="household-name"
@@ -42,16 +42,16 @@ export function CreateHouseholdForm({
           type="text"
           required
           maxLength={120}
-          placeholder="Flat 09 · Linden"
-          className="w-full rounded-none border-[3px] border-dm-border-strong bg-dm-bg px-3 py-2.5 text-sm font-medium text-dm-text outline-none ring-0 placeholder:text-dm-muted focus:border-dm-electric"
+          placeholder="e.g. Flat 12 · Tower B"
+          className="w-full rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-3 py-2.5 text-sm text-dm-text outline-none ring-dm-electric/25 transition placeholder:text-dm-muted/70 focus:border-dm-electric focus:ring-2"
         />
       </div>
       <button
         type="submit"
         disabled={pending}
-        className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-widest text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px disabled:opacity-60"
+        className="w-full rounded-full bg-dm-electric px-4 py-3 text-sm font-semibold text-white shadow-md shadow-black/10 transition hover:brightness-105 disabled:opacity-55 sm:w-auto sm:min-w-[9rem]"
       >
-        {pending ? "Staging…" : "Commit dorm"}
+        {pending ? "Saving…" : "Create"}
       </button>
     </form>
   );

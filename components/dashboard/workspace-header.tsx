@@ -16,43 +16,40 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
     : "?";
 
   return (
-    <header className="sticky top-0 z-40 border-b-[3px] border-dm-electric bg-dm-surface/90 backdrop-blur-md">
-      <div className="flex h-[3.25rem] items-center justify-between gap-4 px-4 lg:px-8">
-        <div className="flex min-w-0 items-center gap-3">
+    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/85 backdrop-blur-xl">
+      <div className="flex h-[3.35rem] items-center justify-between gap-4 px-4 lg:px-8">
+        <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="border-[3px] border-dm-electric px-3 py-1 font-mono text-[13px] font-black uppercase tracking-wide text-dm-text shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+            className="text-[17px] font-semibold tracking-tight text-dm-text transition hover:text-dm-electric"
           >
             DormMate
           </Link>
-          <span className="hidden h-6 w-[3px] bg-dm-electric/40 sm:block" aria-hidden />
           <Link
             href="/"
-            className="hidden text-[10px] font-black uppercase tracking-widest text-dm-muted transition hover:text-dm-electric sm:inline"
+            className="hidden text-sm font-medium text-dm-muted transition hover:text-dm-electric sm:inline"
           >
-            WWW
+            Site
           </Link>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           {showAdmin ? (
             <Link
               href="/dashboard/admin"
-              className="border-[3px] border-transparent px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-dm-accent transition hover:border-dm-accent"
+              className="rounded-full px-3 py-1.5 text-xs font-semibold text-dm-electric transition hover:bg-[var(--dm-accent-soft)]"
             >
               Admin
             </Link>
           ) : null}
-          <div className="hidden items-center gap-2 sm:flex">
-            <span
-              title={email}
-              className="max-w-[11rem] truncate font-mono text-[10px] font-medium uppercase tracking-wide text-dm-muted"
-            >
-              {email}
-            </span>
-          </div>
+          <span
+            title={email}
+            className="hidden max-w-[12rem] truncate text-xs text-dm-muted lg:inline"
+          >
+            {email}
+          </span>
           <div
-            className="flex h-9 w-9 items-center justify-center border-[3px] border-dm-electric bg-dm-accent font-mono text-[11px] font-black uppercase text-dm-accent-ink"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-dm-accent/85 to-teal-500/60 text-[11px] font-semibold text-dm-accent-ink shadow-inner shadow-black/5"
             aria-hidden
           >
             {initials}
@@ -60,9 +57,9 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
           <form action={signOut}>
             <button
               type="submit"
-              className="border-[3px] border-dm-border-strong bg-dm-bg px-3 py-1.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-text shadow-[3px_3px_0_0_var(--dm-electric)] transition hover:bg-dm-surface"
+              className="rounded-full border border-[var(--dm-border-strong)] px-4 py-1.5 text-xs font-semibold text-dm-muted transition hover:border-dm-muted hover:text-dm-text"
             >
-              Exit
+              Sign out
             </button>
           </form>
         </div>

@@ -21,45 +21,38 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-10 pb-[7rem] lg:pb-10">
-      <header className="border-b-[3px] border-dm-electric pb-6">
-        <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-dm-muted">
-          cockpit meta
+      <header className="border-b border-[var(--dm-border-strong)] pb-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
+          Account
         </p>
-        <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text">
-          Settings
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
+          You
         </h1>
       </header>
 
-      <section className="border-[3px] border-dm-border-strong bg-dm-surface p-6 shadow-[5px_5px_0_0_var(--dm-electric)]">
-        <p className="font-mono text-[10px] font-black uppercase text-dm-muted">
+      <section className="rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md">
+        <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
           Signed in
         </p>
-        <p className="mt-3 break-all font-mono text-sm font-semibold text-dm-text">
+        <p className="mt-3 break-all text-sm font-medium text-dm-text">
           {user.email}
         </p>
-        <p className="mt-4 text-xs text-dm-muted">
-          Appearance follows your OS lighting — bleumarin night mode activates
-          automatically for OLED dorms.
+        <p className="mt-5 text-sm leading-relaxed text-dm-muted">
+          Theme follows OS lighting — submarine navy after dark saves retinas reviewing rent math.
         </p>
       </section>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-3">
         <Link
           href="/dashboard"
-          className="border-[3px] border-dm-electric px-6 py-3 font-mono text-[11px] font-black uppercase tracking-widest text-dm-electric shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+          className="rounded-full bg-dm-electric px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-110"
         >
           Pulse
         </Link>
-        <Link
-          href="/privacy"
-          className="border-[3px] border-transparent px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wide text-dm-muted underline"
-        >
+        <Link href="/privacy" className="rounded-full px-4 py-2.5 text-sm font-medium text-dm-muted hover:text-dm-electric">
           Privacy
         </Link>
-        <Link
-          href="/terms"
-          className="border-[3px] border-transparent px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-wide text-dm-muted underline"
-        >
+        <Link href="/terms" className="rounded-full px-4 py-2.5 text-sm font-medium text-dm-muted hover:text-dm-electric">
           Terms
         </Link>
       </div>

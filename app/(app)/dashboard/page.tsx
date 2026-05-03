@@ -64,17 +64,17 @@ export default async function DashboardOverviewPage() {
   const ringTotal = households.length > 0 ? 4 : 1;
   const ringSubtitle =
     households.length === 0
-      ? "No dorm anchored yet"
-      : `${households.length} space${households.length === 1 ? "" : "s"} · presence AI soon`;
+      ? "add a dorm first"
+      : `${households.length} household${households.length === 1 ? "" : "s"} linked`;
 
   return (
     <div className="mx-auto w-full max-w-lg pb-[7.5rem] lg:max-w-6xl lg:pb-10">
       <div className="flex flex-wrap items-center justify-between gap-4 lg:max-w-none">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
-            The State of the Dorm
+          <p className="text-xs font-medium uppercase tracking-wider text-dm-muted">
+            Today in your dorm
           </p>
-          <h1 className="mt-1 text-2xl font-black uppercase tracking-tight text-dm-text">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text">
             Pulse
           </h1>
         </div>
@@ -88,41 +88,45 @@ export default async function DashboardOverviewPage() {
       {error ? (
         <div
           role="alert"
-          className="mt-8 border-[3px] border-dm-danger bg-dm-surface px-4 py-3 text-sm text-dm-danger"
+          className="mt-8 rounded-2xl border border-dm-danger/35 bg-red-500/[0.06] px-4 py-3 text-sm text-dm-danger"
         >
-          <p className="font-bold">Household sync failed</p>
+          <p className="font-semibold">Couldn&apos;t sync households</p>
           <p className="mt-1 opacity-90">
             {shouldExposeSupabaseError() ? error : PUBLIC_TRY_AGAIN}
           </p>
         </div>
       ) : null}
 
-      <div className="mt-10 flex flex-col gap-12 xl:flex-row xl:gap-14">
-        <div className="min-w-0 flex-1 space-y-12">
+      <div className="mt-10 flex flex-col gap-14 xl:flex-row xl:gap-16">
+        <div className="min-w-0 flex-1 space-y-14">
           <section
             aria-labelledby="pulse-money"
-            className="rounded-none border-[3px] border-dm-electric bg-dm-surface p-6 shadow-[6px_6px_0_0_var(--dm-border-strong)] lg:p-10"
+            className="relative overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-gradient-to-b from-dm-surface to-dm-surface/45 p-6 shadow-xl shadow-black/[0.035] lg:p-10"
           >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[var(--dm-electric-glow)] blur-3xl"
+            />
             <p
               id="pulse-money"
-              className="text-[10px] font-black uppercase tracking-[0.28em] text-dm-muted"
+              className="relative text-xs font-semibold uppercase tracking-wider text-dm-muted"
             >
-              The pulse · ledger preview
+              Balance preview
             </p>
-            <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="relative mt-8 flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-dm-muted">
+                <p className="text-sm font-medium text-dm-muted">
                   You are owed
                 </p>
-                <p className="mt-2 font-mono text-[clamp(2.75rem,8vw,3.75rem)] font-semibold tabular-nums tracking-tighter text-[var(--dm-accent)]">
+                <p className="mt-2 font-mono text-[clamp(2.5rem,8vw,3.55rem)] font-semibold tracking-tighter text-[var(--dm-accent)] tabular-nums">
                   {owedPreview}
                 </p>
-                <p className="mt-2 max-w-[20rem] text-xs font-medium leading-snug text-dm-muted">
-                  Receipt intelligence lands in your feed · split arithmetic unlocks in
-                  Pro. Owed states trend green · owe states bleed red here.
+                <p className="mt-3 max-w-[22rem] text-sm leading-relaxed text-dm-muted">
+                  Receipts sync into the feed. When attribution ships, owes flip
+                  to calmer reds here — owed states stay mint-forward.
                 </p>
               </div>
-              <div className="flex flex-col gap-4 lg:items-end">
+              <div className="flex flex-col items-stretch gap-4 lg:max-w-[15rem]">
                 <ContextualActionChip
                   householdsCount={households.length}
                   receiptsCountAllTime={realReceiptCount}
@@ -133,7 +137,7 @@ export default async function DashboardOverviewPage() {
                 {scanHref ? (
                   <Link
                     href={scanHref}
-                    className="inline-flex w-full justify-center rounded-none border-[3px] border-dm-accent bg-dm-accent px-8 py-4 text-center font-mono text-sm font-black uppercase tracking-wide text-dm-accent-ink shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px sm:w-auto lg:min-w-[14rem]"
+                    className="inline-flex justify-center rounded-full bg-[var(--dm-accent)] px-8 py-3.5 text-center text-sm font-semibold text-[var(--dm-accent-ink)] shadow-lg shadow-teal-900/10 transition hover:brightness-105 active:scale-[0.99]"
                   >
                     Scan receipt · AI
                   </Link>
@@ -141,9 +145,9 @@ export default async function DashboardOverviewPage() {
                   <button
                     type="button"
                     disabled
-                    className="rounded-none border-[3px] border-dm-muted px-8 py-4 text-center font-mono text-sm font-black uppercase tracking-wide text-dm-muted opacity-60"
+                    className="rounded-full border border-[var(--dm-border-strong)] px-8 py-3.5 text-center text-sm font-medium text-dm-muted/70"
                   >
-                    Anchor a dorm first
+                    Pick a dorm to scan into
                   </button>
                 )}
               </div>
@@ -151,58 +155,58 @@ export default async function DashboardOverviewPage() {
           </section>
 
           <section aria-labelledby="activity-feed">
-            <div className="flex flex-wrap items-end justify-between gap-3 border-b-[3px] border-dm-electric pb-4">
+            <div className="flex flex-wrap items-end justify-between gap-3 pb-5">
               <div>
                 <h2
                   id="activity-feed"
-                  className="font-mono text-sm font-black uppercase tracking-[0.2em] text-dm-electric"
+                  className="text-lg font-semibold tracking-tight text-dm-text"
                 >
-                  The Feed
+                  Activity
                 </h2>
-                <p className="mt-1 text-xs font-medium text-dm-muted">
-                  Chronological dorm signal — receipts + roadmap teasers.
+                <p className="mt-1 text-sm text-dm-muted">
+                  Latest receipts mixed with roadmap notes.
                 </p>
               </div>
               {feedErr ? (
-                <span className="text-[11px] font-bold uppercase tracking-wide text-dm-danger">
-                  Feed degraded
+                <span className="rounded-full bg-dm-danger/10 px-3 py-1 text-xs font-semibold text-dm-danger">
+                  Feed partial
                 </span>
               ) : null}
             </div>
-            <div className="mt-6">
-              <DashboardFeed receipts={receiptFeed} />
-            </div>
+            <DashboardFeed receipts={receiptFeed} />
           </section>
         </div>
 
-        <aside className="w-full shrink-0 space-y-6 xl:w-[min(100%,22rem)]">
+        <aside className="w-full shrink-0 space-y-6 xl:w-[min(100%,21rem)]">
           <div
             id="create-household"
-            className="scroll-mt-28 border-[3px] border-dm-border-strong bg-dm-surface p-6 shadow-[5px_5px_0_0_var(--dm-electric)] lg:p-8"
+            className="scroll-mt-28 rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/72 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-md lg:p-8"
           >
-            <h3 className="font-mono text-xs font-black uppercase tracking-[0.22em] text-dm-muted">
-              New dorm slug
+            <h3 className="text-sm font-semibold text-dm-text">
+              Create a household
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-dm-muted">
-              Brutal naming. Shared cockpit for AI receipts, inventories, chores.
+              One cockpit for groceries, slips, chores — teammates join when invites land.
             </p>
             <CreateHouseholdForm className="mt-5 space-y-4" />
           </div>
 
           {households.length > 0 ? (
-            <div className="border-[3px] border-dm-electric/35 bg-dm-elevated/80 p-5">
-              <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
-                Jump · spaces
+            <div className="rounded-3xl border border-[var(--dm-border)] bg-dm-surface/50 p-5 backdrop-blur-sm">
+              <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
+                Your spaces
               </p>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-4 space-y-2">
                 {households.map((h) => (
                   <li key={h.id}>
                     <Link
                       href={`/dashboard/household/${h.id}`}
-                      className="flex items-center justify-between gap-4 border-[3px] border-dm-surface bg-dm-surface px-4 py-3 font-semibold shadow-[4px_4px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px hover:border-dm-electric"
+                      className="flex items-center justify-between gap-4 rounded-xl border border-transparent px-4 py-3 transition hover:border-[var(--dm-border-strong)] hover:bg-dm-surface"
                     >
-                      <span className="truncate text-sm text-dm-text">{h.name}</span>
-                      <span className="shrink-0 bg-dm-accent px-2 py-1 font-mono text-[10px] font-black uppercase text-dm-accent-ink">
+                      <span className="truncate font-medium text-dm-text">
+                        {h.name}
+                      </span>
+                      <span className="shrink-0 rounded-full bg-[var(--dm-accent-soft)] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-dm-accent-ink">
                         {h.role}
                       </span>
                     </Link>
