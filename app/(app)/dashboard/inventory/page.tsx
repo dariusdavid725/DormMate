@@ -21,16 +21,16 @@ export default async function InventoryPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-7 pb-24 lg:pb-9">
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Groceries
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+        <h1 className="font-cozy-display text-[2.35rem] text-dm-text leading-[1.1]">
+          Pantry list (soon)
         </h1>
-        <p className="mt-1 text-[13px] text-dm-muted">
-          Coming after receipts stabilize.
+        <p className="mt-2 text-[13px] text-dm-muted">
+          Will hook into receipts when the slips stack is steady.
         </p>
       </header>
 
-      <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
+      <div className="cozy-note cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-note)]">
         <p className="text-sm font-medium text-dm-text">Not available yet</p>
         <p className="mt-2 text-[13px] text-dm-muted">
           Inventory will tie into receipt data later.

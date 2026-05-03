@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
-      <h1 className="text-[2rem] font-black tracking-tight text-dm-text">
-        Terms of use
+      <h1 className="font-cozy-display text-[2.85rem] leading-[1.1] text-dm-text">
+        House rules (terms)
       </h1>
       <p className="mt-6 text-sm leading-relaxed text-dm-muted">
         DormMate is provided “as is” during early access. Availability and features may

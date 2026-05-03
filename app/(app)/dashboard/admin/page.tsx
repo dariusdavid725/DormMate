@@ -62,26 +62,34 @@ export default async function AdminDashboardPage() {
         <span className="text-dm-text">Admin</span>
       </nav>
 
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Admin
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+        <h1 className="font-cozy-display text-[2.5rem] text-dm-text leading-[1.1]">
+          Building superintendent
         </h1>
-        <p className="mt-1 text-[13px] text-dm-muted">
-          Read-only counts and recent households.
+        <p className="mt-2 text-[13px] text-dm-muted">
+          Read-only tally board — households, profiles, slips.
         </p>
       </header>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
-          { label: "Households", value: householdCount ?? 0 },
-          { label: "Profiles", value: profileCount ?? 0 },
-          { label: "Receipts", value: receiptCount ?? 0 },
+          { label: "Households", value: householdCount ?? 0, tilt: "cozy-tilt-xs" },
+          {
+            label: "Profiles",
+            value: profileCount ?? 0,
+            tilt: "cozy-tilt-xs-alt",
+          },
+          {
+            label: "Receipts",
+            value: receiptCount ?? 0,
+            tilt: "cozy-tilt-xs",
+          },
         ].map((card) => (
           <div
             key={card.label}
-            className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-4"
+            className={`dm-card-surface ${card.tilt} px-4 py-4`}
           >
-            <p className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
               {card.label}
             </p>
             <p className="mt-2 font-mono text-2xl font-semibold tabular-nums text-dm-text">
@@ -92,10 +100,10 @@ export default async function AdminDashboardPage() {
       </div>
 
       <section className="mt-12">
-        <h2 className="text-lg font-semibold text-dm-text">
-          Recent households
+        <h2 className="font-cozy-display text-2xl text-dm-text">
+          Recent arrivals
         </h2>
-        <div className="mt-6 overflow-hidden rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface">
+        <div className="cozy-receipt cozy-tilt-xs mt-6 overflow-hidden rounded-[2px]">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg/60 text-xs font-semibold uppercase tracking-wide text-dm-muted">
               <tr>

@@ -35,14 +35,12 @@ export default async function DashboardTasksPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 pb-24 lg:max-w-[56rem] lg:pb-10">
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Tasks
-        </h1>
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+        <h1 className="font-cozy-display text-4xl text-dm-text">Task stack</h1>
         <p className="mt-1 text-[13px] text-dm-muted">
-          Shared chores and points.&nbsp;
-          <Link href="/dashboard" className="text-dm-electric hover:underline">
-            Home
+          Sticky notes for the flat.&nbsp;
+          <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
+            Board
           </Link>
         </p>
       </header>
@@ -70,12 +68,12 @@ export default async function DashboardTasksPage() {
 
       <section className="grid gap-8 lg:grid-cols-[1fr,minmax(280px,380px)]">
         <div className="space-y-2">
-          <h2 className="text-[13px] font-medium text-dm-muted">Open</h2>
+          <h2 className="font-cozy-display text-xl text-dm-muted">Open stickies</h2>
           <HouseholdTaskList tasks={tasks} />
         </div>
 
-        <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
-          <h2 className="text-sm font-medium text-dm-text">New task</h2>
+        <div className="cozy-poster cozy-tilt-xs-alt p-5">
+          <h2 className="font-cozy-display text-2xl text-dm-text">New sticky</h2>
           <p className="mt-1 text-[13px] text-dm-muted">
             Title, points, optional note.
           </p>

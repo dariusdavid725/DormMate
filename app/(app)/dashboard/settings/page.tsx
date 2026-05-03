@@ -21,19 +21,19 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-9 pb-24 lg:pb-9">
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Settings
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+        <h1 className="font-cozy-display text-[2.35rem] text-dm-text leading-[1.1]">
+          Your nook
         </h1>
       </header>
 
-      <section className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
-        <p className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
+      <section className="dm-card-surface cozy-tilt-xs-alt p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
           Account
         </p>
-        <p className="mt-4 break-all text-sm font-bold text-dm-text">{user.email}</p>
+        <p className="mt-4 break-all text-sm font-semibold text-dm-text">{user.email}</p>
         <p className="mt-4 text-[13px] text-dm-muted">
-          Uses a calm dark theme.
+          Warm corkboard aesthetic — readable type, cozy colors.
         </p>
       </section>
 

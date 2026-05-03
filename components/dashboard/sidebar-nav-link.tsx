@@ -20,16 +20,16 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
     <Link
       href={href}
       className={[
-        "flex rounded-lg px-2.5 py-2 text-[14px] transition-colors duration-150",
+        "rounded-md px-2.5 py-2 text-[14px] transition-all duration-200",
         active
-          ? "border-l-2 border-dm-electric bg-[color-mix(in_srgb,var(--dm-electric)_8%,transparent)] font-medium text-dm-text"
-          : "border-l-2 border-transparent text-dm-muted hover:bg-dm-surface hover:text-dm-text",
+          ? "border border-[rgba(90,122,95,0.35)] bg-dm-surface font-semibold text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
+          : "border border-transparent text-dm-muted hover:border-dashed hover:border-[var(--dm-border-strong)] hover:bg-dm-surface/80 hover:text-dm-text",
       ].join(" ")}
     >
-      <div className="min-w-0 flex-1 pl-1">
+      <div className="min-w-0">
         <span className="block truncate">{title}</span>
         {hint ? (
-          <span className="mt-0.5 block truncate text-[11px] text-dm-muted">
+          <span className="mt-0.5 block truncate text-[11px] font-normal opacity-85">
             {hint}
           </span>
         ) : null}

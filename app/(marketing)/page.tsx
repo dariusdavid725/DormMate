@@ -28,45 +28,44 @@ export default async function Home() {
     <div className="flex flex-1 flex-col">
       <section className="relative">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:grid lg:grid-cols-[1.05fr,0.92fr] lg:items-start lg:gap-16 lg:py-24">
-          <div className="border-l-[3px] border-dm-electric pl-6 sm:pl-7">
-            <p className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-              For shared flats
+          <div className="border-l-4 border-dm-electric pl-6 sm:pl-7">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+              Shared flats & dorms
             </p>
-            <h1 className="mt-5 max-w-[20ch] text-balance text-[2.65rem] font-bold leading-[1.08] tracking-tight text-dm-text sm:text-[3.05rem]">
-              One room: chores earn rewards, receipts keep cash honest.
+            <h1 className="font-cozy-display mt-4 max-w-[18ch] text-balance text-[3.1rem] leading-[1.05] text-dm-text sm:text-[3.6rem]">
+              The household corkboard.
             </h1>
-            <p className="mt-6 max-w-md text-[17px] leading-relaxed text-dm-muted">
-              No more infinite &ldquo;who took out the trash?&rdquo; or chasing who
-              fronted Tesco. Track chores with points that your crew defines, stash
-              receipts in one ledger, graduate to splits when math ships.
+            <p className="mt-6 max-w-md text-[16px] leading-relaxed text-dm-muted">
+              Stick chores with points, clip receipts in one strip, and keep money talk
+              off the endless group chat.
             </p>
-            <div className="mt-11 flex flex-wrap items-center gap-3">
+            <div className="mt-10 flex flex-wrap items-center gap-3">
               {userLoggedIn ? (
                 <>
                   <Link
                     href="/dashboard"
-                    className="inline-flex rounded-md bg-dm-electric px-8 py-3 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105"
+                    className="inline-flex rounded-md bg-dm-electric px-8 py-3 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105"
                   >
-                    Open dashboard
+                    Open board
                   </Link>
                   <Link
                     href="/dashboard/tasks"
-                    className="inline-flex rounded-md border border-[var(--dm-border-strong)] px-6 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
+                    className="cozy-note cozy-hover-wiggle inline-flex rounded-[2px] px-6 py-3 text-sm font-semibold text-dm-text shadow-[var(--cozy-shadow-note)]"
                   >
-                    Tasks
+                    Task stickies
                   </Link>
                 </>
               ) : (
                 <>
                   <Link
                     href="/signup"
-                    className="inline-flex rounded-md bg-dm-electric px-8 py-3 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105"
+                    className="inline-flex rounded-md bg-dm-electric px-8 py-3 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105"
                   >
                     Get started
                   </Link>
                   <Link
                     href="/login"
-                    className="inline-flex rounded-md border border-[var(--dm-border-strong)] px-7 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
+                    className="inline-flex rounded-md border border-dashed border-[var(--dm-border-strong)] bg-dm-surface px-7 py-3 text-sm font-semibold text-dm-text hover:border-dm-electric"
                   >
                     Log in
                   </Link>
@@ -76,23 +75,22 @@ export default async function Home() {
           </div>
 
           <div className="mt-14 space-y-4 lg:mt-6">
-            <figure className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-6 sm:p-7">
-              <figcaption className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Chores you can claim
+            <figure className="cozy-note cozy-tilt-xs p-6 sm:p-7 shadow-[var(--cozy-shadow-note)]">
+              <figcaption className="text-[11px] font-bold uppercase tracking-wide text-dm-muted">
+                Chores
               </figcaption>
-              <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-                One wall everyone sees: bins, errands, cleanup. Someone finishes —
-                points land on them. Rewards are whatever your flat decides (coffee,
-                vibe, bragging rights).
+              <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
+                Yellow notes for what needs doing — claim one, earn the points your flat
+                dreams up.
               </p>
             </figure>
-            <figure className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-6 sm:p-7">
-              <figcaption className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Receipt intelligence
+            <figure className="cozy-receipt cozy-tilt-xs-alt p-6 sm:p-7">
+              <figcaption className="text-[11px] font-bold uppercase tracking-wide text-dm-muted">
+                Receipts
               </figcaption>
-              <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
-                Snap slips after the shop trip. AI pulls totals — no blurry midnight
-                retyping — so money talk stays sane.
+              <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
+                Snap the crumpled till tape. We read the total so nobody retypes with
+                cold thumbs.
               </p>
             </figure>
           </div>

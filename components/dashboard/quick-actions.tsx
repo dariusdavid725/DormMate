@@ -3,28 +3,46 @@ import Link from "next/link";
 export function DashboardQuickActions() {
   return (
     <section aria-label="Quick actions">
-      <h2 className="text-[13px] font-semibold tracking-tight text-dm-muted">
-        Quick actions
-      </h2>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="font-cozy-display text-2xl text-dm-text">
+          Tasks & money
+        </span>
+        <span
+          className="h-px flex-1 max-w-[3rem] bg-dm-border-strong"
+          aria-hidden
+        />
+      </div>
+      <p className="mb-3 text-[12px] text-dm-muted">
+        Sticky for chores · slip for spends · flyer for gatherings.
+      </p>
+      <div className="flex flex-wrap gap-3">
         <Link
           href="/dashboard/tasks"
-          className="rounded-lg bg-dm-electric px-4 py-2 text-sm font-medium text-[#081018]"
+          className={[
+            "cozy-note cozy-hover-wiggle cozy-drop-in px-5 py-3 text-sm font-semibold text-dm-text shadow-none",
+            "cozy-tilt-xs inline-block hover:brightness-[1.03]",
+          ].join(" ")}
+          style={{ animationDelay: "90ms" }}
         >
-          Add task
+          + Task sticky
         </Link>
         <Link
           href="/dashboard/finances"
-          className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-2 text-sm font-medium text-dm-text hover:border-dm-electric/50"
+          className={[
+            "cozy-receipt cozy-hover-wiggle cozy-drop-in relative inline-flex items-center px-5 py-3 text-sm font-medium text-dm-text",
+            "cozy-tilt-xs-alt hover:brightness-[1.02]",
+          ].join(" ")}
+          style={{ animationDelay: "140ms" }}
         >
-          Add expense
+          <span className="relative z-[1]">Expense slip</span>
         </Link>
         <span
-          className="cursor-not-allowed rounded-lg border border-dashed border-[var(--dm-border-strong)] px-4 py-2 text-sm font-medium text-dm-muted opacity-65"
+          className="cozy-poster cozy-tilt-xs inline-flex px-5 py-3 text-sm font-medium text-dm-muted opacity-80 cozy-drop-in"
+          style={{ animationDelay: "190ms" }}
           title="Coming later"
           aria-disabled
         >
-          Create event · soon
+          Event flyer · soon
         </span>
       </div>
     </section>

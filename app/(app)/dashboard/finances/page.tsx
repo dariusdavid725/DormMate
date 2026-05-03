@@ -24,12 +24,12 @@ export default async function FinancesPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8 pb-24 lg:pb-9">
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Finances
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+        <h1 className="font-cozy-display text-[2.35rem] text-dm-text leading-[1.1]">
+          The money envelope
         </h1>
-        <p className="mt-1 max-w-xl text-[13px] text-dm-muted">
-          Balances preview per household (splits upcoming).
+        <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
+          Balance preview per flat — splits on the roadmap.
         </p>
       </header>
 
@@ -39,7 +39,7 @@ export default async function FinancesPage() {
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface">
+      <div className="cozy-receipt cozy-tilt-xs overflow-hidden rounded-[2px]">
         <table className="min-w-full text-left text-sm">
           <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg text-[11px] font-medium uppercase tracking-wide text-dm-muted">
             <tr>

@@ -82,19 +82,19 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   }
 
   return (
-    <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
+    <div className="cozy-poster cozy-tilt-xs p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-base font-semibold text-dm-text">Scan receipt</h3>
+          <h3 className="font-cozy-display text-3xl text-dm-text">Drop a slip</h3>
           <p className="mt-1 max-w-md text-[13px] text-dm-muted">
-            Upload a photo. We extract the total for your household log.
+            Photo in — total out. We stick it on the household receipt pile.
           </p>
         </div>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={phase === "reading"}
-          className="shrink-0 rounded-md bg-dm-electric px-4 py-2 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105 disabled:pointer-events-none disabled:opacity-50"
+          className="dm-scan-hero shrink-0 rounded-md px-4 py-2 text-sm font-semibold text-[#fffaf5] hover:brightness-105 disabled:pointer-events-none disabled:opacity-50"
         >
           {phase === "reading" ? "Reading…" : "Upload image"}
         </button>
@@ -115,7 +115,7 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
       {error ? (
         <p
           role="alert"
-          className="dm-fade-in-up mt-4 rounded-2xl border border-dm-danger/40 bg-red-500/[0.08] px-4 py-3 text-sm text-dm-danger"
+          className="mt-4 rounded-md border border-dm-danger/45 bg-dm-surface px-4 py-3 text-sm text-dm-danger"
         >
           {error}
         </p>
@@ -140,9 +140,9 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
         <div
           role="status"
           aria-live="polite"
-          className="mt-4 rounded-md border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-sm text-dm-text"
+          className="cozy-note cozy-tilt-xs mt-4 px-3 py-2.5 text-sm text-dm-text shadow-[var(--cozy-shadow-note)]"
         >
-          Saved. It appears under Home · Recent activity.
+          Pinned. It shows on the board under Activity.
         </div>
       ) : null}
     </div>
@@ -178,7 +178,7 @@ function ReceiptPreview({
   return (
     <form
       action={formAction}
-      className="space-y-4 rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg p-4"
+      className="cozy-receipt space-y-4 p-4"
     >
       <input type="hidden" name="household_id" value={householdId} />
       <input type="hidden" name="filename" value={filename} />
@@ -237,7 +237,7 @@ function ReceiptPreview({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-md bg-dm-electric px-4 py-2 text-sm font-medium text-[var(--dm-accent-ink)] hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
+          className="rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
         >
           {pending ? "Saving…" : "Save to household"}
         </button>

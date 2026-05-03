@@ -60,28 +60,32 @@ export default async function DashboardOverviewPage() {
   const hasHouseholds = households.length > 0;
 
   return (
-    <div className="mx-auto w-full max-w-lg pb-24 lg:max-w-3xl lg:pb-12">
-      <header className="border-b border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-dm-text">
-          Home
+    <div className="cozy-board mx-auto w-full max-w-lg pb-24 lg:max-w-3xl lg:pb-12">
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5">
+        <h1 className="font-cozy-display text-[2.65rem] leading-none text-dm-text sm:text-5xl">
+          The dorm board
         </h1>
         {!hasHouseholds ? (
-          <p className="mt-1 text-[13px] text-dm-muted">
-            Create a household to track tasks and receipts.
+          <p className="mt-2 text-[13px] text-dm-muted">
+            Tape up a household first — then tasks and slips can stick here.
           </p>
-        ) : null}
+        ) : (
+          <p className="mt-2 text-[13px] text-dm-muted">
+            Your shared wall for today, chores, and what just happened.
+          </p>
+        )}
       </header>
 
       {error ? (
         <div
           role="alert"
-          className="mt-6 rounded-lg border border-dm-danger/30 px-4 py-3 text-sm text-dm-danger"
+          className="mt-6 rounded-md border border-dm-danger/40 bg-dm-surface px-4 py-3 text-sm text-dm-danger"
         >
           {shouldExposeSupabaseError() ? error : PUBLIC_TRY_AGAIN}
         </div>
       ) : null}
 
-      <div className="mt-6 space-y-8">
+      <div className="mt-8 space-y-10 rounded-xl border border-[rgba(107,96,84,0.15)] bg-dm-surface-mid/40 p-5 shadow-inner sm:p-6">
         <TodayStrip
           choresDue={openTasks.length}
           owedLabel={owedPreview}
@@ -92,28 +96,21 @@ export default async function DashboardOverviewPage() {
         <DashboardQuickActions />
 
         <section aria-labelledby="activity-heading">
-          <div className="mb-3 flex flex-wrap items-baseline gap-2">
-            <h2
-              id="activity-heading"
-              className="text-[13px] font-semibold text-dm-muted"
-            >
-              Recent activity
+          <div className="mb-3 flex flex-wrap items-end gap-x-3 gap-y-2">
+            <h2 id="activity-heading" className="font-cozy-display text-2xl text-dm-text">
+              Activity
             </h2>
-            <Link
-              href="/dashboard/tasks"
-              className="text-[12px] font-medium text-dm-electric hover:underline"
-            >
-              Tasks
-            </Link>
-            <Link
-              href="/dashboard/finances"
-              className="text-[12px] font-medium text-dm-electric hover:underline"
-            >
-              Money
-            </Link>
+            <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
+              <Link href="/dashboard/tasks" className="hover:underline">
+                Tasks
+              </Link>
+              <Link href="/dashboard/finances" className="hover:underline">
+                Expenses
+              </Link>
+            </div>
           </div>
           {activityErr ? (
-            <p className="mb-2 text-[12px] text-dm-danger">Activity partial.</p>
+            <p className="mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
           ) : null}
           <HouseActivityFeed items={houseActivity} />
         </section>
@@ -122,14 +119,15 @@ export default async function DashboardOverviewPage() {
       {!hasHouseholds ? (
         <section
           id="create-household"
-          className="mt-10 scroll-mt-24 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5"
+          className="cozy-poster cozy-tilt-xs mt-10 scroll-mt-24 border-dashed border-dm-muted/35 p-5 sm:p-6"
           aria-labelledby="hh-new"
         >
-          <h2 id="hh-new" className="text-sm font-medium text-dm-text">
-            New household
-          </h2>
-          <p className="mt-1 text-[13px] text-dm-muted">
-            Needed before tasks and receipts.
+          <div className="mb-3 flex items-center gap-2">
+            <span className="font-cozy-display text-3xl text-dm-text">New pad</span>
+            <span className="cozy-pin shrink-0" aria-hidden />
+          </div>
+          <p className="text-[13px] text-dm-muted">
+            One name is enough — you can pin more flats later from the hallway.
           </p>
           <CreateHouseholdForm className="mt-4 space-y-4" />
         </section>

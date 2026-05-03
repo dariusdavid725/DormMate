@@ -25,17 +25,17 @@ export default async function LoginPage({ searchParams }: Props) {
   return (
     <>
       <div className="mb-7 text-center">
-        <p className="text-[11px] font-black uppercase tracking-[0.32em] text-dm-electric">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-dm-muted">
           Lobby check-in
         </p>
-        <h1 className="mt-2 text-3xl font-black tracking-tight text-dm-text">
-          Back in your flat HQ
+        <h1 className="font-cozy-display mt-2 text-4xl tracking-tight text-dm-text sm:text-[2.75rem]">
+          Back on the corkboard
         </h1>
-        <p className="mt-2 text-sm font-medium leading-relaxed text-dm-muted">
-          Chores queued, receipts snoozed — dive back in whenever adulting pings you.
+        <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+          Stickies and receipt slips stay right where you left them.
         </p>
       </div>
-      <div className="dm-card-surface dm-fade-in-up rounded-[1.35rem] p-8 shadow-[0_30px_80px_-52px_var(--dm-electric-glow)] lg:p-10">
+      <div className="cozy-poster cozy-drop-in dm-fade-in-up p-8 shadow-[var(--cozy-shadow-paper)] lg:p-10">
         <LoginForm nextHref={nextHref} urlError={urlError} />
       </div>
       <p className="mt-7 text-center text-sm text-dm-muted">

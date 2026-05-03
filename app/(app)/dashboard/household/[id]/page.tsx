@@ -118,12 +118,12 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-5 border-b border-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] pb-7">
+      <div className="flex flex-wrap items-start justify-between gap-5 border-b border-dashed border-[var(--dm-border-strong)] pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-            Household
+            Household corkboard
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-dm-text md:text-[2rem]">
+          <h1 className="font-cozy-display mt-2 text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
             {household.name}
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
@@ -148,14 +148,14 @@ export default async function HouseholdDetailPage(props: PageProps) {
       </div>
 
       <div className="mt-7 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-0 shrink-0 gap-1 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-1">
+        <div className="flex min-w-0 shrink-0 gap-1 rounded-[3px] border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-1 shadow-[var(--cozy-shadow-paper)]">
         <Link
           href={tabBase}
           scroll={false}
           className={[
-            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
+            "rounded-sm px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "overview"
-              ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_18%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border-strong)]"
               : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
@@ -165,9 +165,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=tasks`}
           scroll={false}
           className={[
-            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
+            "rounded-sm px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "tasks"
-              ? "bg-[color-mix(in_srgb,var(--dm-electric)_16%,transparent)] font-semibold text-dm-electric ring-1 ring-[var(--dm-border)]"
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_18%,transparent)] font-semibold text-dm-electric ring-1 ring-[var(--dm-border-strong)]"
               : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
@@ -177,9 +177,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=members`}
           scroll={false}
           className={[
-            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
+            "rounded-sm px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "members"
-              ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border)]"
+              ? "bg-[color-mix(in_srgb,var(--dm-electric)_18%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border-strong)]"
               : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
@@ -189,10 +189,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=receipts`}
           scroll={false}
           className={[
-            "rounded-full px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
+            "rounded-sm px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[6.75rem]",
             view === "receipts"
-              ? "bg-[var(--dm-accent-soft)] text-[var(--dm-accent-ink)] ring-1 ring-emerald-400/30"
-              : "text-dm-muted hover:text-dm-accent-ink",
+              ? "bg-dm-accent-warn-bg text-[var(--dm-accent-warn-text)] ring-1 ring-[var(--dm-border-strong)]"
+              : "text-dm-muted hover:text-dm-text",
           ].join(" ")}
         >
           Receipts
@@ -202,26 +202,26 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
       {view === "overview" ? (
         <>
-          <div className="mt-8 space-y-2">
+          <div className="mt-8 space-y-3">
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="block rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
+              className="cozy-receipt cozy-hover-wiggle block rounded-[2px] px-4 py-3 text-sm font-medium text-dm-text"
             >
-              Receipts — scan & list
+              Receipts · scan & stash
             </Link>
             <Link
               href={`${tabBase}?view=tasks`}
               scroll={false}
-              className="block rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm font-medium text-dm-text hover:border-dm-electric"
+              className="cozy-note cozy-hover-wiggle cozy-tilt-xs block rounded-[2px] px-4 py-3 text-sm font-medium text-dm-text shadow-[var(--cozy-shadow-note)]"
             >
-              Tasks — shared chores
+              Tasks · shared stickies
             </Link>
           </div>
 
-          <section className="mt-8 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5">
-            <h2 className="text-base font-semibold text-dm-text">
-              Settings
+          <section className="dm-card-surface cozy-tilt-xs-alt mt-8 p-5">
+            <h2 className="font-cozy-display text-2xl text-dm-text">
+              Flat settings
             </h2>
             <p className="mt-2 text-sm text-dm-muted">
               {canRename
@@ -252,8 +252,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </div>
           ) : (
             <>
-              <div className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5 sm:p-6">
-                <h2 className="text-sm font-medium text-dm-text">New task</h2>
+              <div className="cozy-poster cozy-tilt-xs p-5 sm:p-6">
+                <h2 className="font-cozy-display text-2xl text-dm-text">New sticky</h2>
                 <CreateHouseholdTaskForm
                   className="mt-6 space-y-4"
                   households={[{ id: household.id, name: household.name }]}
@@ -295,7 +295,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="text-sm font-medium text-dm-text">Receipts</h2>
+            <h2 className="font-cozy-display text-2xl text-dm-text">Receipt pile</h2>
             <p className="mt-1 text-[13px] text-dm-muted">
               Visible to all members of this household.
             </p>

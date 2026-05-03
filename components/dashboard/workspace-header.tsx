@@ -16,18 +16,18 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
     : "?";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/92 shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
       <div className="flex h-12 items-center justify-between gap-4 px-4 lg:h-14 lg:px-8">
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="text-[16px] font-semibold tracking-tight text-dm-text hover:text-dm-electric"
+            className="font-cozy-display text-2xl text-dm-text md:text-[1.65rem]"
           >
             DormMate
           </Link>
           <Link
             href="/"
-            className="hidden text-sm text-dm-muted hover:text-dm-text sm:inline"
+            className="hidden text-sm text-dm-muted underline decoration-dashed decoration-[var(--dm-border-strong)] underline-offset-4 hover:text-dm-text sm:inline"
           >
             About
           </Link>
@@ -37,7 +37,7 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
           {showAdmin ? (
             <Link
               href="/dashboard/admin"
-              className="rounded-md px-2.5 py-1 text-xs font-medium text-dm-electric hover:underline"
+              className="rounded-md px-2 py-1 text-xs font-semibold text-dm-electric hover:underline"
             >
               Admin
             </Link>
@@ -49,7 +49,7 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
             {email}
           </span>
           <div
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-dm-electric text-[10px] font-semibold text-[var(--dm-accent-ink)]"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[10px] font-bold uppercase text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
             aria-hidden
           >
             {initials}
@@ -57,9 +57,9 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
           <form action={signOut}>
             <button
               type="submit"
-              className="rounded-md border border-[var(--dm-border-strong)] px-3 py-1 text-xs font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
+              className="rounded-md border border-dashed border-[var(--dm-border-strong)] bg-transparent px-3 py-1 text-xs font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
             >
-              Sign out
+              Out
             </button>
           </form>
         </div>
