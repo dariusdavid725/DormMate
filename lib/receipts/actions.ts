@@ -80,5 +80,6 @@ export async function saveReceiptFromScan(
 
   const path = `/dashboard/household/${householdId}`;
   revalidatePath(path);
+  revalidatePath("/dashboard");
   return { ok: true };
 }

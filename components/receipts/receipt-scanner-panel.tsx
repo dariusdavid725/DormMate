@@ -7,6 +7,7 @@ import {
   useState,
   useActionState,
 } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   saveReceiptFromScan,
@@ -19,6 +20,7 @@ type Phase = "idle" | "reading" | "preview" | "saved";
 const saveInitial: SaveReceiptState = {};
 
 export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +32,9 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   const onScanSaved = useCallback(() => {
     setPreview(null);
     setPhase("saved");
-    setTimeout(() => setPhase("idle"), 2200);
-  }, []);
+    router.refresh();
+    window.setTimeout(() => setPhase("idle"), 3200);
+  }, [router]);
 
   async function onPickFile(file: File | undefined) {
     if (!file) return;
@@ -79,23 +82,20 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   }
 
   return (
-    <div className="rounded-3xl border border-stone-200/90 bg-gradient-to-br from-white via-amber-50/40 to-teal-50/50 p-6 shadow-sm dark:border-stone-700 dark:from-stone-900 dark:via-stone-900 dark:to-teal-950/40">
+    <div className="overflow-hidden rounded-3xl border border-[var(--dm-border-strong)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-surface)_95%,transparent),color-mix(in_srgb,var(--dm-accent)_6%,transparent))] p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-50">
-            Snap a receipt
-          </h3>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-            Take a photo under decent light — we extract totals so nobody has to
-            type rows after a grocery run. Uses OpenAI vision when configured on
-            the server.
+        <div className="min-w-0">
+          <h3 className="text-lg font-semibold text-dm-text">Snap a receipt</h3>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-dm-muted">
+            Decent light, flat-ish slip — we yank totals so nobody re-types after
+            a grocery run with cold hands.
           </p>
         </div>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={phase === "reading"}
-          className="shrink-0 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-900/15 transition hover:from-teal-500 hover:to-emerald-500 disabled:opacity-60 dark:shadow-black/40"
+          className="dm-hover-tap dm-scan-hero shrink-0 rounded-2xl bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[filter] duration-200 hover:brightness-110 disabled:pointer-events-none disabled:opacity-50"
         >
           {phase === "reading" ? "Reading…" : "Upload image"}
         </button>
@@ -116,29 +116,43 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
       {error ? (
         <p
           role="alert"
-          className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-100"
+          className="dm-fade-in-up mt-4 rounded-2xl border border-dm-danger/40 bg-red-500/[0.08] px-4 py-3 text-sm text-dm-danger"
         >
           {error}
         </p>
       ) : null}
 
       {phase === "preview" && preview ? (
-        <ReceiptPreview
-          householdId={householdId}
-          filename={preview.filename}
-          extraction={preview.extraction}
-          onCancel={() => {
-            setPreview(null);
-            setPhase("idle");
-          }}
-          onSaved={onScanSaved}
-        />
+        <div className="dm-fade-in-up mt-6">
+          <ReceiptPreview
+            householdId={householdId}
+            filename={preview.filename}
+            extraction={preview.extraction}
+            onCancel={() => {
+              setPreview(null);
+              setPhase("idle");
+            }}
+            onSaved={onScanSaved}
+          />
+        </div>
       ) : null}
 
       {phase === "saved" ? (
-        <p className="mt-4 text-sm font-medium text-teal-800 dark:text-teal-200">
-          Saved to this household — nice one.
-        </p>
+        <div
+          role="status"
+          aria-live="polite"
+          className="dm-fade-in-up mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-[color-mix(in_srgb,var(--dm-accent)_45%,var(--dm-border))] bg-[color-mix(in_srgb,var(--dm-accent)_10%,transparent)] px-4 py-3 text-sm font-medium text-dm-text"
+        >
+          <span
+            className="dm-flash-check flex h-8 w-8 items-center justify-center rounded-full bg-dm-accent text-sm font-bold text-dm-accent-ink"
+            aria-hidden
+          >
+            ✓
+          </span>
+          <span>
+            Saved — it&apos;ll show up in House activity right away on Home.
+          </span>
+        </div>
       ) : null}
     </div>
   );
@@ -171,7 +185,10 @@ function ReceiptPreview({
   }, [state, onSaved]);
 
   return (
-    <form action={formAction} className="mt-6 space-y-4 rounded-2xl border border-stone-200 bg-white/90 p-5 dark:border-stone-700 dark:bg-stone-950/80">
+    <form
+      action={formAction}
+      className="space-y-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/82 p-5 shadow-inner backdrop-blur-sm"
+    >
       <input type="hidden" name="household_id" value={householdId} />
       <input type="hidden" name="filename" value={filename} />
       <input
@@ -181,23 +198,21 @@ function ReceiptPreview({
       />
 
       {state?.error ? (
-        <p className="text-sm text-rose-700 dark:text-rose-300">{state.error}</p>
+        <p className="text-sm font-medium text-dm-danger">{state.error}</p>
       ) : null}
 
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
         <div>
-          <dt className="text-[11px] font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">
+          <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
             Merchant
           </dt>
-          <dd className="font-medium text-stone-900 dark:text-stone-100">
-            {extraction.merchant ?? "—"}
-          </dd>
+          <dd className="font-medium text-dm-text">{extraction.merchant ?? "—"}</dd>
         </div>
         <div>
-          <dt className="text-[11px] font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">
+          <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
             Total
           </dt>
-          <dd className="font-medium text-stone-900 dark:text-stone-100">
+          <dd className="font-mono font-semibold tabular-nums text-dm-accent">
             {extraction.total != null
               ? `${extraction.total.toFixed(2)} ${extraction.currency}`
               : "—"}
@@ -207,14 +222,14 @@ function ReceiptPreview({
 
       {extraction.line_items.length > 0 ? (
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
             Lines
           </p>
-          <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto text-sm text-stone-700 dark:text-stone-300">
+          <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto text-sm text-dm-muted">
             {extraction.line_items.slice(0, 12).map((li, i) => (
               <li key={`${li.name}-${i}`} className="flex justify-between gap-2">
-                <span className="min-w-0 truncate">{li.name}</span>
-                <span className="shrink-0 tabular-nums text-stone-600 dark:text-stone-400">
+                <span className="min-w-0 truncate text-dm-text">{li.name}</span>
+                <span className="shrink-0 tabular-nums">
                   {li.amount != null ? li.amount.toFixed(2) : "—"}
                 </span>
               </li>
@@ -224,23 +239,21 @@ function ReceiptPreview({
       ) : null}
 
       {extraction.notes ? (
-        <p className="text-xs text-stone-500 dark:text-stone-400">
-          {extraction.notes}
-        </p>
+        <p className="text-xs text-dm-muted">{extraction.notes}</p>
       ) : null}
 
       <div className="flex flex-wrap gap-2 pt-2">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-2xl bg-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 disabled:opacity-60"
+          className="dm-hover-tap rounded-xl bg-dm-accent px-4 py-2.5 text-sm font-semibold text-dm-accent-ink shadow-sm transition-[filter] duration-200 hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
         >
           {pending ? "Saving…" : "Save to household"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-2xl border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50 dark:border-stone-600 dark:text-stone-200 dark:hover:bg-stone-800"
+          className="dm-hover-tap rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-2.5 text-sm font-semibold text-dm-muted transition-colors duration-200 hover:border-dm-electric/40 hover:text-dm-text"
         >
           Discard
         </button>
