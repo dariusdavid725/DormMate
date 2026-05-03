@@ -53,7 +53,7 @@ export default async function Home() {
                     href="/dashboard"
                     className="inline-flex items-center border-b-2 border-[var(--dm-construct-ink)] pb-0.5 text-sm font-bold text-dm-text dark:border-white"
                   >
-                    Home overview
+                    Dashboard
                   </Link>
                 </>
               ) : (
@@ -82,11 +82,12 @@ export default async function Home() {
                 className="absolute inset-y-8 right-0 w-24 translate-x-1/3 rotate-[-18deg] bg-[var(--dm-construct-red)] opacity-20"
               />
               <figcaption className="relative text-[11px] font-black uppercase tracking-[0.25em] text-[var(--dm-construct-ink)] dark:text-white">
-                Construct lane
+                Chores on the wall
               </figcaption>
               <p className="relative mt-4 text-[15px] font-medium leading-relaxed text-[var(--dm-construct-ink)]/90 dark:text-dm-muted">
-                Yellow signal bars, vermillion CTAs, electric blue wayfinding — the UI
-                shifts register so living together never feels like one grey admin panel.
+                Everyone sees the same list: who took the bins, who stocked milk, who
+                owes a favour. Claim a task, earn the points you agreed on — no nagging
+                DMs.
               </p>
             </figure>
             <figure className="-rotate-[0.5deg] rounded-3xl border border-[var(--dm-border-strong)] bg-dm-surface/75 p-6 shadow-xl shadow-black/[0.04] backdrop-blur-md sm:p-8">

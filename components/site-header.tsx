@@ -35,7 +35,7 @@ export async function SiteHeader() {
                 href="/dashboard"
                 className="rounded-full bg-dm-electric px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:brightness-110"
               >
-                App
+                Dashboard
               </Link>
               <form action={signOut}>
                 <button

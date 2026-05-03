@@ -29,7 +29,7 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
             href="/"
             className="hidden text-sm font-medium text-dm-muted transition hover:text-dm-electric sm:inline"
           >
-            Site
+            About
           </Link>
         </div>
 
