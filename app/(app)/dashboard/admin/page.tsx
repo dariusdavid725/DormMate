@@ -53,34 +53,30 @@ export default async function AdminDashboardPage() {
     }>;
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <nav aria-label="Breadcrumb" className="mb-6 text-xs text-stone-500">
-        <ol className="flex flex-wrap items-center gap-1">
+    <div className="mx-auto w-full max-w-6xl pb-[7rem] lg:pb-10">
+      <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+        <ol className="flex flex-wrap items-center gap-2">
           <li>
-            <Link
-              href="/dashboard"
-              className="font-medium text-stone-600 underline-offset-4 hover:text-teal-800 hover:underline"
-            >
-              Overview
+            <Link href="/dashboard" className="text-dm-electric underline">
+              Pulse
             </Link>
           </li>
-          <li aria-hidden className="text-stone-300">
+          <li aria-hidden className="opacity-40">
             /
           </li>
-          <li className="font-medium text-stone-800">Platform admin</li>
+          <li className="text-dm-text">God mode</li>
         </ol>
       </nav>
 
-      <header className="border-b border-stone-200 pb-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-500">
-          Operations
+      <header className="border-b-[3px] border-dm-electric pb-8">
+        <p className="font-mono text-[10px] font-black uppercase tracking-[0.24em] text-dm-muted">
+          Operations telemetry
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900">
-          Platform overview
+        <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text">
+          Platform radar
         </h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-stone-600">
-          Read-only snapshot across households. Access is restricted to the
-          platform administrator account.
+        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-dm-muted">
+          Read-only across households · restricted JWT lane.
         </p>
       </header>
 
@@ -92,12 +88,12 @@ export default async function AdminDashboardPage() {
         ].map((card) => (
           <div
             key={card.label}
-            className="rounded-2xl border border-stone-200 bg-white px-5 py-4 shadow-sm"
+            className="border-[3px] border-dm-border-strong bg-dm-surface px-5 py-5 shadow-[5px_5px_0_0_var(--dm-electric)]"
           >
-            <p className="text-xs font-medium uppercase tracking-wide text-stone-500">
+            <p className="font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
               {card.label}
             </p>
-            <p className="mt-2 text-3xl font-semibold tabular-nums text-stone-900">
+            <p className="mt-3 font-mono text-4xl font-semibold tabular-nums tracking-tighter text-dm-text">
               {card.value}
             </p>
           </div>
@@ -105,43 +101,43 @@ export default async function AdminDashboardPage() {
       </div>
 
       <section className="mt-12">
-        <h2 className="text-lg font-semibold text-stone-900">
-          Recent households
+        <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
+          Recent households · max 20
         </h2>
-        <p className="mt-1 text-sm text-stone-500">
-          Newest first (max 20).
-        </p>
-        <div className="mt-6 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+        <div className="mt-6 overflow-hidden border-[3px] border-dm-border-strong bg-dm-surface shadow-[8px_8px_0_0_var(--dm-electric)]">
           <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-stone-100 bg-stone-50 text-[11px] font-semibold uppercase tracking-wide text-stone-500">
+            <thead className="border-b-[3px] border-dm-electric bg-dm-elevated font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
               <tr>
-                <th className="px-5 py-3">Name</th>
+                <th className="px-5 py-3">Slug</th>
                 <th className="hidden px-5 py-3 sm:table-cell">Created</th>
-                <th className="hidden px-5 py-3 lg:table-cell">Creator ID</th>
+                <th className="hidden px-5 py-3 lg:table-cell">Creator UUID</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100">
+            <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-5 py-8 text-center text-stone-500">
-                    No households yet.
+                  <td colSpan={3} className="px-5 py-10 text-center font-mono text-xs text-dm-muted">
+                    No households yet · quiet grid.
                   </td>
                 </tr>
               ) : (
                 rows.map((r) => (
-                  <tr key={r.id} className="text-stone-800">
-                    <td className="px-5 py-3">
+                  <tr
+                    key={r.id}
+                    className="border-b-[3px] border-dm-border-strong/25 last:border-b-0 text-dm-text"
+                  >
+                    <td className="px-5 py-4">
                       <Link
                         href={`/dashboard/household/${r.id}`}
-                        className="font-medium text-teal-800 underline-offset-2 hover:underline"
+                        className="font-semibold text-dm-electric underline underline-offset-2 hover:text-dm-accent"
                       >
                         {r.name}
                       </Link>
                     </td>
-                    <td className="hidden px-5 py-3 text-stone-600 sm:table-cell">
+                    <td className="hidden px-5 py-4 font-mono text-xs tabular-nums text-dm-muted sm:table-cell">
                       {formatTs(r.created_at)}
                     </td>
-                    <td className="hidden font-mono text-xs text-stone-500 lg:table-cell">
+                    <td className="hidden max-w-[12rem] truncate px-5 py-4 font-mono text-[11px] text-dm-muted lg:table-cell">
                       {r.created_by}
                     </td>
                   </tr>

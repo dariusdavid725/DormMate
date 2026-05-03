@@ -22,13 +22,13 @@ export function RenameHouseholdForm({
   );
 
   return (
-    <form action={formAction} className="mt-6 max-w-lg space-y-4">
+    <form action={formAction} className="mt-6 max-w-lg space-y-5">
       <input type="hidden" name="household_id" value={householdId} />
 
       {state?.error ? (
         <div
           role="alert"
-          className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/55 dark:text-red-200"
+          className="border-[3px] border-dm-danger bg-dm-elevated px-3 py-2 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger"
         >
           {state.error}
         </div>
@@ -37,9 +37,9 @@ export function RenameHouseholdForm({
       <div>
         <label
           htmlFor="rename-household"
-          className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400"
+          className="mb-2 block font-mono text-[10px] font-black uppercase tracking-[0.22em] text-dm-muted"
         >
-          Display name
+          Node label
         </label>
         <input
           id="rename-household"
@@ -49,16 +49,16 @@ export function RenameHouseholdForm({
           minLength={1}
           maxLength={120}
           defaultValue={initialName}
-          className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 shadow-sm outline-none ring-emerald-500/35 placeholder:text-zinc-400 focus:ring-2 dark:border-zinc-600 dark:bg-zinc-900 dark:text-white"
+          className="w-full rounded-none border-[3px] border-dm-border-strong bg-dm-bg px-3 py-2.5 text-sm font-medium text-dm-text outline-none focus:border-dm-electric"
         />
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-60"
+        className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)] disabled:opacity-60"
       >
-        {pending ? "Saving…" : "Save changes"}
+        {pending ? "Commit…" : "Commit rename"}
       </button>
     </form>
   );

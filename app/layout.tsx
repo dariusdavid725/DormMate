@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 
 import "./globals.css";
 
 import { getSiteUrl, tryGetMetadataBase } from "@/lib/site-url";
 
-const jakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -23,12 +23,11 @@ export const metadata: Metadata = {
     template: "%s · DormMate",
   },
   description:
-    "Receipts, splits, and household basics in one workspace — for roommates and shared flats.",
+    "Receipts, splits, and dorm clarity — AI-ready, mobile-first.",
   openGraph: {
     url: process.env.NEXT_PUBLIC_SITE_URL ? getSiteUrl() : undefined,
     title: "DormMate",
-    description:
-      "Receipts, splits, and household basics in one workspace.",
+    description: "Clean-tech shared housing pulse — receipts to settle-up.",
     type: "website",
   },
 };
@@ -39,8 +38,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${geistMono.variable} h-full`}>
-      <body className="flex min-h-full flex-col bg-[var(--background)] font-sans text-stone-900 antialiased">
+    <html
+      lang="en"
+      className={`${inter.variable} ${geistMono.variable} h-full`}
+    >
+      <body className="flex min-h-full flex-col bg-dm-bg font-sans antialiased">
         {children}
       </body>
     </html>

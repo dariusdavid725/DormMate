@@ -25,7 +25,7 @@ function labelForMember(m: HouseholdMemberRow) {
 
 function SubmitPending({ idle }: { idle: string }) {
   const { pending } = useFormStatus();
-  return <>{pending ? "Saving…" : idle}</>;
+  return <>{pending ? "Staging…" : idle}</>;
 }
 
 export function HouseholdMembersPanel({
@@ -45,13 +45,14 @@ export function HouseholdMembersPanel({
 
   return (
     <div className="space-y-10">
-      <section className="rounded-2xl border border-teal-200/80 bg-white p-6 shadow-sm ring-1 ring-teal-600/10">
-        <h3 className="text-sm font-semibold text-stone-900">Your profile</h3>
-        <p className="mt-1 text-xs text-stone-500">
-          Visible to people in this household. Photos use a shared album-style
-          layout — keep it casual.
+      <section className="border-[3px] border-dm-electric bg-dm-surface p-6 shadow-[6px_6px_0_0_var(--dm-border-strong)]">
+        <h3 className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-dm-muted">
+          Your cockpit ID
+        </h3>
+        <p className="mt-2 text-xs leading-relaxed text-dm-muted">
+          Visible inside this dorm only · photo stored in guarded Supabase lanes.
         </p>
-        <form action={updateProfileDisplayName} className="mt-5 flex flex-wrap gap-3">
+        <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
           <input type="hidden" name="household_id" value={householdId} />
           <label className="sr-only" htmlFor="display_name">
             Display name
@@ -61,92 +62,92 @@ export function HouseholdMembersPanel({
             name="display_name"
             type="text"
             maxLength={80}
-            placeholder="How you want to appear"
+            placeholder="Alias · dorm-safe"
             defaultValue={
               sorted.find((x) => x.userId === currentUserId)?.displayName ?? ""
             }
-            className="min-w-[12rem] flex-1 rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none ring-teal-600/0 transition placeholder:text-stone-400 focus:border-teal-300 focus:ring-2 focus:ring-teal-600/20"
+            className="min-w-[12rem] flex-1 rounded-none border-[3px] border-dm-border-strong bg-dm-bg px-3 py-2.5 font-mono text-sm text-dm-text outline-none placeholder:text-dm-muted focus:border-dm-electric"
           />
           <button
             type="submit"
-            className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-teal-800 disabled:opacity-60"
+            className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)] disabled:opacity-60"
           >
-            <SubmitPending idle="Save name" />
+            <SubmitPending idle="Commit name" />
           </button>
         </form>
 
         <form
           action={uploadProfileAvatar}
           encType="multipart/form-data"
-          className="mt-6 flex flex-wrap items-end gap-3 border-t border-stone-100 pt-6"
+          className="mt-8 flex flex-wrap items-end gap-4 border-t-[3px] border-dm-electric/30 pt-8"
         >
           <input type="hidden" name="household_id" value={householdId} />
           <div className="min-w-0 flex-1">
             <label
               htmlFor="avatar"
-              className="block text-xs font-medium text-stone-600"
+              className="block font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted"
             >
-              Profile photo
+              Telemetry portrait
             </label>
             <input
               id="avatar"
               name="avatar"
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
-              className="mt-2 block w-full max-w-xs text-xs text-stone-600 file:mr-3 file:rounded-md file:border file:border-stone-200 file:bg-stone-50 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-stone-700 hover:file:bg-stone-100"
+              className="mt-3 block w-full max-w-xs text-[11px] text-dm-muted file:mr-3 file:border-[3px] file:border-dm-electric file:bg-dm-bg file:px-3 file:py-2 file:font-mono file:text-[10px] file:font-black file:uppercase file:tracking-wide file:text-dm-text"
             />
           </div>
           <button
             type="submit"
-            className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-800 transition hover:bg-stone-50"
+            className="rounded-none border-[3px] border-dm-border-strong bg-dm-elevated px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-text shadow-[4px_4px_0_0_var(--dm-electric)]"
           >
-            <SubmitPending idle="Upload" />
+            <SubmitPending idle="Pump photo" />
           </button>
         </form>
       </section>
 
       <div>
-        <h3 className="text-sm font-semibold text-stone-900">Everyone here</h3>
-        <p className="mt-1 text-xs text-stone-500">
-          {members.length} member{members.length === 1 ? "" : "s"} in this space.
+        <h3 className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
+          Everyone here
+        </h3>
+        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-dm-muted">
+          {members.length} node{members.length === 1 ? "" : "s"} · mesh graph
         </p>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => (
             <li key={m.userId}>
-              <article className="group flex gap-4 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition duration-200 hover:border-stone-300 hover:shadow-md">
+              <article className="group flex gap-4 border-[3px] border-dm-border-strong bg-dm-surface p-5 shadow-[4px_4px_0_0_var(--dm-electric)] transition hover:-translate-y-px">
                 <div className="relative shrink-0">
                   {m.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element -- dynamic Supabase public URLs
+                    // eslint-disable-next-line @next/next/no-img-element -- Supabase CDN
                     <img
                       src={m.avatarUrl}
                       alt=""
-                      className="h-14 w-14 rounded-full object-cover shadow-sm ring-2 ring-white"
+                      className="h-14 w-14 rounded-none border-[3px] border-dm-electric object-cover"
                     />
                   ) : (
                     <div
-                      className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-800 text-sm font-semibold text-white shadow-sm"
+                      className="flex h-14 w-14 items-center justify-center rounded-none border-[3px] border-dm-electric bg-dm-accent font-mono text-sm font-black text-dm-accent-ink"
                       aria-hidden
                     >
-                      {labelForMember(m)
-                        .slice(0, 2)
-                        .toUpperCase()}
+                      {labelForMember(m).slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   {m.userId === currentUserId ? (
-                    <span className="absolute -bottom-1 -right-1 rounded-full bg-teal-600 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white shadow">
+                    <span className="absolute -bottom-1 -right-1 border-[2px] border-dm-border-strong bg-dm-electric px-1.5 py-0.5 font-mono text-[8px] font-black uppercase text-white">
                       You
                     </span>
                   ) : null}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold text-stone-900">
+                  <p className="truncate font-semibold text-dm-text">
                     {labelForMember(m)}
                   </p>
-                  <p className="mt-1 text-xs capitalize text-stone-500">
-                    <span className="inline-flex rounded-md bg-stone-100 px-2 py-0.5 font-medium text-stone-700">
+                  <p className="mt-2 text-[11px] font-mono capitalize text-dm-muted">
+                    <span className="inline-flex border-[2px] border-dm-muted/40 px-2 py-0.5 font-semibold uppercase text-dm-muted">
                       {m.role}
                     </span>
-                    <span className="mx-2 text-stone-300">·</span>
+                    <span className="mx-2 opacity-40">/</span>
                     Joined {formatJoined(m.joinedAt)}
                   </p>
                 </div>

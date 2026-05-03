@@ -95,64 +95,62 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const tabBase = `/dashboard/household/${id}`;
 
   return (
-    <div className="mx-auto w-full max-w-6xl pb-16">
-      <nav aria-label="Breadcrumb" className="mb-6 text-xs text-stone-500">
-        <ol className="flex flex-wrap items-center gap-1">
+    <div className="mx-auto w-full max-w-6xl pb-28 lg:pb-16">
+      <nav aria-label="Breadcrumb" className="mb-6 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
+        <ol className="flex flex-wrap items-center gap-2">
           <li>
             <Link
               href="/dashboard"
-              className="font-medium text-stone-600 underline-offset-4 hover:text-teal-800 hover:underline"
+              className="text-dm-electric underline underline-offset-2"
             >
-              Overview
+              Pulse
             </Link>
           </li>
-          <li aria-hidden className="text-stone-300">
+          <li aria-hidden className="opacity-40">
             /
           </li>
-          <li className="truncate font-medium text-stone-800">
-            {household.name}
-          </li>
+          <li className="truncate text-dm-text">{household.name}</li>
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-6 border-b border-stone-200 pb-8">
+      <div className="flex flex-wrap items-start justify-between gap-6 border-b-[3px] border-dm-electric pb-8">
         <div className="min-w-0 max-w-xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-teal-800">
-            Household
+          <p className="font-mono text-[10px] font-black uppercase tracking-[0.26em] text-dm-muted">
+            Dorm node
           </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900 md:text-[2rem]">
+          <h1 className="mt-2 text-3xl font-black uppercase tracking-tight text-dm-text md:text-[2rem]">
             {household.name}
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-stone-600">
-            Your role{" "}
-            <span className="font-semibold capitalize text-stone-800">
+          <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
+            Role{" "}
+            <span className="font-mono font-bold uppercase text-dm-text">
               {memberRole}
             </span>
-            . Created {formatDate(household.createdAt)}.
+            · since {formatDate(household.createdAt)}.
           </p>
         </div>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <span className="inline-flex rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-700 shadow-sm">
+        <div className="flex shrink-0 flex-wrap gap-3">
+          <span className="inline-flex items-center border-[3px] border-dm-border-strong bg-dm-surface px-3 py-1.5 font-mono text-[10px] font-black uppercase text-dm-text shadow-[3px_3px_0_0_var(--dm-electric)]">
             {households.length} space{households.length === 1 ? "" : "s"}
           </span>
           <Link
             href="/dashboard"
-            className="inline-flex rounded-full border border-stone-300 bg-transparent px-3 py-1 text-xs font-semibold text-stone-700 transition hover:bg-stone-100"
+            className="inline-flex items-center border-[3px] border-dm-muted/40 px-4 py-1.5 font-mono text-[10px] font-black uppercase tracking-wide text-dm-muted transition hover:border-dm-electric hover:text-dm-electric"
           >
-            All households
+            Pulse
           </Link>
         </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-2 border-b border-stone-200">
+      <div className="mt-8 flex flex-wrap gap-3 border-b-[3px] border-dm-border-strong/35">
         <Link
           href={tabBase}
           scroll={false}
           className={[
-            "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
+            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
             view === "overview"
-              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
-              : "text-stone-500 hover:text-stone-800",
+              ? "border-dm-electric bg-dm-electric text-white shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-electric hover:text-dm-text",
           ].join(" ")}
         >
           Overview
@@ -161,10 +159,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=members`}
           scroll={false}
           className={[
-            "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
+            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
             view === "members"
-              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
-              : "text-stone-500 hover:text-stone-800",
+              ? "border-dm-electric bg-dm-electric text-white shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-electric hover:text-dm-text",
           ].join(" ")}
         >
           Members
@@ -173,10 +171,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           href={`${tabBase}?view=receipts`}
           scroll={false}
           className={[
-            "rounded-t-lg px-4 py-2.5 text-sm font-semibold transition",
+            "border-[3px] px-4 py-2.5 font-mono text-[11px] font-black uppercase tracking-wide transition",
             view === "receipts"
-              ? "border border-b-0 border-stone-200 bg-white text-stone-900 shadow-[0_-1px_0_0_white]"
-              : "text-stone-500 hover:text-stone-800",
+              ? "border-dm-accent bg-dm-accent text-dm-accent-ink shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+              : "border-transparent bg-dm-bg text-dm-muted hover:border-dm-accent hover:text-dm-accent-ink",
           ].join(" ")}
         >
           Receipts
@@ -189,20 +187,20 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <Link
               href={`${tabBase}?view=receipts`}
               scroll={false}
-              className="group flex flex-col rounded-3xl border border-teal-200/80 bg-gradient-to-br from-teal-50 via-white to-stone-50 p-6 shadow-sm ring-1 ring-teal-600/10 transition hover:shadow-md"
+              className="group flex flex-col border-[3px] border-dm-accent bg-[color-mix(in_srgb,var(--dm-accent)_12%,transparent)] p-7 shadow-[6px_6px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px"
             >
-              <span className="w-fit rounded-full bg-teal-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
-                Beta
+              <span className="w-fit border-[3px] border-dm-accent-ink bg-dm-accent px-2.5 py-1 font-mono text-[10px] font-black uppercase text-dm-accent-ink">
+                AI lane live
               </span>
-              <h2 className="mt-4 text-lg font-semibold text-stone-900 group-hover:text-teal-900">
-                Receipts & splits
+              <h2 className="mt-5 text-lg font-black uppercase tracking-tight text-dm-text">
+                Receipt blast
               </h2>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
-                Snap grocery runs — we read totals so nobody re-types chaos from a
-                crumpled slip.
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
+                Vision pipeline reads slips · assignments drop into mint success
+                states.
               </p>
-              <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-teal-700 group-hover:gap-2">
-                Open receipts tab
+              <span className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-wide text-dm-accent-ink">
+                Receipts cockpit
                 <span aria-hidden>→</span>
               </span>
             </Link>
@@ -220,26 +218,26 @@ export default async function HouseholdDetailPage(props: PageProps) {
             ].map((card) => (
               <article
                 key={card.title}
-                className="flex flex-col rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"
+                className="flex flex-col border-[3px] border-dm-border-strong bg-dm-surface p-7 shadow-[5px_5px_0_0_var(--dm-electric)]"
               >
-                <span className="w-fit rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-stone-600">
+                <span className="w-fit border-[2px] border-dm-muted/50 px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-widest text-dm-muted">
                   {card.status}
                 </span>
-                <h2 className="mt-4 text-base font-semibold text-stone-900">
+                <h2 className="mt-5 text-base font-black uppercase tracking-tight text-dm-text">
                   {card.title}
                 </h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-dm-muted">
                   {card.desc}
                 </p>
               </article>
             ))}
           </div>
 
-          <section className="mt-12 rounded-3xl border border-stone-200 bg-white p-8 shadow-sm">
-            <h2 className="text-lg font-semibold text-stone-900">
-              Settings
+          <section className="mt-12 border-[3px] border-dm-electric bg-dm-surface p-8 shadow-[8px_8px_0_0_var(--dm-border-strong)]">
+            <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
+              Node mutation
             </h2>
-            <p className="mt-2 text-sm text-stone-600">
+            <p className="mt-3 text-sm text-dm-muted">
               {canRename
                 ? "Rename is available to whoever created this household."
                 : "Only the creator can rename this household. Ask them to adjust the display name."}
@@ -257,20 +255,15 @@ export default async function HouseholdDetailPage(props: PageProps) {
           {membersResult && "error" in membersResult ? (
             <div
               role="alert"
-              className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-900"
+              className="border-[3px] border-dm-danger bg-dm-elevated px-5 py-4 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger"
             >
               Could not load members.{" "}
               {shouldExposeSupabaseError() ? (
                 <>
-                  Run{" "}
-                  <code className="rounded bg-red-100 px-1 font-mono text-xs">
-                    supabase/schema.sql
-                  </code>{" "}
-                  in Supabase so{" "}
-                  <code className="rounded bg-red-100 px-1 font-mono text-xs">
-                    list_household_members_for_user
-                  </code>{" "}
-                  (with profiles) is applied.
+                  Apply{" "}
+                  <code className="border border-dm-danger/40 px-1 font-mono normal-case">
+                    schema.sql
+                  </code>
                 </>
               ) : (
                 PUBLIC_TRY_AGAIN
@@ -288,24 +281,16 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="text-lg font-semibold text-stone-900">
-              Saved receipts
+            <h2 className="font-mono text-[11px] font-black uppercase tracking-[0.2em] text-dm-muted">
+              Saved slips
             </h2>
-            <p className="mt-1 text-sm text-stone-600">
+            <p className="mt-2 text-sm text-dm-muted">
               Everyone in this household can see these — transparency beats awkward
               guessing about who paid what.
             </p>
             {receiptsPayload?.error ? (
-              <p className="mt-4 text-sm text-rose-700">
-                Could not load receipts. Run the latest{" "}
-                <code className="rounded bg-stone-100 px-1 font-mono text-xs">
-                  supabase/schema.sql
-                </code>{" "}
-                so the{" "}
-                <code className="rounded bg-stone-100 px-1 font-mono text-xs">
-                  receipts
-                </code>{" "}
-                table exists.
+              <p className="mt-4 font-mono text-xs font-bold uppercase tracking-wide text-dm-danger">
+                Receipts table missing · run migration stack.
               </p>
             ) : (
               <div className="mt-6">

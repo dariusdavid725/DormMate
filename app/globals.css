@@ -1,12 +1,52 @@
 @import "tailwindcss";
 
 /*
-  Minimal workspace UI — neutral canvas, restrained teal accent.
+  Clean-tech brutal minimal: Electric Blue structural, mint/teal kinetic CTAs/success,
+  white paper light / submarine navy dark — student-grade contrast.
 */
+
 :root {
-  /* Light-first product UI — OS dark mode does not flip the whole app to black. */
-  --background: #f7f6f4;
-  --foreground: #1c1917;
+  --dm-bg: #f8fafc;
+  --dm-surface: #ffffff;
+  --dm-elevated: #eef2ff;
+  --dm-text: #020617;
+  --dm-muted: #475569;
+  --dm-electric: #005bff;
+  --dm-electric-glow: #3d7bff;
+  --dm-accent: #20f3b1;
+  --dm-accent-ink: #003d2f;
+  --dm-danger: #e11d48;
+  --dm-border-strong: #020617;
+  --dm-accent-warn-bg: #fef08a;
+  --dm-accent-warn-text: #422006;
+
+  --background: var(--dm-bg);
+  --foreground: var(--dm-text);
+
+  font-feature-settings:
+    "tnum" 1,
+    "lnum" 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dm-bg: #030711;
+    --dm-surface: #0b1228;
+    --dm-elevated: #101b3a;
+    --dm-text: #e9f0ff;
+    --dm-muted: #8ba3cf;
+    --dm-electric: #4da3ff;
+    --dm-electric-glow: #9dc6ff;
+    --dm-accent: #34f5cb;
+    --dm-accent-ink: #08221c;
+    --dm-danger: #ff6b81;
+    --dm-border-strong: #274d82;
+    --dm-accent-warn-bg: #3b2f0a;
+    --dm-accent-warn-text: #fef9c3;
+
+    --background: var(--dm-bg);
+    --foreground: var(--dm-text);
+  }
 }
 
 @theme inline {
@@ -14,18 +54,33 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --color-dm-bg: var(--dm-bg);
+  --color-dm-surface: var(--dm-surface);
+  --color-dm-elevated: var(--dm-elevated);
+  --color-dm-text: var(--dm-text);
+  --color-dm-muted: var(--dm-muted);
+  --color-dm-electric: var(--dm-electric);
+  --color-dm-electric-glow: var(--dm-electric-glow);
+  --color-dm-accent: var(--dm-accent);
+  --color-dm-accent-ink: var(--dm-accent-ink);
+  --color-dm-danger: var(--dm-danger);
+  --color-dm-accent-warn-bg: var(--dm-accent-warn-bg);
+  --color-dm-accent-warn-text: var(--dm-accent-warn-text);
+  /* Hard outline for neo-brutal shadows · maps to daylight/navy strokes */
+  --color-dm-border-strong: var(--dm-border-strong);
 }
 
 html {
-  color-scheme: light;
+  color-scheme: light dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--dm-bg);
+  color: var(--dm-text);
 }
 
 ::selection {
-  background-color: rgba(13, 148, 136, 0.22);
-  color: var(--foreground);
+  background-color: color-mix(in srgb, var(--dm-accent) 35%, transparent);
+  color: var(--dm-text);
 }

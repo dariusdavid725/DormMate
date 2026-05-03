@@ -21,16 +21,16 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
     <Link
       href={href}
       className={[
-        "group flex rounded-xl px-3 py-2 text-sm transition",
+        "group flex rounded-none border-[3px] px-3 py-2.5 font-mono text-sm font-semibold uppercase tracking-wide transition",
         active
-          ? "bg-teal-600/12 font-medium text-teal-950 ring-1 ring-teal-600/20"
-          : "text-stone-600 hover:bg-stone-100 hover:text-stone-900",
+          ? "border-dm-electric bg-dm-elevated font-black text-dm-text shadow-[4px_4px_0_0_var(--dm-border-strong)]"
+          : "border-transparent text-dm-muted hover:border-dm-electric/40 hover:bg-dm-surface hover:text-dm-text",
       ].join(" ")}
     >
       <div className="min-w-0 flex-1">
         <span className="block truncate">{title}</span>
         {hint ? (
-          <span className="mt-0.5 block truncate text-[11px] font-normal uppercase tracking-wide text-stone-400 group-hover:text-stone-500">
+          <span className="mt-0.5 block truncate text-[10px] font-semibold uppercase tracking-wide text-dm-muted/90 group-hover:text-dm-muted">
             {hint}
           </span>
         ) : null}

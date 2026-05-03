@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: {
-    default: "DormMate — Shared household finance",
+    default: "DormMate · Dorm finance OS",
     template: "%s · DormMate",
   },
   description:
-    "Receipts, splits, and household basics in one calm workspace — built for roommates and shared flats.",
+    "Mobile-first roommate ledger — receipts, AI scan lane, submarine dark mode.",
 };
 
 export default async function Home() {
@@ -26,83 +26,91 @@ export default async function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <section className="relative min-h-[calc(100vh-8rem)] lg:min-h-[calc(100vh-5rem)]">
-        <div className="mx-auto grid max-w-7xl gap-0 lg:min-h-[calc(100vh-8rem)] lg:grid-cols-2 lg:gap-0">
-          {/* Editorial column — subtle tone block */}
-          <div className="flex flex-col justify-center border-b border-stone-200/80 bg-[#ebe9e4] px-6 py-16 sm:px-10 lg:border-b-0 lg:border-r lg:py-24 lg:pl-12 lg:pr-10 xl:pl-16">
-            <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-stone-500">
-              Shared housing
-            </p>
-            <h1 className="mt-6 max-w-lg text-pretty text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl sm:leading-[1.08]">
-              One workspace for costs you split together.
-            </h1>
-            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-stone-600">
-              Scan receipts, track what matters, and keep conversations factual
-              instead of tense—without turning your flat into a spreadsheet.
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              {userLoggedIn ? (
-                <Link
-                  href="/dashboard"
-                  className="inline-flex rounded-lg bg-teal-700 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
-                >
-                  Open workspace
-                </Link>
-              ) : (
-                <>
+      <section className="relative border-b-[3px] border-dm-electric">
+        <div className="mx-auto grid max-w-7xl gap-0 lg:min-h-[min(640px,calc(100vh-10rem))] lg:grid-cols-[1fr,44%]">
+          <div className="relative flex flex-col justify-center overflow-hidden px-6 py-16 sm:px-12 lg:border-r-[3px] lg:border-dm-electric lg:py-24">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.07]"
+              style={{
+                backgroundImage: `linear-gradient(135deg, var(--dm-electric) 12px, transparent 12px)`,
+                backgroundSize: "24px 24px",
+              }}
+            />
+            <div className="relative border-[3px] border-dm-border-strong bg-dm-surface p-8 shadow-[8px_8px_0_0_var(--dm-electric)] sm:p-12">
+              <p className="font-mono text-[10px] font-black uppercase tracking-[0.3em] text-dm-muted">
+                Clean brutal · Receipt AI
+              </p>
+              <h1 className="mt-6 max-w-lg text-pretty font-sans text-4xl font-black uppercase leading-[0.95] tracking-tighter text-dm-text sm:text-5xl">
+                Electricity for shared money.
+              </h1>
+              <p className="mt-8 max-w-md text-[15px] font-medium leading-relaxed text-dm-muted">
+                Neon mint hits when you nail a split. Navy holds your night-shift
+                focus. Receipt scan is the gravitational center — everything else orbits clarity.
+              </p>
+              <div className="mt-12 flex flex-wrap gap-4">
+                {userLoggedIn ? (
                   <Link
-                    href="/signup"
-                    className="inline-flex rounded-lg bg-teal-700 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-teal-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                    href="/dashboard"
+                    className="rounded-none border-[3px] border-dm-accent bg-dm-accent px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-dm-accent-ink shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px"
                   >
-                    Create account
+                    Open pulse
                   </Link>
-                  <Link
-                    href="/login"
-                    className="inline-flex rounded-lg border border-stone-300 bg-white/90 px-6 py-2.5 text-sm font-medium text-stone-900 transition hover:bg-white"
-                  >
-                    Log in
-                  </Link>
-                </>
-              )}
+                ) : (
+                  <>
+                    <Link
+                      href="/signup"
+                      className="rounded-none border-[3px] border-dm-electric bg-dm-electric px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-white shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:bg-dm-electric-glow"
+                    >
+                      Create account
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="rounded-none border-[3px] border-dm-border-strong bg-dm-surface px-8 py-3.5 font-mono text-[11px] font-black uppercase tracking-widest text-dm-text shadow-[5px_5px_0_0_var(--dm-electric)] transition hover:bg-dm-elevated"
+                    >
+                      Log in
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Quiet preview — structural, not decorative */}
-          <div className="flex flex-col justify-center px-6 py-14 sm:px-10 lg:py-24 lg:pr-12 xl:pr-16">
-            <div className="mx-auto w-full max-w-md">
-              <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.04)]">
-                <div className="flex items-baseline justify-between gap-4 border-b border-stone-100 pb-4">
-                  <span className="text-xs font-medium uppercase tracking-wider text-stone-400">
-                    Household
-                  </span>
-                  <span className="font-mono text-sm tabular-nums text-stone-900">
-                    —
-                  </span>
+          <div className="flex flex-col justify-center px-6 py-14 lg:px-12">
+            <div className="space-y-6 font-mono text-xs font-bold uppercase tracking-widest text-dm-muted">
+              <div className="flex items-start gap-4 border-[3px] border-dm-electric bg-dm-bg p-5 shadow-[6px_6px_0_0_var(--dm-border-strong)]">
+                <span className="text-lg" aria-hidden>
+                  ⚡
+                </span>
+                <div>
+                  <p className="text-dm-text">Electric truth layer</p>
+                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
+                    Live receipt reads · settlement graph incoming
+                  </p>
                 </div>
-                <dl className="mt-5 space-y-4 font-mono text-sm tabular-nums">
-                  <div className="flex justify-between gap-6 text-stone-600">
-                    <dt className="font-sans text-[13px] font-normal text-stone-500">
-                      Receipt scan
-                    </dt>
-                    <dd className="text-stone-900">Ready</dd>
-                  </div>
-                  <div className="flex justify-between gap-6 text-stone-600">
-                    <dt className="font-sans text-[13px] font-normal text-stone-500">
-                      Shared staples
-                    </dt>
-                    <dd className="text-stone-900">—</dd>
-                  </div>
-                  <div className="flex justify-between gap-6 text-stone-600">
-                    <dt className="font-sans text-[13px] font-normal text-stone-500">
-                      Members
-                    </dt>
-                    <dd className="text-stone-900">—</dd>
-                  </div>
-                </dl>
               </div>
-              <p className="mt-8 text-center text-xs leading-relaxed text-stone-500">
-                Receipts · groceries · chores — one place, minimal noise.
-              </p>
+              <div className="flex items-start gap-4 border-[3px] border-dm-muted/40 bg-dm-surface p-5">
+                <span className="text-lg" aria-hidden>
+                  ◆
+                </span>
+                <div>
+                  <p className="text-dm-text">Submarine OLED dark</p>
+                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
+                    Auto night stack for ramen-hour accounting
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 border-[3px] border-dm-accent bg-dm-accent/10 p-5">
+                <span className="text-lg text-dm-accent-ink" aria-hidden>
+                  ✚
+                </span>
+                <div>
+                  <p className="text-dm-text">Mint only for kinetic wins</p>
+                  <p className="mt-2 text-[11px] font-semibold uppercase leading-snug tracking-wide text-dm-muted">
+                    Pays / confirmations / triumphant settles
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

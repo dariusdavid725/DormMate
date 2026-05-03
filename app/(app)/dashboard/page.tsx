@@ -2,30 +2,34 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { ContextualActionChip } from "@/components/dashboard/contextual-action-chip";
+import { DashboardFeed } from "@/components/dashboard/dashboard-feed";
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
+import { DormStatusRing } from "@/components/dashboard/dorm-status-ring";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
+import { loadReceiptFeedPreview } from "@/lib/receipts/feed-queries";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Overview",
+  title: "Pulse",
 };
 
-function formatJoined(iso: string) {
+function formatEuro(n: number) {
   try {
-    const d = new Date(iso);
-    return new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(d);
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(n);
   } catch {
-    return "";
+    return `€${n.toFixed(2)}`;
   }
 }
 
@@ -40,97 +44,173 @@ export default async function DashboardOverviewPage() {
   }
 
   const { households, error } = await loadHouseholdSummaries(user.id);
+  const primaryId = households[0]?.id ?? null;
+  const { items: receiptFeed, error: feedErr } = await loadReceiptFeedPreview(
+    households,
+  );
+
+  const realReceiptCount = receiptFeed.length;
+  const firstHhReceipts = primaryId
+    ? receiptFeed.filter((x) => x.householdId === primaryId).length
+    : 0;
+
+  const scanHref = primaryId
+    ? `/dashboard/household/${primaryId}?view=receipts`
+    : null;
+
+  const owedPreview = formatEuro(0);
+
+  const ringFilled = households.length > 0 ? Math.min(households.length, 4) : 0;
+  const ringTotal = households.length > 0 ? 4 : 1;
+  const ringSubtitle =
+    households.length === 0
+      ? "No dorm anchored yet"
+      : `${households.length} space${households.length === 1 ? "" : "s"} · presence AI soon`;
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <header className="mb-10 max-w-2xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-teal-800 dark:text-teal-300">
-          Workspace
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900 md:text-[2rem] dark:text-stone-50">
-          Overview
-        </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-stone-600 dark:text-stone-400">
-          Manage shared households, open each space for balances, staples, and
-          chores — starting with clarity on who belongs where.
-        </p>
-      </header>
+    <div className="mx-auto w-full max-w-lg pb-[7.5rem] lg:max-w-6xl lg:pb-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 lg:max-w-none">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
+            The State of the Dorm
+          </p>
+          <h1 className="mt-1 text-2xl font-black uppercase tracking-tight text-dm-text">
+            Pulse
+          </h1>
+        </div>
+        <DormStatusRing
+          filled={ringFilled}
+          total={ringTotal}
+          subtitle={ringSubtitle}
+        />
+      </div>
 
       {error ? (
         <div
           role="alert"
-          className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-950 dark:border-amber-900/70 dark:bg-amber-950/35 dark:text-amber-50"
+          className="mt-8 border-[3px] border-dm-danger bg-dm-surface px-4 py-3 text-sm text-dm-danger"
         >
-          <p className="font-medium">Could not load households</p>
+          <p className="font-bold">Household sync failed</p>
           <p className="mt-1 opacity-90">
             {shouldExposeSupabaseError() ? error : PUBLIC_TRY_AGAIN}
           </p>
         </div>
       ) : null}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr,minmax(16rem,22rem)] lg:gap-12">
-        <section aria-labelledby="your-households">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2
-                id="your-households"
-                className="text-lg font-semibold tracking-tight text-stone-900 dark:text-stone-50"
-              >
-                Your households
-              </h2>
-              <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
-                {households.length === 0
-                  ? "Create your first household to invite roommates soon."
-                  : `${households.length} linked space${households.length === 1 ? "" : "s"}.`}
-              </p>
+      <div className="mt-10 flex flex-col gap-12 xl:flex-row xl:gap-14">
+        <div className="min-w-0 flex-1 space-y-12">
+          <section
+            aria-labelledby="pulse-money"
+            className="rounded-none border-[3px] border-dm-electric bg-dm-surface p-6 shadow-[6px_6px_0_0_var(--dm-border-strong)] lg:p-10"
+          >
+            <p
+              id="pulse-money"
+              className="text-[10px] font-black uppercase tracking-[0.28em] text-dm-muted"
+            >
+              The pulse · ledger preview
+            </p>
+            <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-dm-muted">
+                  You are owed
+                </p>
+                <p className="mt-2 font-mono text-[clamp(2.75rem,8vw,3.75rem)] font-semibold tabular-nums tracking-tighter text-[var(--dm-accent)]">
+                  {owedPreview}
+                </p>
+                <p className="mt-2 max-w-[20rem] text-xs font-medium leading-snug text-dm-muted">
+                  Receipt intelligence lands in your feed · split arithmetic unlocks in
+                  Pro. Owed states trend green · owe states bleed red here.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 lg:items-end">
+                <ContextualActionChip
+                  householdsCount={households.length}
+                  receiptsCountAllTime={realReceiptCount}
+                  primaryHouseholdHasReceipts={firstHhReceipts > 0}
+                  scanReceiptHref={scanHref}
+                  createHouseholdHint={households.length === 0}
+                />
+                {scanHref ? (
+                  <Link
+                    href={scanHref}
+                    className="inline-flex w-full justify-center rounded-none border-[3px] border-dm-accent bg-dm-accent px-8 py-4 text-center font-mono text-sm font-black uppercase tracking-wide text-dm-accent-ink shadow-[5px_5px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px sm:w-auto lg:min-w-[14rem]"
+                  >
+                    Scan receipt · AI
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    className="rounded-none border-[3px] border-dm-muted px-8 py-4 text-center font-mono text-sm font-black uppercase tracking-wide text-dm-muted opacity-60"
+                  >
+                    Anchor a dorm first
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          </section>
 
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {households.map((h) => (
-              <li key={h.id}>
-                <Link
-                  href={`/dashboard/household/${h.id}`}
-                  prefetch
-                  className="group flex flex-col rounded-2xl border border-stone-200/90 bg-white p-5 shadow-sm transition hover:border-teal-400/50 hover:shadow-md dark:border-stone-800 dark:bg-stone-900/50 dark:hover:border-teal-500/40"
+          <section aria-labelledby="activity-feed">
+            <div className="flex flex-wrap items-end justify-between gap-3 border-b-[3px] border-dm-electric pb-4">
+              <div>
+                <h2
+                  id="activity-feed"
+                  className="font-mono text-sm font-black uppercase tracking-[0.2em] text-dm-electric"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="text-[17px] font-semibold tracking-tight text-stone-900 group-hover:text-teal-900 dark:text-stone-50 dark:group-hover:text-teal-200">
-                      {h.name}
-                    </span>
-                    <span className="shrink-0 rounded-full bg-teal-600/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-teal-900 dark:bg-teal-500/15 dark:text-teal-100">
-                      {h.role}
-                    </span>
-                  </div>
-                  <span className="mt-6 text-[11px] font-medium uppercase tracking-wider text-stone-400 dark:text-stone-500">
-                    Member since
-                  </span>
-                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    {formatJoined(h.joinedAt)}
-                  </span>
-                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-800 group-hover:gap-2 dark:text-teal-300">
-                    Open workspace
-                    <span aria-hidden>→</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <aside className="lg:pt-14">
-          <div className="sticky top-[5.75rem] space-y-6">
-            <div className="rounded-2xl border border-stone-200/90 bg-white p-6 shadow-sm ring-1 ring-stone-900/[0.03] dark:border-stone-800 dark:bg-stone-900/60 dark:ring-white/[0.04]">
-              <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-50">
-                Create household
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
-                One shared space for receipts, staples, chores, and fair
-                settle-up — onboarding stays minimal for now.
-              </p>
-              <CreateHouseholdForm className="mt-5 space-y-4" />
+                  The Feed
+                </h2>
+                <p className="mt-1 text-xs font-medium text-dm-muted">
+                  Chronological dorm signal — receipts + roadmap teasers.
+                </p>
+              </div>
+              {feedErr ? (
+                <span className="text-[11px] font-bold uppercase tracking-wide text-dm-danger">
+                  Feed degraded
+                </span>
+              ) : null}
             </div>
+            <div className="mt-6">
+              <DashboardFeed receipts={receiptFeed} />
+            </div>
+          </section>
+        </div>
+
+        <aside className="w-full shrink-0 space-y-6 xl:w-[min(100%,22rem)]">
+          <div
+            id="create-household"
+            className="scroll-mt-28 border-[3px] border-dm-border-strong bg-dm-surface p-6 shadow-[5px_5px_0_0_var(--dm-electric)] lg:p-8"
+          >
+            <h3 className="font-mono text-xs font-black uppercase tracking-[0.22em] text-dm-muted">
+              New dorm slug
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-dm-muted">
+              Brutal naming. Shared cockpit for AI receipts, inventories, chores.
+            </p>
+            <CreateHouseholdForm className="mt-5 space-y-4" />
           </div>
+
+          {households.length > 0 ? (
+            <div className="border-[3px] border-dm-electric/35 bg-dm-elevated/80 p-5">
+              <p className="font-mono text-[10px] font-black uppercase tracking-[0.2em] text-dm-muted">
+                Jump · spaces
+              </p>
+              <ul className="mt-4 space-y-3">
+                {households.map((h) => (
+                  <li key={h.id}>
+                    <Link
+                      href={`/dashboard/household/${h.id}`}
+                      className="flex items-center justify-between gap-4 border-[3px] border-dm-surface bg-dm-surface px-4 py-3 font-semibold shadow-[4px_4px_0_0_var(--dm-border-strong)] transition hover:-translate-y-px hover:border-dm-electric"
+                    >
+                      <span className="truncate text-sm text-dm-text">{h.name}</span>
+                      <span className="shrink-0 bg-dm-accent px-2 py-1 font-mono text-[10px] font-black uppercase text-dm-accent-ink">
+                        {h.role}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </aside>
       </div>
     </div>
