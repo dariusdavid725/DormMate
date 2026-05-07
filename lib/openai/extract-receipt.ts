@@ -19,6 +19,30 @@ Rules:
 - Keep amounts as decimal numbers in major currency units (not cents).
 - Be honest when unreadable: null fields are OK.`;
 
+const DEFAULT_MODEL = "gpt-4o-mini";
+const DEFAULT_TIMEOUT_MS = 18_000;
+const MAX_RETRIES = 1;
+
+function normalizeCurrency(value: unknown): string {
+  if (typeof value !== "string") return "EUR";
+  const cleaned = value.trim().toUpperCase();
+  if (!cleaned) return "EUR";
+  return cleaned.slice(0, 8);
+}
+
+function normalizeNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string") {
+    const cleaned = value.replace(",", ".").replace(/[^\d.-]/g, "").trim();
+    if (!cleaned) return null;
+    const parsed = Number(cleaned);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
 function coercePayload(raw: unknown): ReceiptExtraction {
   if (!raw || typeof raw !== "object") {
     return {
@@ -36,14 +60,14 @@ function coercePayload(raw: unknown): ReceiptExtraction {
 
   return {
     merchant: typeof o.merchant === "string" ? o.merchant : null,
-    total: typeof o.total === "number" ? o.total : null,
-    currency: typeof o.currency === "string" ? o.currency : "EUR",
+    total: normalizeNumber(o.total),
+    currency: normalizeCurrency(o.currency),
     purchased_at: typeof o.purchased_at === "string" ? o.purchased_at : null,
     line_items: lineItemsRaw
       .filter((x): x is Record<string, unknown> => !!x && typeof x === "object")
       .map((li) => ({
         name: typeof li.name === "string" ? li.name : "Item",
-        amount: typeof li.amount === "number" ? li.amount : null,
+        amount: normalizeNumber(li.amount),
       })),
     notes: typeof o.notes === "string" ? o.notes : undefined,
   };
@@ -59,42 +83,62 @@ export async function extractReceiptFromImageBase64(
   }
 
   const openai = new OpenAI({ apiKey });
+  const model = process.env.OPENAI_RECEIPT_MODEL ?? DEFAULT_MODEL;
+  const timeoutMsRaw = Number(process.env.OPENAI_RECEIPT_TIMEOUT_MS ?? "");
+  const timeoutMs =
+    Number.isFinite(timeoutMsRaw) && timeoutMsRaw >= 5_000
+      ? timeoutMsRaw
+      : DEFAULT_TIMEOUT_MS;
 
   const dataUrl = `data:${mimeType};base64,${base64}`;
 
-  const completion = await openai.chat.completions.create({
-    model: process.env.OPENAI_RECEIPT_MODEL ?? "gpt-4o-mini",
-    temperature: 0.2,
-    response_format: { type: "json_object" },
-    messages: [
-      { role: "system", content: SYSTEM },
-      {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: { url: dataUrl },
-          },
-          {
-            type: "text",
-            text: "Extract receipt fields as JSON.",
-          },
-        ],
-      },
-    ],
-  });
+  let lastErr: Error | null = null;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const completion = await openai.chat.completions.create(
+        {
+          model,
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: SYSTEM },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: { url: dataUrl },
+                },
+                {
+                  type: "text",
+                  text: "Extract receipt fields as JSON.",
+                },
+              ],
+            },
+          ],
+        },
+        { timeout: timeoutMs },
+      );
 
-  const rawText = completion.choices[0]?.message?.content;
-  if (!rawText) {
-    throw new Error("EMPTY_MODEL_RESPONSE");
+      const rawText = completion.choices[0]?.message?.content;
+      if (!rawText) {
+        throw new Error("EMPTY_MODEL_RESPONSE");
+      }
+
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(rawText) as unknown;
+      } catch {
+        return coercePayload(null);
+      }
+
+      return coercePayload(parsed);
+    } catch (error) {
+      lastErr = error instanceof Error ? error : new Error(String(error));
+      if (attempt >= MAX_RETRIES) {
+        break;
+      }
+    }
   }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(rawText) as unknown;
-  } catch {
-    return coercePayload(null);
-  }
-
-  return coercePayload(parsed);
+  throw lastErr ?? new Error("OPENAI_RECEIPT_FAILED");
 }
