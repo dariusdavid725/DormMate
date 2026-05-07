@@ -38,6 +38,7 @@ export function DashboardShell({
               <div className="flex flex-col gap-0.5">
                 <SidebarNavLink href="/dashboard" title="Home" exact />
                 <SidebarNavLink href="/dashboard/tasks" title="Tasks" exact />
+                <SidebarNavLink href="/dashboard/inventory" title="Pantry" exact />
                 {showAdmin ? (
                   <SidebarNavLink
                     href="/dashboard/admin"

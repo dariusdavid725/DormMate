@@ -133,10 +133,28 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text,
   avatar_url text,
+  gender_identity text,
+  dietary_preferences text[] not null default '{}'::text[],
+  bio text,
+  pronouns text,
   updated_at timestamptz not null default now ()
 );
 
 comment on table public.profiles is 'One row per auth user; optional avatar in storage bucket avatars/{user_id}/.';
+
+alter table public.profiles add column if not exists gender_identity text;
+alter table public.profiles add column if not exists dietary_preferences text[] not null default '{}'::text[];
+alter table public.profiles add column if not exists bio text;
+alter table public.profiles add column if not exists pronouns text;
+
+alter table public.profiles
+  drop constraint if exists profiles_gender_identity_check;
+
+alter table public.profiles
+  add constraint profiles_gender_identity_check check (
+    gender_identity is null
+    or gender_identity in ('female', 'male', 'non_binary', 'other')
+  );
 
 drop trigger if exists profiles_set_updated_at on public.profiles;
 

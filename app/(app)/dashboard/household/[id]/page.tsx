@@ -129,7 +129,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
     view === "tasks" ||
     view === "members" ||
     view === "expenses" ||
-    view === "events";
+    view === "events" ||
+    view === "receipts";
 
   const memberBundle = needsMembers ? await loadHouseholdMembers(id) : null;
 
@@ -400,6 +401,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
                   emptyHint="No slips yet — add a scanned photo above or jot a manual bill under Money."
                   enableSplitAllAction
                   linkedReceiptIds={linkedReceiptIds}
+                  memberOptions={membersList.map((m) => ({
+                    userId: m.userId,
+                    label: labelMember(m),
+                  }))}
                 />
               </div>
             )}

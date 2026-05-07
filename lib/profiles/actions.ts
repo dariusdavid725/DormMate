@@ -127,4 +127,83 @@ export async function uploadProfileAvatar(formData: FormData): Promise<void> {
     revalidatePath(`/dashboard/household/${householdId}`);
   }
   revalidatePath("/dashboard");
+  revalidatePath("/dashboard/settings");
+}
+
+export type ProfileDetailsState = {
+  error?: string;
+  ok?: boolean;
+};
+
+const ALLOWED_DIETARY = new Set([
+  "vegan",
+  "vegetarian",
+  "pescatarian",
+  "halal",
+  "kosher",
+  "lactose_free",
+  "gluten_free",
+  "nut_allergy",
+  "none",
+]);
+
+export async function updateProfileDetails(
+  _prev: ProfileDetailsState | void,
+  formData: FormData,
+): Promise<ProfileDetailsState> {
+  const displayName = String(formData.get("display_name") ?? "").trim();
+  const pronouns = String(formData.get("pronouns") ?? "").trim();
+  const genderIdentity = String(formData.get("gender_identity") ?? "").trim();
+  const bio = String(formData.get("bio") ?? "").trim();
+
+  const dietaryRaw = formData
+    .getAll("dietary_preferences")
+    .map((x) => String(x).trim())
+    .filter(Boolean);
+  const dietary = [...new Set(dietaryRaw)].filter((x) =>
+    ALLOWED_DIETARY.has(x),
+  );
+
+  if (displayName.length > 80) {
+    return { error: "Display name too long (max 80)." };
+  }
+  if (pronouns.length > 40) {
+    return { error: "Pronouns too long (max 40)." };
+  }
+  if (genderIdentity.length > 40) {
+    return { error: "Gender field too long (max 40)." };
+  }
+  if (bio.length > 300) {
+    return { error: "Bio too long (max 300)." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "Not signed in." };
+  }
+
+  const { error } = await supabase.from("profiles").upsert(
+    {
+      id: user.id,
+      display_name: displayName || shortNameFromEmail(user.email),
+      pronouns: pronouns || null,
+      gender_identity: genderIdentity || null,
+      dietary_preferences: dietary,
+      bio: bio || null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "id" },
+  );
+
+  if (error?.message) {
+    console.error("[profiles] update details", error.message);
+    return { error: "Could not save profile right now." };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/settings");
+  return { ok: true };
 }
