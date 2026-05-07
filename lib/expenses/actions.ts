@@ -203,25 +203,66 @@ export async function createManualExpense(
   revalidatePath(`/dashboard/household/${householdId}`);
 }
 
-export async function settleHouseholdExpense(formData: FormData): Promise<void> {
+export type SettleExpenseState = { ok?: boolean; error?: string };
+
+export async function settleHouseholdExpense(
+  _prev: SettleExpenseState | void,
+  formData: FormData,
+): Promise<SettleExpenseState> {
   const expenseId = String(formData.get("expense_id") ?? "").trim();
   const householdId = String(formData.get("household_id") ?? "").trim();
-  if (!expenseId || !householdId) return;
+  if (!expenseId || !householdId) {
+    return { error: "Missing expense." };
+  }
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return {
+      error: shouldExposeSupabaseError() ? "Not signed in." : PUBLIC_TRY_AGAIN,
+    };
+  }
+
+  const { data: row, error: fetchErr } = await supabase
+    .from("household_expenses")
+    .select("id, household_id, status")
+    .eq("id", expenseId)
+    .eq("household_id", householdId)
+    .maybeSingle();
+
+  if (fetchErr?.message || !row) {
+    console.error("[settleHouseholdExpense] fetch", fetchErr?.message);
+    return {
+      error: shouldExposeSupabaseError()
+        ? fetchErr?.message ?? "Could not find expense."
+        : PUBLIC_TRY_AGAIN,
+    };
+  }
+
+  const status = (row as { status: string }).status;
+  if (status === "settled") {
+    return { ok: true };
+  }
+
   const { error } = await supabase
     .from("household_expenses")
     .update({ status: "settled" })
-    .eq("id", expenseId);
+    .eq("id", expenseId)
+    .eq("household_id", householdId);
 
   if (error?.message) {
     console.error("[settleHouseholdExpense]", error.message);
-    return;
+    return {
+      error: shouldExposeSupabaseError() ? error.message : PUBLIC_TRY_AGAIN,
+    };
   }
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/finances");
   revalidatePath(`/dashboard/household/${householdId}`);
+  return { ok: true };
 }
 
 export async function createExpenseFromReceiptSplitAll(

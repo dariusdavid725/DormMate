@@ -85,7 +85,7 @@ export function HouseholdMembersPanel({
             name="display_name"
             type="text"
             maxLength={80}
-            placeholder="How your name reads on slips"
+            placeholder="Name shown to roommates"
             defaultValue={
               sorted.find((x) => x.userId === currentUserId)?.displayName ?? ""
             }

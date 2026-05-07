@@ -22,9 +22,9 @@ import {
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
 import { loadEventRsvps, loadHouseholdEvents } from "@/lib/events/queries";
+import { computePendingBalanceSections } from "@/lib/expenses/compute-pending-balances";
 import {
   loadExpenseSplits,
-  loadHouseholdExpenseBalances,
   loadHouseholdExpenses,
 } from "@/lib/expenses/queries";
 import type { HouseholdMemberRow } from "@/lib/households/queries";
@@ -159,17 +159,22 @@ export default async function HouseholdDetailPage(props: PageProps) {
       ? await loadHouseholdExpenses(id)
       : null;
 
-  const balancePayload =
-    view === "expenses" ?
-      await loadHouseholdExpenseBalances(id)
-    : null;
-
   const splitsPayload =
     view === "expenses" &&
     expensesPayload?.expenses &&
     expensesPayload.expenses.length ?
       await loadExpenseSplits(expensesPayload.expenses.map((e) => e.id))
     : null;
+
+  const balanceSections =
+    view === "expenses" &&
+    expensesPayload?.expenses &&
+    splitsPayload?.byExpense ?
+      computePendingBalanceSections(
+        expensesPayload.expenses,
+        splitsPayload.byExpense,
+      )
+    : [];
 
   const linkedReceiptIds =
     view === "receipts"
@@ -214,7 +219,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
       <div className="flex flex-wrap items-start justify-between gap-5 border-b border-dashed border-[var(--dm-border-strong)] pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-            Household corkboard
+            Shared household
           </p>
           <h1 className="font-cozy-display mt-2 text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
             {household.name}
@@ -244,7 +249,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <div className="grid grid-cols-3 gap-1 rounded-[3px] border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-1 shadow-[var(--cozy-shadow-paper)] sm:flex sm:min-w-0 sm:shrink-0 sm:flex-wrap">
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
           <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Tasks" />
-          <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="$" />
+          <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="Money" />
           <TabLink active={view === "events"} href={`${tabBase}?view=events`} label="Events" />
           <TabLink active={view === "members"} href={`${tabBase}?view=members`} label="Members" />
           <TabLink active={view === "receipts"} href={`${tabBase}?view=receipts`} label="Receipts" />
@@ -255,13 +260,13 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <OverviewCard href={`${tabBase}?view=receipts`}>
-              Receipts · scan slips
+              Receipts · scan & save
             </OverviewCard>
             <OverviewVariant href={`${tabBase}?view=tasks`} variant="note">
               Tasks · stickies
             </OverviewVariant>
             <OverviewCard href={`${tabBase}?view=expenses`}>
-              Bills · split tab
+              Money · split costs
             </OverviewCard>
             <OverviewVariant href={`${tabBase}?view=events`} variant="poster">
               Events · RSVPs
@@ -386,9 +391,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10 space-y-8">
           <ReceiptScannerPanel householdId={id} />
           <div>
-            <h2 className="font-cozy-display text-2xl text-dm-text">Receipt pile</h2>
+            <h2 className="font-cozy-display text-2xl text-dm-text">Saved receipts</h2>
             <p className="mt-1 text-[13px] text-dm-muted">
-              Visible to all members of this household.
+              Everyone in this household can see these. Tap a receipt to expand lines from the scan.
             </p>
             {receiptsPayload?.error ?
               <p className="mt-4 text-sm font-medium text-dm-danger">
@@ -398,7 +403,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
               <div className="mt-6">
                 <ReceiptList
                   receipts={receiptsPayload?.receipts ?? []}
-                  emptyHint="No slips yet — add a scanned photo above or jot a manual bill under Money."
+                  emptyHint="No receipts yet — take a photo above, then save. After that you can split it with housemates on this same screen."
                   enableSplitAllAction
                   linkedReceiptIds={linkedReceiptIds}
                   memberOptions={membersList.map((m) => ({
@@ -417,9 +422,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
           : (
             <>
               <div className="cozy-poster cozy-tilt-xs p-5">
-                <h2 className="font-cozy-display text-3xl text-dm-text">Split the tab</h2>
+                <h2 className="font-cozy-display text-3xl text-dm-text">Split costs</h2>
                 <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
-                  Manual slips sit beside receipts — totals stay editable until settled.
+                  Add a shared bill here, or turn a scanned receipt into a split from the Receipts tab.
+                  Currency comes from each bill (check Romanian receipts show RON before saving).
                 </p>
                 {membersList.length === 0 ?
                   <p className="mt-4 text-[13px] text-dm-danger">
@@ -440,20 +446,21 @@ export default async function HouseholdDetailPage(props: PageProps) {
               <div className="cozy-note cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-note)]">
                 <h3 className="font-cozy-display text-2xl text-dm-text">Who owes who</h3>
                 <p className="mt-2 text-[12px] text-dm-muted">
-                  Snapshot from pending slips only · positive means you floated more than your slice.
+                  Only open bills count. Positive means that person paid more than their share for these
+                  totals (others still owe them). Negative means they still owe others.
                 </p>
-                {balancePayload?.error ?
-                  <p className="mt-4 text-[13px] text-dm-danger">{balancePayload.error}</p>
+                {expensesPayload?.error ?
+                  <p className="mt-4 text-[13px] text-dm-danger">{expensesPayload.error}</p>
                 : (
                   <HouseholdNetBalances
-                    balances={balancePayload?.balances ?? []}
+                    sections={balanceSections}
                     memberLabels={memberLabels}
                   />
                 )}
               </div>
 
               <div>
-                <h3 className="font-cozy-display text-2xl text-dm-text">Ledger</h3>
+                <h3 className="font-cozy-display text-2xl text-dm-text">All bills</h3>
                 <HouseholdExpenseList
                   householdId={id}
                   expenses={expensesPayload?.expenses ?? []}

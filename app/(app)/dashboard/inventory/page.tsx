@@ -26,7 +26,7 @@ export default async function InventoryPage() {
           Groceries list (soon)
         </h1>
         <p className="mt-2 text-[13px] text-dm-muted">
-          Will hook into receipts when the slips stack is steady.
+          Shared shopping list — we&apos;ll connect this to receipts in a later update.
         </p>
       </header>
 

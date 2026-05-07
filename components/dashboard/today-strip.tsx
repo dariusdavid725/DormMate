@@ -18,7 +18,7 @@ export function TodayStrip({
       tilt: "cozy-tilt-xs" as const,
     },
     {
-      label: "You’re owed",
+      label: "Balance (open bills)",
       value: hasHouseholds ? owedLabel : "—",
       tilt: "cozy-tilt-xs-alt" as const,
     },

@@ -7,7 +7,7 @@ Return ONLY valid JSON with this shape (no markdown):
 {
   "merchant": string | null,
   "total": number | null,
-  "currency": string (ISO 4217 if obvious, else guess from locale symbols or default "EUR"),
+  "currency": string (ISO 4217 code — use RON for Romanian lei / LEI / L; EUR for euro receipts; USD for dollars),
   "purchased_at": string | null (ISO 8601 date if you can infer from receipt, else null),
   "line_items": [ { "name": string, "amount": number | null } ],
   "notes": string | null (short uncertainty note if handwriting/blur)
@@ -25,9 +25,45 @@ const MAX_RETRIES = 1;
 
 function normalizeCurrency(value: unknown): string {
   if (typeof value !== "string") return "EUR";
-  const cleaned = value.trim().toUpperCase();
-  if (!cleaned) return "EUR";
-  return cleaned.slice(0, 8);
+  const raw = value.trim();
+  if (!raw) return "EUR";
+  const lower = raw.toLowerCase();
+
+  if (
+    /\bron\b/i.test(raw) ||
+    /\blei\b/i.test(raw) ||
+    lower.includes(" lei") ||
+    lower.endsWith("lei")
+  ) {
+    return "RON";
+  }
+  if (lower.includes("euro") || raw.includes("€")) return "EUR";
+  if (lower.includes("usd") || lower.includes("dollar") || raw.includes("$"))
+    return "USD";
+  if (lower.includes("gbp") || lower.includes("£") || /\bstg\b/i.test(raw))
+    return "GBP";
+
+  const cleaned = raw.toUpperCase().replace(/[^A-Z]/g, "");
+  const synonyms: Record<string, string> = {
+    LEI: "RON",
+    LEU: "RON",
+    RON: "RON",
+    EURO: "EUR",
+    EUR: "EUR",
+    USD: "USD",
+    GBP: "GBP",
+    BGN: "BGN",
+    PLN: "PLN",
+    HUF: "HUF",
+  };
+  if (cleaned.length >= 3 && synonyms[cleaned.slice(0, 3)]) {
+    return synonyms[cleaned.slice(0, 3)];
+  }
+  const lettersOnly = raw.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8);
+  if (lettersOnly.length === 3 && /^[A-Z]{3}$/.test(lettersOnly)) {
+    return lettersOnly;
+  }
+  return "EUR";
 }
 
 function normalizeNumber(value: unknown): number | null {

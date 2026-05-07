@@ -5,15 +5,15 @@ export function DashboardQuickActions() {
     <section aria-label="Quick actions">
       <div className="mb-2 flex items-center gap-2">
         <span className="font-cozy-display text-2xl text-dm-text">
-          Tasks & money
+          Shortcuts
         </span>
         <span
-          className="h-px flex-1 max-w-[3rem] bg-dm-border-strong"
+          className="h-px max-w-[3rem] flex-1 bg-dm-border-strong"
           aria-hidden
         />
       </div>
       <p className="mb-3 text-[12px] text-dm-muted">
-        Sticky for chores · slip for spends · flyer for gatherings.
+        Tasks: chores. Expenses: shared bills. Events live on each household page.
       </p>
       <div className="flex flex-wrap gap-3">
         <Link
@@ -24,7 +24,7 @@ export function DashboardQuickActions() {
           ].join(" ")}
           style={{ animationDelay: "90ms" }}
         >
-          + Task sticky
+          + Add task
         </Link>
         <Link
           href="/dashboard/finances"
@@ -34,24 +34,24 @@ export function DashboardQuickActions() {
           ].join(" ")}
           style={{ animationDelay: "140ms" }}
         >
-          <span className="relative z-[1]">Expense slip</span>
+          <span className="relative z-[1]">Expenses overview</span>
         </Link>
         <span
           className="cozy-poster cozy-drop-in cozy-tilt-xs inline-flex px-5 py-3 text-sm font-semibold text-dm-muted cozy-hover-wiggle"
           style={{ animationDelay: "190ms" }}
-          title="Pick a household, then Events tab"
+          title="Choose your household, then open the Events tab"
         >
-          Events · on your flat page
+          Events · open your household first
         </span>
         <Link
           href="/dashboard/join"
           className={[
-            "inline-flex px-5 py-3 text-sm font-semibold text-dm-muted underline-offset-4",
-            "cozy-drop-in hover:underline",
+            "cozy-drop-in inline-flex px-5 py-3 text-sm font-semibold text-dm-muted underline-offset-4",
+            "hover:underline",
           ].join(" ")}
           style={{ animationDelay: "240ms" }}
         >
-          Join with invite
+          Join household with code
         </Link>
       </div>
     </section>

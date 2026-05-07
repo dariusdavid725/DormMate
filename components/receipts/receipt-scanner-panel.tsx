@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useActionState,
@@ -18,6 +19,8 @@ import type { ReceiptExtraction } from "@/lib/receipts/types";
 type Phase = "idle" | "reading" | "preview" | "saved";
 
 const saveInitial: SaveReceiptState = {};
+
+const COMMON_CURRENCIES = ["RON", "EUR", "USD", "GBP", "BGN", "PLN", "HUF"];
 
 export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   const router = useRouter();
@@ -86,9 +89,9 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
     <div className="cozy-poster cozy-tilt-xs p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="font-cozy-display text-3xl text-dm-text">Drop a slip</h3>
+          <h3 className="font-cozy-display text-3xl text-dm-text">Scan a receipt</h3>
           <p className="mt-1 max-w-md text-[13px] text-dm-muted">
-            Photo in — total out. We stick it on the household receipt pile.
+            Upload a photo of the receipt. We read the total and line items — then you can save it to this household.
           </p>
         </div>
         <div className="shrink-0 flex flex-wrap gap-2">
@@ -172,7 +175,7 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
           aria-live="polite"
           className="cozy-note cozy-tilt-xs mt-4 px-3 py-2.5 text-sm text-dm-text shadow-[var(--cozy-shadow-note)]"
         >
-          Pinned. It shows on the board under Activity.
+          Saved — it appears in the list below and in Home activity.
         </div>
       ) : null}
     </div>
@@ -197,6 +200,18 @@ function ReceiptPreview({
     saveInitial,
   );
   const fired = useRef(false);
+  const [currency, setCurrency] = useState(() =>
+    (extraction.currency || "EUR").toUpperCase().slice(0, 8),
+  );
+
+  useEffect(() => {
+    setCurrency((extraction.currency || "EUR").toUpperCase().slice(0, 8));
+  }, [extraction]);
+
+  const mergedExtraction = useMemo(
+    (): ReceiptExtraction => ({ ...extraction, currency }),
+    [extraction, currency],
+  );
 
   useEffect(() => {
     if (state?.ok && !fired.current) {
@@ -215,7 +230,7 @@ function ReceiptPreview({
       <input
         type="hidden"
         name="extraction_json"
-        value={JSON.stringify(extraction)}
+        value={JSON.stringify(mergedExtraction)}
       />
 
       {state?.error ? (
@@ -225,17 +240,45 @@ function ReceiptPreview({
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-            Merchant
+            Store
           </dt>
           <dd className="font-medium text-dm-text">{extraction.merchant ?? "—"}</dd>
         </div>
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+            Currency
+          </dt>
+          <dd className="mt-1">
+            <label className="sr-only" htmlFor="receipt-currency">
+              Receipt currency
+            </label>
+            <select
+              id="receipt-currency"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value.toUpperCase().slice(0, 8))}
+              className="w-full max-w-[11rem] rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-2 py-1.5 text-sm text-dm-text"
+            >
+              {COMMON_CURRENCIES.includes(currency) ? null : (
+                <option value={currency}>{currency}</option>
+              )}
+              {COMMON_CURRENCIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-dm-muted">
+              Fix here if the scan guessed wrong (e.g. Romanian receipts should be RON).
+            </p>
+          </dd>
+        </div>
+        <div className="sm:col-span-2">
+          <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
             Total
           </dt>
           <dd className="font-mono font-semibold tabular-nums text-dm-accent">
             {extraction.total != null
-              ? `${extraction.total.toFixed(2)} ${extraction.currency}`
+              ? `${extraction.total.toFixed(2)} ${currency}`
               : "—"}
           </dd>
         </div>
@@ -244,7 +287,7 @@ function ReceiptPreview({
       {extraction.line_items.length > 0 ? (
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-            Lines
+            Lines from scan
           </p>
           <ul className="mt-2 max-h-40 space-y-1 overflow-y-auto text-sm text-dm-muted">
             {extraction.line_items.slice(0, 12).map((li, i) => (
@@ -269,14 +312,14 @@ function ReceiptPreview({
           disabled={pending}
           className="rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white hover:brightness-105 disabled:pointer-events-none disabled:opacity-55"
         >
-          {pending ? "Saving…" : "Save to household"}
+          {pending ? "Saving…" : "Save receipt"}
         </button>
         <button
           type="button"
           onClick={onCancel}
           className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
         >
-          Discard
+          Cancel
         </button>
       </div>
     </form>

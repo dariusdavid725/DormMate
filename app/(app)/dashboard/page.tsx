@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
+import { GettingStartedHint } from "@/components/dashboard/getting-started-hint";
 import { HouseActivityFeed } from "@/components/dashboard/house-activity-feed";
 import { DashboardQuickActions } from "@/components/dashboard/quick-actions";
 import { TodayStrip } from "@/components/dashboard/today-strip";
@@ -84,6 +85,8 @@ export default async function DashboardOverviewPage() {
           hasHouseholds={hasHouseholds}
         />
 
+        <GettingStartedHint hasHouseholds={hasHouseholds} />
+
         <DashboardQuickActions />
 
         <section aria-labelledby="activity-heading">
@@ -114,11 +117,11 @@ export default async function DashboardOverviewPage() {
           aria-labelledby="hh-new"
         >
           <div className="mb-3 flex items-center gap-2">
-            <span className="font-cozy-display text-3xl text-dm-text">New pad</span>
+            <span className="font-cozy-display text-3xl text-dm-text">Create household</span>
             <span className="cozy-pin shrink-0" aria-hidden />
           </div>
           <p className="text-[13px] text-dm-muted">
-            One name is enough — you can pin more flats later from the hallway.
+            Enter a name for your dorm or flat. You can join more households later from the menu.
           </p>
           <CreateHouseholdForm className="mt-4 space-y-4" />
         </section>

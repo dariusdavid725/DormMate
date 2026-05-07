@@ -1,17 +1,7 @@
-import { settleHouseholdExpense } from "@/lib/expenses/actions";
+import { SettleExpenseForm } from "@/components/expenses/settle-expense-form";
 
 import type { HouseholdExpenseRow } from "@/lib/expenses/queries";
-
-function fmtMoney(n: number, cur: string) {
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: cur || "EUR",
-    }).format(n);
-  } catch {
-    return `${n.toFixed(2)} ${cur}`;
-  }
-}
+import { formatMoneySafe } from "@/lib/currency/format-money";
 
 function fmtDate(val: string) {
   try {
@@ -37,7 +27,7 @@ export function HouseholdExpenseList({
   if (!expenses.length) {
     return (
       <p className="mt-6 text-[13px] text-dm-muted">
-        Nothing logged yet — add a slip above!
+        No expenses yet — add one above, or scan a receipt under Receipts and turn it into a split.
       </p>
     );
   }
@@ -46,7 +36,7 @@ export function HouseholdExpenseList({
     <ul className="mt-6 space-y-3">
       {expenses.map((e) => {
         const splits = splitUserIdsByExpenseId.get(e.id) ?? [];
-        const payer = memberLabels[e.paidByUserId] ?? "mate";
+        const payer = memberLabels[e.paidByUserId] ?? "Housemate";
         const splitNames =
           splits
             .map((id) => memberLabels[id]?.trim())
@@ -69,24 +59,20 @@ export function HouseholdExpenseList({
                   split with {splitNames}
                 </p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-                  {settled ? "Settled · archived totals" : "Pending · rolls into balances"}
+                  {settled
+                    ? "Closed — no longer affects balances"
+                    : "Open — counts in “who owes who” above"}
                 </p>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
                 <span className="font-mono text-lg font-semibold tabular-nums text-dm-text">
-                  {fmtMoney(e.amount, e.currency)}
+                  {formatMoneySafe(e.amount, e.currency)}
                 </span>
                 {!settled ? (
-                  <form action={settleHouseholdExpense}>
-                    <input type="hidden" name="household_id" value={householdId} />
-                    <input type="hidden" name="expense_id" value={e.id} />
-                    <button
-                      type="submit"
-                      className="rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-1.5 text-[11px] font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-electric"
-                    >
-                      Mark settled
-                    </button>
-                  </form>
+                  <SettleExpenseForm
+                    householdId={householdId}
+                    expenseId={e.id}
+                  />
                 ) : null}
               </div>
             </div>
