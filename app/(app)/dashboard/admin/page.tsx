@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { isPlatformSuperAdmin } from "@/lib/platform-admin";
+import {
+  addPlatformAdminEmail,
+  removePlatformAdminEmail,
+} from "@/lib/admin/actions";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Admin",
+  title: "Site admin",
 };
 
 function formatTs(iso: string | null) {
@@ -27,7 +30,8 @@ export default async function AdminDashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user?.email || !isPlatformSuperAdmin(user.email)) {
+  const { data: adminFlag } = await supabase.rpc("is_platform_super_admin");
+  if (!user?.email || adminFlag !== true) {
     redirect("/dashboard");
   }
 
@@ -37,6 +41,18 @@ export default async function AdminDashboardPage() {
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("receipts").select("*", { count: "exact", head: true }),
     ]);
+
+  const { data: adminRowsRaw } = await supabase.rpc("list_platform_admin_emails");
+  const adminRows = (adminRowsRaw ?? []) as Array<{ email: string; added_at: string }>;
+
+  const { data: usersRaw } = await supabase.rpc("list_platform_users");
+  const users = (usersRaw ?? []) as Array<{
+    user_id: string;
+    email: string;
+    display_name: string | null;
+    created_at: string;
+    household_count: number;
+  }>;
 
   const { data: recentHouseholds } = await supabase
     .from("households")
@@ -59,15 +75,15 @@ export default async function AdminDashboardPage() {
           Home
         </Link>
         <span className="mx-2 opacity-40">/</span>
-        <span className="text-dm-text">Admin</span>
+        <span className="text-dm-text">Site admin</span>
       </nav>
 
       <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
-        <h1 className="font-cozy-display text-[2.5rem] text-dm-text leading-[1.1]">
-          Building superintendent
+        <h1 className="text-3xl font-semibold tracking-tight text-dm-text">
+          Site admin panel
         </h1>
         <p className="mt-2 text-[13px] text-dm-muted">
-          Read-only tally board — households, profiles, slips.
+          Manage platform admins, review users, and inspect households.
         </p>
       </header>
 
@@ -99,9 +115,80 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
+      <section className="mt-10 grid gap-5 lg:grid-cols-2">
+        <div className="dm-card-surface p-5">
+          <h2 className="text-lg font-semibold text-dm-text">Platform admins</h2>
+          <p className="mt-1 text-[12px] text-dm-muted">
+            Anyone listed here gets access to this panel.
+          </p>
+          <form action={addPlatformAdminEmail} className="mt-4 flex gap-2">
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="admin@email.com"
+              className="min-w-0 flex-1 rounded-md border border-[var(--dm-border-strong)] bg-dm-bg px-3 py-2 text-sm"
+            />
+            <button className="rounded-md bg-dm-electric px-3 py-2 text-sm font-semibold text-white">
+              Add
+            </button>
+          </form>
+          <ul className="mt-4 space-y-2">
+            {adminRows.map((a) => (
+              <li key={a.email} className="flex items-center justify-between gap-3 rounded-md border border-[var(--dm-border)] px-3 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-dm-text">{a.email}</p>
+                  <p className="text-[11px] text-dm-muted">{formatTs(a.added_at)}</p>
+                </div>
+                {a.email.toLowerCase() !== "dariusdavid725@gmail.com" ? (
+                  <form action={removePlatformAdminEmail}>
+                    <input type="hidden" name="email" value={a.email} />
+                    <button className="text-xs font-semibold text-dm-danger hover:underline">
+                      Remove
+                    </button>
+                  </form>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="dm-card-surface p-5">
+          <h2 className="text-lg font-semibold text-dm-text">Users</h2>
+          <p className="mt-1 text-[12px] text-dm-muted">
+            Latest 300 accounts, with household membership count.
+          </p>
+          <div className="mt-4 max-h-80 overflow-auto rounded-md border border-[var(--dm-border)]">
+            <table className="min-w-full text-left text-sm">
+              <thead className="border-b border-[var(--dm-border)] bg-dm-bg/60 text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+                <tr>
+                  <th className="px-3 py-2">User</th>
+                  <th className="px-3 py-2">Joined</th>
+                  <th className="px-3 py-2 text-right">Households</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.user_id} className="border-b border-[var(--dm-border)] last:border-b-0">
+                    <td className="px-3 py-2">
+                      <p className="truncate text-sm text-dm-text">{u.display_name ?? "—"}</p>
+                      <p className="truncate text-[11px] text-dm-muted">{u.email}</p>
+                    </td>
+                    <td className="px-3 py-2 text-[11px] text-dm-muted">{formatTs(u.created_at)}</td>
+                    <td className="px-3 py-2 text-right font-mono text-sm tabular-nums text-dm-text">
+                      {u.household_count}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section className="mt-12">
-        <h2 className="font-cozy-display text-2xl text-dm-text">
-          Recent arrivals
+        <h2 className="text-lg font-semibold text-dm-text">
+          Recent households
         </h2>
         <div className="cozy-receipt cozy-tilt-xs mt-6 overflow-hidden rounded-[2px]">
           <table className="min-w-full text-left text-sm">

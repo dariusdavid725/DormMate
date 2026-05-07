@@ -46,6 +46,13 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
       <p className="mt-1 text-[11px] text-dm-muted">
         {households.length} household{households.length === 1 ? "" : "s"} available.
       </p>
+      <button
+        type="button"
+        onClick={() => router.push("/dashboard/join")}
+        className="mt-2 rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1.5 text-[11px] font-semibold text-dm-muted"
+      >
+        Join with code
+      </button>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Grocery",
+  title: "Groceries",
 };
 
 export default async function InventoryPage() {
@@ -23,7 +23,7 @@ export default async function InventoryPage() {
     <div className="mx-auto max-w-xl space-y-7 pb-24 lg:pb-9">
       <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
         <h1 className="font-cozy-display text-[2.35rem] text-dm-text leading-[1.1]">
-          Pantry list (soon)
+          Groceries list (soon)
         </h1>
         <p className="mt-2 text-[13px] text-dm-muted">
           Will hook into receipts when the slips stack is steady.

@@ -229,17 +229,146 @@ grant execute on function public.household_has_no_members (uuid) to authenticate
 -------------------------------------------------------------------------------
 -- Platform super-admin (JWT email match — irrevocable in SQL; do not remove row)
 -------------------------------------------------------------------------------
+create table if not exists public.platform_admins (
+  email text primary key,
+  added_at timestamptz not null default now (),
+  added_by uuid references auth.users (id) on delete set null
+);
+
+insert into public.platform_admins (email)
+values ('dariusdavid725@gmail.com')
+on conflict (email) do nothing;
+
+alter table public.platform_admins enable row level security;
+
+drop policy if exists platform_admins_select_self on public.platform_admins;
+create policy platform_admins_select_self on public.platform_admins
+for select to authenticated using (
+  lower(trim(email)) = lower(trim(coalesce((select auth.jwt ()->>'email'), '')))
+);
+
 create or replace function public.is_platform_super_admin ()
 returns boolean
 language sql
 stable
 as $$
-  select lower(trim(coalesce((select auth.jwt ()->>'email'), '')))
-    = 'dariusdavid725@gmail.com';
+  select exists (
+    select 1
+    from public.platform_admins pa
+    where lower(trim(pa.email)) = lower(trim(coalesce((select auth.jwt ()->>'email'), '')))
+  );
 $$;
 
 revoke all on function public.is_platform_super_admin () from public;
 grant execute on function public.is_platform_super_admin () to authenticated;
+
+create or replace function public.list_platform_admin_emails ()
+returns table (
+  email text,
+  added_at timestamptz
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select pa.email, pa.added_at
+  from public.platform_admins pa
+  where public.is_platform_super_admin ()
+  order by pa.email asc;
+$$;
+
+revoke all on function public.list_platform_admin_emails () from public;
+grant execute on function public.list_platform_admin_emails () to authenticated;
+
+create or replace function public.set_platform_admin_email (p_email text)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  cleaned text;
+begin
+  if not public.is_platform_super_admin () then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+
+  cleaned := lower(trim(coalesce(p_email, '')));
+  if cleaned = '' or position('@' in cleaned) < 2 then
+    raise exception 'invalid email' using errcode = '22023';
+  end if;
+
+  insert into public.platform_admins (email, added_by)
+  values (cleaned, auth.uid ())
+  on conflict (email) do nothing;
+end;
+$$;
+
+revoke all on function public.set_platform_admin_email (text) from public;
+grant execute on function public.set_platform_admin_email (text) to authenticated;
+
+create or replace function public.remove_platform_admin_email (p_email text)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  cleaned text;
+begin
+  if not public.is_platform_super_admin () then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+
+  cleaned := lower(trim(coalesce(p_email, '')));
+  if cleaned = '' then
+    return;
+  end if;
+
+  if cleaned = 'dariusdavid725@gmail.com' then
+    return;
+  end if;
+
+  delete from public.platform_admins where email = cleaned;
+end;
+$$;
+
+revoke all on function public.remove_platform_admin_email (text) from public;
+grant execute on function public.remove_platform_admin_email (text) to authenticated;
+
+create or replace function public.list_platform_users ()
+returns table (
+  user_id uuid,
+  email text,
+  display_name text,
+  created_at timestamptz,
+  household_count bigint
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    au.id as user_id,
+    au.email::text as email,
+    p.display_name,
+    au.created_at,
+    coalesce(count(hm.household_id), 0)::bigint as household_count
+  from auth.users au
+  left join public.profiles p on p.id = au.id
+  left join public.household_members hm on hm.user_id = au.id
+  where public.is_platform_super_admin ()
+  group by au.id, au.email, p.display_name, au.created_at
+  order by au.created_at desc
+  limit 300;
+$$;
+
+revoke all on function public.list_platform_users () from public;
+grant execute on function public.list_platform_users () to authenticated;
 
 -------------------------------------------------------------------------------
 -- RPC: create household + owner row (one transaction)

@@ -9,11 +9,11 @@ type Item = {
 };
 
 const NAV: readonly Item[] = [
-  { href: "/dashboard", label: "Board" },
+  { href: "/dashboard", label: "Home" },
   { href: "/dashboard/tasks", label: "Tasks" },
-  { href: "/dashboard/finances", label: "$" },
-  { href: "/dashboard/inventory", label: "Pantry" },
-  { href: "/dashboard/settings", label: "You" },
+  { href: "/dashboard/finances", label: "Expenses" },
+  { href: "/dashboard/inventory", label: "Groceries" },
+  { href: "/dashboard/settings", label: "Account" },
 ] as const;
 
 function isActive(pathname: string, href: string) {

@@ -21,15 +21,12 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="font-cozy-display text-2xl text-dm-text md:text-[1.65rem]"
+            className="text-xl font-semibold text-dm-text md:text-[1.35rem]"
           >
             DormMate
           </Link>
-          <Link
-            href="/"
-            className="hidden text-sm text-dm-muted underline decoration-dashed decoration-[var(--dm-border-strong)] underline-offset-4 hover:text-dm-text sm:inline"
-          >
-            About
+          <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-text sm:inline-flex">
+            Join household
           </Link>
         </div>
 
@@ -39,9 +36,21 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
               href="/dashboard/admin"
               className="rounded-md px-2 py-1 text-xs font-semibold text-dm-electric hover:underline"
             >
-              Admin
+              Site admin
             </Link>
           ) : null}
+          <Link
+            href="/dashboard/settings"
+            className="rounded-md px-2 py-1 text-xs font-semibold text-dm-muted hover:text-dm-text"
+          >
+            Account
+          </Link>
+          <Link
+            href="/dashboard/join"
+            className="rounded-md px-2 py-1 text-xs font-semibold text-dm-muted hover:text-dm-text sm:hidden"
+          >
+            Join
+          </Link>
           <span
             title={email}
             className="hidden max-w-[11rem] truncate text-xs text-dm-muted lg:inline"

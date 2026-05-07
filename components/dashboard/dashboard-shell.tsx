@@ -38,11 +38,14 @@ export function DashboardShell({
               <div className="flex flex-col gap-0.5">
                 <SidebarNavLink href="/dashboard" title="Home" exact />
                 <SidebarNavLink href="/dashboard/tasks" title="Tasks" exact />
-                <SidebarNavLink href="/dashboard/inventory" title="Pantry" exact />
+                <SidebarNavLink href="/dashboard/finances" title="Expenses" exact />
+                <SidebarNavLink href="/dashboard/inventory" title="Groceries" exact />
+                <SidebarNavLink href="/dashboard/join" title="Join household" exact />
+                <SidebarNavLink href="/dashboard/settings" title="Account" exact />
                 {showAdmin ? (
                   <SidebarNavLink
                     href="/dashboard/admin"
-                    title="Admin"
+                    title="Site admin"
                     exact
                   />
                 ) : null}
