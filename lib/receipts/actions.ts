@@ -6,6 +6,7 @@ import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
+import { normalizeShoppingCategory } from "@/lib/receipts/shopping-categories";
 import type { ReceiptExtraction } from "@/lib/receipts/types";
 import { createClient } from "@/lib/supabase/server";
 
@@ -50,6 +51,8 @@ export async function saveReceiptFromScan(
     }
   }
 
+  const cat = normalizeShoppingCategory(extraction.shopping_category);
+
   const { error } = await supabase.from("receipts").insert({
     household_id: householdId,
     created_by: user.id,
@@ -58,6 +61,7 @@ export async function saveReceiptFromScan(
     currency: extraction.currency || "EUR",
     purchased_at: purchasedAt,
     source_filename: filename,
+    shopping_category: cat,
     extraction: extraction as unknown as Record<string, unknown>,
   });
 

@@ -1,9 +1,12 @@
-import type { ReceiptLineItem, ReceiptRow } from "@/lib/receipts/types";
+import { ReceiptLineSplitPanel } from "@/components/receipts/receipt-line-split-panel";
 import { formatMoneySafe } from "@/lib/currency/format-money";
 import {
   createExpenseFromReceiptSelectedMembers,
   createExpenseFromReceiptSplitAll,
 } from "@/lib/expenses/actions";
+import { extractReceiptLines } from "@/lib/receipts/parse-extraction-lines";
+import { shoppingCategoryLabel } from "@/lib/receipts/shopping-categories";
+import type { ReceiptRow } from "@/lib/receipts/types";
 
 function fmtWhen(iso: string) {
   try {
@@ -14,29 +17,6 @@ function fmtWhen(iso: string) {
   } catch {
     return iso;
   }
-}
-
-function lineItemsFromRow(r: ReceiptRow): ReceiptLineItem[] {
-  const raw = r.extraction?.line_items;
-  if (!Array.isArray(raw)) return [];
-  const out: ReceiptLineItem[] = [];
-  for (const item of raw) {
-    if (!item || typeof item !== "object") continue;
-    const li = item as Record<string, unknown>;
-    let amount: number | null =
-      typeof li.amount === "number" && Number.isFinite(li.amount) ?
-        li.amount
-      : null;
-    if (amount === null && typeof li.amount === "string") {
-      const parsed = Number(li.amount.replace(",", "."));
-      amount = Number.isFinite(parsed) ? parsed : null;
-    }
-    out.push({
-      name: typeof li.name === "string" ? li.name : "Item",
-      amount,
-    });
-  }
-  return out;
 }
 
 export function ReceiptList({
@@ -65,17 +45,30 @@ export function ReceiptList({
       <ul className="divide-y divide-dashed divide-[rgba(91,79,71,0.18)] px-4 py-3">
         {receipts.map((r) => {
           const alreadySplit = linkedReceiptIds.includes(r.id);
-          const lines = lineItemsFromRow(r);
+          const lines = extractReceiptLines(r);
           const notes =
             typeof r.extraction?.notes === "string" ? r.extraction.notes : "";
+          const catLabel = shoppingCategoryLabel(
+            r.shopping_category ??
+              (typeof r.extraction?.shopping_category === "string"
+                ? r.extraction.shopping_category
+                : null),
+          );
 
           return (
             <li key={r.id} className="cozy-hover-wiggle py-3 first:pt-0">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-dm-text">
-                    {r.merchant ?? "Unknown store"}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="truncate font-semibold text-dm-text">
+                      {r.merchant ?? "Unknown store"}
+                    </p>
+                    {catLabel ?
+                      <span className="shrink-0 rounded-full bg-dm-bg/80 px-2 py-px text-[10px] font-semibold uppercase tracking-wide text-dm-muted ring-1 ring-[var(--dm-border-strong)]">
+                        {catLabel}
+                      </span>
+                    : null}
+                  </div>
                   <p className="mt-1 text-[11px] text-dm-muted tabular-nums">
                     Added {fmtWhen(r.created_at)}
                     {r.source_filename ? ` · ${r.source_filename}` : ""}
@@ -214,6 +207,22 @@ export function ReceiptList({
                     <p className="mt-2 text-[12px] text-dm-muted">{notes}</p>
                   ) : null}
                 </details>
+              ) : null}
+
+              {enableSplitAllAction &&
+              !alreadySplit &&
+              lines.length > 0 &&
+              memberOptions.length > 0 &&
+              r.total_amount != null &&
+              r.total_amount > 0 ? (
+                <ReceiptLineSplitPanel
+                  receiptId={r.id}
+                  householdId={r.household_id}
+                  totalAmount={Number(r.total_amount)}
+                  currency={r.currency}
+                  lineItems={lines}
+                  memberOptions={memberOptions}
+                />
               ) : null}
             </li>
           );

@@ -10,6 +10,8 @@ export type ReceiptExtraction = {
   currency: string;
   purchased_at: string | null;
   line_items: ReceiptLineItem[];
+  /** groceries | pharmacy | household | … (see shopping-categories). */
+  shopping_category?: string | null;
   notes?: string;
 };
 
@@ -22,6 +24,7 @@ export type ReceiptRow = {
   currency: string;
   purchased_at: string | null;
   source_filename: string | null;
+  shopping_category?: string | null;
   extraction: ReceiptExtraction & Record<string, unknown>;
   created_at: string;
 };

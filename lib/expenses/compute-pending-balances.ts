@@ -1,5 +1,6 @@
 import type {
   BalanceRow,
+  ExpenseSplitPart,
   HouseholdExpenseRow,
 } from "@/lib/expenses/queries";
 
@@ -13,18 +14,19 @@ export type BalanceSection = {
  */
 export function computePendingBalanceSections(
   expenses: HouseholdExpenseRow[],
-  splitUserIdsByExpenseId: Map<string, string[]>,
+  splitPartsByExpenseId: Map<string, ExpenseSplitPart[]>,
 ): BalanceSection[] {
   const perCurrency = new Map<string, Map<string, number>>();
 
   for (const e of expenses) {
     if (e.status !== "pending") continue;
-    const splits = splitUserIdsByExpenseId.get(e.id) ?? [];
-    if (splits.length === 0) continue;
+    const parts = splitPartsByExpenseId.get(e.id) ?? [];
+    if (parts.length === 0) continue;
+
+    const sumW = parts.reduce((s, p) => s + p.weight, 0);
+    if (sumW <= 0) continue;
 
     const cur = (e.currency || "EUR").toUpperCase().slice(0, 8);
-    const cnt = splits.length;
-    const share = e.amount / cnt;
 
     let users = perCurrency.get(cur);
     if (!users) {
@@ -32,8 +34,9 @@ export function computePendingBalanceSections(
       perCurrency.set(cur, users);
     }
 
-    for (const uid of splits) {
-      users.set(uid, (users.get(uid) ?? 0) - share);
+    for (const p of parts) {
+      const share = e.amount * (p.weight / sumW);
+      users.set(p.userId, (users.get(p.userId) ?? 0) - share);
     }
     users.set(
       e.paidByUserId,

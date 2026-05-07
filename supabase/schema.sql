@@ -65,6 +65,7 @@ create table if not exists public.receipts (
   currency text not null default 'EUR',
   purchased_at timestamptz,
   source_filename text,
+  shopping_category text,
   extraction jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now ()
 );
@@ -798,8 +799,11 @@ create unique index if not exists household_expenses_source_receipt_unique
 create table if not exists public.household_expense_splits (
   expense_id uuid not null references public.household_expenses (id) on delete cascade,
   user_id uuid not null references auth.users (id) on delete cascade,
+  weight numeric (14, 6) not null default 1 check (weight > 0),
   primary key (expense_id, user_id)
 );
+
+comment on column public.household_expense_splits.weight is 'Share of expense total; debit per user = amount * weight / sum(weights).';
 
 -------------------------------------------------------------------------------
 -- Events + RSVP
@@ -1065,8 +1069,18 @@ revoke all on function public.promote_household_member_to_admin (uuid, uuid) fro
 grant execute on function public.promote_household_member_to_admin (uuid, uuid) to authenticated;
 
 -------------------------------------------------------------------------------
--- RPC: create expense + equal splits (atomic)
+-- RPC: create expense + splits (equal weights when p_split_weights is null)
 -------------------------------------------------------------------------------
+drop function if exists public.create_household_expense_with_splits (
+  uuid,
+  text,
+  numeric,
+  text,
+  date,
+  uuid,
+  uuid[]
+);
+
 create or replace function public.create_household_expense_with_splits (
   p_household_id uuid,
   p_title text,
@@ -1074,7 +1088,8 @@ create or replace function public.create_household_expense_with_splits (
   p_currency text,
   p_expense_date date,
   p_paid_by_user_id uuid,
-  p_split_user_ids uuid[]
+  p_split_user_ids uuid[],
+  p_split_weights numeric[] default null
 )
 returns uuid
 language plpgsql
@@ -1086,8 +1101,11 @@ declare
   uid uuid := auth.uid ();
   eid uuid;
   n int;
+  i int;
   u uuid;
+  w numeric;
   tt text;
+  nw int;
 begin
   if uid is null then
     raise exception 'not authenticated' using errcode = '42501';
@@ -1111,6 +1129,12 @@ begin
 
   if n < 1 then
     raise exception 'pick at least one person to split with' using errcode = '22023';
+  end if;
+
+  nw := coalesce(array_length(p_split_weights, 1), 0);
+
+  if p_split_weights is not null and nw <> n then
+    raise exception 'split_weights length must match split_user_ids' using errcode = '22023';
   end if;
 
   if not exists (
@@ -1156,10 +1180,16 @@ begin
   )
   returning id into eid;
 
-  foreach u in array p_split_user_ids
+  for i in 1..n
   loop
-    insert into public.household_expense_splits (expense_id, user_id)
-    values (eid, u);
+    u := p_split_user_ids[i];
+    if p_split_weights is null then
+      w := 1::numeric;
+    else
+      w := greatest(coalesce(p_split_weights[i], 1::numeric), 0.000001::numeric);
+    end if;
+    insert into public.household_expense_splits (expense_id, user_id, weight)
+    values (eid, u, w);
   end loop;
 
   return eid;
@@ -1173,7 +1203,8 @@ revoke all on function public.create_household_expense_with_splits (
   text,
   date,
   uuid,
-  uuid[]
+  uuid[],
+  numeric[]
 ) from public;
 grant execute on function public.create_household_expense_with_splits (
   uuid,
@@ -1182,11 +1213,12 @@ grant execute on function public.create_household_expense_with_splits (
   text,
   date,
   uuid,
-  uuid[]
+  uuid[],
+  numeric[]
 ) to authenticated;
 
 -------------------------------------------------------------------------------
--- RPC: net balances from pending expenses (equal splits)
+-- RPC: net balances from pending expenses (weighted splits)
 -------------------------------------------------------------------------------
 create or replace function public.household_expense_net_balances (p_household_id uuid)
 returns table (user_id uuid, net_amount numeric)
@@ -1201,16 +1233,16 @@ as $$
     where e.household_id = p_household_id
       and e.status = 'pending'
   ),
-  split_counts as (
-    select s.expense_id, count(*)::numeric as cnt
+  split_sums as (
+    select s.expense_id, sum(s.weight)::numeric as sum_w
     from public.household_expense_splits s
     where s.expense_id in (select ex.id from ex)
     group by s.expense_id
   ),
   debits as (
-    select s.user_id as uid, sum(-(ex.amount / sc.cnt)) as delta
+    select s.user_id as uid, sum(-(ex.amount * s.weight / nullif(sw.sum_w, 0))) as delta
     from ex
-    join split_counts sc on sc.expense_id = ex.id
+    join split_sums sw on sw.expense_id = ex.id
     join public.household_expense_splits s on s.expense_id = ex.id
     group by s.user_id
   ),
@@ -1590,7 +1622,9 @@ begin
       'total',
       new.total_amount,
       'currency',
-      new.currency
+      new.currency,
+      'shopping_category',
+      new.shopping_category
     )
   );
   return new;
@@ -1676,3 +1710,22 @@ create trigger trg_event_created_activity
   after insert on public.household_events
   for each row
 execute procedure public.log_activity_event_created ();
+
+-------------------------------------------------------------------------------
+-- Existing databases (additive): receipt category + split weights
+-------------------------------------------------------------------------------
+alter table public.receipts
+  add column if not exists shopping_category text;
+
+alter table public.household_expense_splits
+  add column if not exists weight numeric (14, 6);
+
+update public.household_expense_splits
+set weight = 1
+where weight is null;
+
+alter table public.household_expense_splits
+  alter column weight set default 1;
+
+alter table public.household_expense_splits
+  alter column weight set not null;

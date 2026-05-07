@@ -1,6 +1,9 @@
 import { SettleExpenseForm } from "@/components/expenses/settle-expense-form";
 
-import type { HouseholdExpenseRow } from "@/lib/expenses/queries";
+import type {
+  ExpenseSplitPart,
+  HouseholdExpenseRow,
+} from "@/lib/expenses/queries";
 import { formatMoneySafe } from "@/lib/currency/format-money";
 
 function fmtDate(val: string) {
@@ -13,15 +16,37 @@ function fmtDate(val: string) {
   }
 }
 
+function formatSplitParts(
+  parts: ExpenseSplitPart[],
+  labels: Record<string, string>,
+): string {
+  if (!parts.length) return "—";
+  const sumW = parts.reduce((s, p) => s + p.weight, 0);
+  if (sumW <= 0) return "—";
+  const equal = parts.every(
+    (p) => Math.abs(p.weight - parts[0].weight) < 0.000001 * Math.max(sumW, 1),
+  );
+  if (equal) {
+    return parts.map((p) => labels[p.userId]?.trim() ?? "Housemate").join(", ");
+  }
+  return parts
+    .map((p) => {
+      const pct = Math.round((p.weight / sumW) * 1000) / 10;
+      const name = labels[p.userId]?.trim() ?? "Housemate";
+      return `${name} (${pct}%)`;
+    })
+    .join(", ");
+}
+
 export function HouseholdExpenseList({
   householdId,
   expenses,
-  splitUserIdsByExpenseId,
+  splitPartsByExpenseId,
   memberLabels,
 }: {
   householdId: string;
   expenses: HouseholdExpenseRow[];
-  splitUserIdsByExpenseId: Map<string, string[]>;
+  splitPartsByExpenseId: Map<string, ExpenseSplitPart[]>;
   memberLabels: Record<string, string>;
 }) {
   if (!expenses.length) {
@@ -35,13 +60,9 @@ export function HouseholdExpenseList({
   return (
     <ul className="mt-6 space-y-3">
       {expenses.map((e) => {
-        const splits = splitUserIdsByExpenseId.get(e.id) ?? [];
+        const parts = splitPartsByExpenseId.get(e.id) ?? [];
         const payer = memberLabels[e.paidByUserId] ?? "Housemate";
-        const splitNames =
-          splits
-            .map((id) => memberLabels[id]?.trim())
-            .filter(Boolean)
-            .join(", ") || "—";
+        const splitSummary = formatSplitParts(parts, memberLabels);
         const settled = e.status === "settled";
 
         return (
@@ -56,7 +77,7 @@ export function HouseholdExpenseList({
                   {fmtDate(e.expenseDate)} · paid by{" "}
                   <span className="text-dm-text">{payer}</span>
                   <span className="mx-2 opacity-40">·</span>
-                  split with {splitNames}
+                  shares: {splitSummary}
                 </p>
                 <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
                   {settled

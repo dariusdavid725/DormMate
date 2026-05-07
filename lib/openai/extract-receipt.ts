@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 
 import type { ReceiptExtraction } from "@/lib/receipts/types";
+import { normalizeShoppingCategory } from "@/lib/receipts/shopping-categories";
 
 const SYSTEM = `You read retail receipts for shared flats (students & young renters).
 Return ONLY valid JSON with this shape (no markdown):
@@ -10,6 +11,10 @@ Return ONLY valid JSON with this shape (no markdown):
   "currency": string (ISO 4217 code — use RON for Romanian lei / LEI / L; EUR for euro receipts; USD for dollars),
   "purchased_at": string | null (ISO 8601 date if you can infer from receipt, else null),
   "line_items": [ { "name": string, "amount": number | null } ],
+  "shopping_category": string — ONE of:
+    groceries | pharmacy | household | eating_out | electronics | beauty |
+    alcohol_tobacco | transport | entertainment | clothing | pets | stationery | other
+    (pick best fit from product mix; groceries for supermarkets; pharmacy for meds-only),
   "notes": string | null (short uncertainty note if handwriting/blur)
 }
 Rules:
@@ -87,6 +92,7 @@ function coercePayload(raw: unknown): ReceiptExtraction {
       currency: "EUR",
       purchased_at: null,
       line_items: [],
+      shopping_category: "other",
       notes: "Could not parse model output.",
     };
   }
@@ -99,6 +105,7 @@ function coercePayload(raw: unknown): ReceiptExtraction {
     total: normalizeNumber(o.total),
     currency: normalizeCurrency(o.currency),
     purchased_at: typeof o.purchased_at === "string" ? o.purchased_at : null,
+    shopping_category: normalizeShoppingCategory(o.shopping_category),
     line_items: lineItemsRaw
       .filter((x): x is Record<string, unknown> => !!x && typeof x === "object")
       .map((li) => ({

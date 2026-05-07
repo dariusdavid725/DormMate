@@ -14,6 +14,7 @@ import {
   saveReceiptFromScan,
   type SaveReceiptState,
 } from "@/lib/receipts/actions";
+import { shoppingCategoryLabel } from "@/lib/receipts/shopping-categories";
 import type { ReceiptExtraction } from "@/lib/receipts/types";
 
 type Phase = "idle" | "reading" | "preview" | "saved";
@@ -237,12 +238,21 @@ function ReceiptPreview({
         <p className="text-sm font-medium text-dm-danger">{state.error}</p>
       ) : null}
 
-      <dl className="grid gap-3 text-sm sm:grid-cols-2">
+      <dl className="grid gap-3 text-sm sm:grid-cols-3">
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
             Store
           </dt>
           <dd className="font-medium text-dm-text">{extraction.merchant ?? "—"}</dd>
+        </div>
+        <div>
+          <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+            Category
+          </dt>
+          <dd className="font-medium text-dm-text">
+            {shoppingCategoryLabel(extraction.shopping_category ?? undefined) ??
+              "Other"}
+          </dd>
         </div>
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">

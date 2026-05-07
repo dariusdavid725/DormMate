@@ -9,7 +9,7 @@ export const loadReceiptsForHousehold = cache(async (householdId: string) => {
   const { data, error } = await supabase
     .from("receipts")
     .select(
-      "id, household_id, created_by, merchant, total_amount, currency, purchased_at, source_filename, extraction, created_at",
+      "id, household_id, created_by, merchant, total_amount, currency, purchased_at, source_filename, shopping_category, extraction, created_at",
     )
     .eq("household_id", householdId)
     .order("created_at", { ascending: false })

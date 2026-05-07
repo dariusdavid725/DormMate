@@ -19,7 +19,7 @@ export function GettingStartedHint({
           (computer).
         </li>
         <li>
-          Use <strong className="text-dm-text">Receipts</strong> to photograph a receipt (tap it later to see scanned lines).
+          Use <strong className="text-dm-text">Receipts</strong> to photograph a receipt (tap &quot;Split by items&quot; so each person only pays lines they used).
           Use <strong className="text-dm-text">Money</strong> to split a bill — after Revolut/cash, tap{" "}
           <strong className="text-dm-text">We settled up</strong> so it stops counting.
         </li>

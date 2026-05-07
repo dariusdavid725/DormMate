@@ -70,33 +70,46 @@ export const loadHouseholdExpenses = cache(async (householdId: string) => {
   return { error: null as string | null, expenses };
 });
 
+export type ExpenseSplitPart = {
+  userId: string;
+  weight: number;
+};
+
 export async function loadExpenseSplits(expenseIds: string[]) {
   if (expenseIds.length === 0) {
     return {
       error: null as string | null,
-      byExpense: new Map<string, string[]>(),
+      byExpense: new Map<string, ExpenseSplitPart[]>(),
     };
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("household_expense_splits")
-    .select("expense_id, user_id")
+    .select("expense_id, user_id, weight")
     .in("expense_id", expenseIds);
 
   if (error?.message) {
     console.error("[expenses] splits", error.message);
     return {
       error: error.message,
-      byExpense: new Map<string, string[]>(),
+      byExpense: new Map<string, ExpenseSplitPart[]>(),
     };
   }
 
-  const byExpense = new Map<string, string[]>();
+  const byExpense = new Map<string, ExpenseSplitPart[]>();
   for (const raw of data ?? []) {
-    const row = raw as { expense_id: string; user_id: string };
+    const row = raw as {
+      expense_id: string;
+      user_id: string;
+      weight?: number | string | null;
+    };
+    const w = Number(row.weight ?? 1);
     const list = byExpense.get(row.expense_id) ?? [];
-    list.push(row.user_id);
+    list.push({
+      userId: row.user_id,
+      weight: Number.isFinite(w) && w > 0 ? w : 1,
+    });
     byExpense.set(row.expense_id, list);
   }
 

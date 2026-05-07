@@ -250,32 +250,32 @@ export default async function HouseholdDetailPage(props: PageProps) {
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
           <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Tasks" />
           <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="Money" />
+          <TabLink active={view === "receipts"} href={`${tabBase}?view=receipts`} label="Receipts" />
           <TabLink active={view === "events"} href={`${tabBase}?view=events`} label="Events" />
           <TabLink active={view === "members"} href={`${tabBase}?view=members`} label="Members" />
-          <TabLink active={view === "receipts"} href={`${tabBase}?view=receipts`} label="Receipts" />
         </div>
       </div>
 
       {view === "overview" ? (
         <>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <OverviewCard href={`${tabBase}?view=receipts`}>
-              Receipts · scan & save
-            </OverviewCard>
             <OverviewVariant href={`${tabBase}?view=tasks`} variant="note">
-              Tasks · stickies
+              Tasks · chores
             </OverviewVariant>
             <OverviewCard href={`${tabBase}?view=expenses`}>
               Money · split costs
+            </OverviewCard>
+            <OverviewCard href={`${tabBase}?view=receipts`}>
+              Receipts · scan & split
             </OverviewCard>
             <OverviewVariant href={`${tabBase}?view=events`} variant="poster">
               Events · RSVPs
             </OverviewVariant>
             <OverviewCard href={`${tabBase}?view=members`}>
-              Crew · invites
+              Members · invites
             </OverviewCard>
             <OverviewCard href="/dashboard/join">
-              Join another pad
+              Join another household
             </OverviewCard>
           </div>
 
@@ -464,7 +464,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 <HouseholdExpenseList
                   householdId={id}
                   expenses={expensesPayload?.expenses ?? []}
-                  splitUserIdsByExpenseId={splitsPayload?.byExpense ?? new Map()}
+                  splitPartsByExpenseId={splitsPayload?.byExpense ?? new Map()}
                   memberLabels={memberLabels}
                 />
               </div>
