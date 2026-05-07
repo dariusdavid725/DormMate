@@ -16,7 +16,7 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
     : "?";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/92 shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/92 pt-[env(safe-area-inset-top)] shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
       <div className="flex h-14 items-center justify-between gap-4 px-4 lg:h-14 lg:px-8">
         <div className="flex min-w-0 items-center gap-6">
           <Link
@@ -66,7 +66,7 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
           <form action={signOut}>
             <button
               type="submit"
-              className="rounded-md border border-dashed border-[var(--dm-border-strong)] bg-transparent px-3 py-1.5 text-xs font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
+              className="touch-manipulation rounded-md border border-dashed border-[var(--dm-border-strong)] bg-transparent px-3 py-2 text-xs font-medium text-dm-muted min-h-[44px] sm:min-h-0 sm:py-1.5 hover:border-dm-electric hover:text-dm-text"
             >
               Out
             </button>

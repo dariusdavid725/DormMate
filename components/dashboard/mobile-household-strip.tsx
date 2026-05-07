@@ -34,7 +34,7 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
             if (!id) return;
             router.push(`/dashboard/household/${id}`);
           }}
-          className="max-w-[70vw] rounded-md border border-[var(--dm-border-strong)] bg-dm-surface px-2.5 py-1.5 text-xs font-medium text-dm-text"
+          className="max-w-[70vw] min-h-[44px] touch-manipulation rounded-md border border-[var(--dm-border-strong)] bg-dm-surface px-2.5 py-2 text-sm font-medium text-dm-text"
         >
           {households.map((h) => (
             <option key={h.id} value={h.id}>
@@ -49,7 +49,7 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
       <button
         type="button"
         onClick={() => router.push("/dashboard/join")}
-        className="mt-2 rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1.5 text-[11px] font-semibold text-dm-muted"
+        className="mt-2 min-h-[44px] touch-manipulation rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-muted"
       >
         Join with code
       </button>

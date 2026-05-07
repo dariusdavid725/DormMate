@@ -17,7 +17,7 @@ export async function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-dashed border-[var(--dm-border-strong)] bg-dm-surface/95 shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-dashed border-[var(--dm-border-strong)] bg-dm-surface/95 pt-[env(safe-area-inset-top)] shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
         <Link
           href="/"
@@ -33,14 +33,14 @@ export async function SiteHeader() {
               </span>
               <Link
                 href="/dashboard"
-                className="rounded-md bg-dm-electric px-4 py-2 text-xs font-semibold text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] hover:brightness-105"
+                className="touch-manipulation inline-flex min-h-[44px] items-center justify-center rounded-md bg-dm-electric px-4 py-2 text-xs font-semibold text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] hover:brightness-105 sm:min-h-0"
               >
                 Board
               </Link>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="rounded-md border border-dashed border-[var(--dm-border-strong)] px-4 py-2 text-xs font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text"
+                  className="touch-manipulation min-h-[44px] rounded-md border border-dashed border-[var(--dm-border-strong)] px-4 py-2 text-xs font-medium text-dm-muted hover:border-dm-electric hover:text-dm-text sm:min-h-0"
                 >
                   Sign out
                 </button>
@@ -50,13 +50,13 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 text-sm font-medium text-dm-muted hover:text-dm-text"
+                className="touch-manipulation inline-flex min-h-[44px] items-center rounded-md px-3 py-2 text-sm font-medium text-dm-muted hover:text-dm-text sm:min-h-0"
               >
                 Log in
               </Link>
               <Link
                 href="/signup"
-                className="rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105"
+                className="touch-manipulation inline-flex min-h-[44px] items-center justify-center rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105 sm:min-h-0"
               >
                 Start
               </Link>

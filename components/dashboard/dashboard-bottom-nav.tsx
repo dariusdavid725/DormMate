@@ -47,7 +47,7 @@ export function DashboardBottomNav() {
                 prefetch
                 aria-current={active ? "page" : undefined}
                 className={[
-                  "flex min-h-12 flex-col items-center justify-center rounded-md px-1 py-1.5 font-semibold transition-colors active:scale-[0.98]",
+                  "touch-manipulation flex min-h-12 flex-col items-center justify-center rounded-md px-1 py-1.5 font-semibold transition-colors active:scale-[0.98]",
                   active
                     ? "bg-[rgba(247,236,184,0.55)] text-[var(--dm-electric-deep)]"
                     : "text-dm-muted hover:bg-dm-elevated/80 hover:text-dm-text",
