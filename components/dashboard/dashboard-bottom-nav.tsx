@@ -16,23 +16,6 @@ const NAV: readonly Item[] = [
   { href: "/dashboard/settings", label: "You" },
 ] as const;
 
-function iconFor(href: string): string {
-  switch (href) {
-    case "/dashboard":
-      return "🏠";
-    case "/dashboard/tasks":
-      return "✅";
-    case "/dashboard/finances":
-      return "💸";
-    case "/dashboard/inventory":
-      return "🧺";
-    case "/dashboard/settings":
-      return "👤";
-    default:
-      return "•";
-  }
-}
-
 function isActive(pathname: string, href: string) {
   if (href === "/dashboard") {
     return (
@@ -70,9 +53,6 @@ export function DashboardBottomNav() {
                     : "text-dm-muted hover:bg-dm-elevated/80 hover:text-dm-text",
                 ].join(" ")}
               >
-                <span className="text-[14px] leading-none" aria-hidden>
-                  {iconFor(item.href)}
-                </span>
                 {item.label}
               </Link>
             </li>

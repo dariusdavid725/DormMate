@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 type Item = { id: string; name: string };
@@ -44,28 +43,9 @@ export function MobileHouseholdStrip({ households }: { households: Item[] }) {
           ))}
         </select>
       </div>
-      <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5">
-        {households.map((h) => {
-          const href = `/dashboard/household/${h.id}`;
-          const active = pathname === href || pathname.startsWith(`${href}/`);
-          return (
-            <Link
-              key={h.id}
-              href={href}
-              prefetch
-              aria-current={active ? "page" : undefined}
-              className={[
-                "cozy-note cozy-hover-wiggle shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-semibold shadow-[var(--cozy-shadow-note)]",
-                active
-                  ? "ring-2 ring-[rgba(90,122,95,0.35)] ring-offset-2 ring-offset-dm-bg-elev text-dm-text"
-                  : "text-dm-muted",
-              ].join(" ")}
-            >
-              {h.name}
-            </Link>
-          );
-        })}
-      </div>
+      <p className="mt-1 text-[11px] text-dm-muted">
+        {households.length} household{households.length === 1 ? "" : "s"} available.
+      </p>
     </div>
   );
 }

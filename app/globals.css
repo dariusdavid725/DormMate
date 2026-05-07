@@ -95,10 +95,14 @@
 
 html {
   color-scheme: light;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body.dm-app-body {
   min-height: 100dvh;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -106,6 +110,8 @@ body {
   background-image: var(--dm-body-fill);
   background-attachment: fixed;
   color: var(--dm-text);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Playful headings — Caveat (--font-cozy-display from Next font on html) */
@@ -127,6 +133,13 @@ body {
   transform: rotate(0.4deg);
 }
 @media (prefers-reduced-motion: reduce) {
+  .cozy-tilt-xs,
+  .cozy-tilt-xs-alt {
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
   .cozy-tilt-xs,
   .cozy-tilt-xs-alt {
     transform: none;

@@ -2,6 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
+import {
+  shouldExposeSupabaseError,
+  PUBLIC_TRY_AGAIN,
+} from "@/lib/errors/public";
 import { createClient } from "@/lib/supabase/server";
 
 function shortNameFromEmail(email: string | undefined | null) {
@@ -200,7 +204,9 @@ export async function updateProfileDetails(
 
   if (error?.message) {
     console.error("[profiles] update details", error.message);
-    return { error: "Could not save profile right now." };
+    return {
+      error: shouldExposeSupabaseError() ? error.message : PUBLIC_TRY_AGAIN,
+    };
   }
 
   revalidatePath("/dashboard");

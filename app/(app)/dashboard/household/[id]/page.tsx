@@ -240,8 +240,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </div>
       </div>
 
-      <div className="mt-7 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:overflow-visible sm:flex-wrap [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-0 shrink-0 gap-1 rounded-[3px] border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-1 shadow-[var(--cozy-shadow-paper)]">
+      <div className="mt-7 pb-2">
+        <div className="grid grid-cols-3 gap-1 rounded-[3px] border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-1 shadow-[var(--cozy-shadow-paper)] sm:flex sm:min-w-0 sm:shrink-0 sm:flex-wrap">
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
           <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Tasks" />
           <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="$" />
@@ -515,7 +515,7 @@ function TabLink({
       scroll={false}
       aria-current={active ? "page" : undefined}
       className={[
-        "rounded-sm px-4 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[5.85rem]",
+        "rounded-sm px-3 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[5.85rem]",
         active
           ? href.includes("receipts")
             ? "bg-dm-accent-warn-bg text-[var(--dm-accent-warn-text)] ring-1 ring-[var(--dm-border-strong)]"

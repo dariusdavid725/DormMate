@@ -147,7 +147,8 @@ export function AccountPreferencesForm({
           <input
             type="file"
             name="avatar"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/*"
+            capture="environment"
             className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
           />
         </label>
