@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { useFormStatus } from "react-dom";
 
 import type { HouseholdMemberRow } from "@/lib/households/queries";
@@ -52,6 +53,9 @@ export function HouseholdMembersPanel({
   householdCreatorId: string;
   currentRole: string;
 }) {
+  const galleryRef = useRef<HTMLInputElement>(null);
+  const mobileGalleryRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const sorted = [...members].sort((a, b) => {
     if (a.userId === currentUserId) return -1;
     if (b.userId === currentUserId) return 1;
@@ -102,20 +106,50 @@ export function HouseholdMembersPanel({
         >
           <input type="hidden" name="household_id" value={householdId} />
           <div className="min-w-0 flex-1">
-            <label
-              htmlFor="avatar"
-              className="block text-xs font-semibold uppercase tracking-wide text-dm-muted"
-            >
+            <p className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
               Photo
-            </label>
+            </p>
+            <div className="sm:hidden mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => mobileGalleryRef.current?.click()}
+                className="rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text"
+              >
+                Choose gallery
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraRef.current?.click()}
+                className="rounded-md bg-dm-electric px-3 py-2 text-xs font-semibold text-white"
+              >
+                Take photo
+              </button>
+            </div>
             <input
-              id="avatar"
+              ref={mobileGalleryRef}
+              name="avatar"
+              type="file"
+              accept="image/*"
+              className="sr-only sm:hidden"
+            />
+            <input
+              ref={cameraRef}
               name="avatar"
               type="file"
               accept="image/*"
               capture="environment"
-              className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
+              className="sr-only"
             />
+            <label className="hidden sm:block mt-2 text-xs text-dm-muted">
+              Upload from computer
+              <input
+                ref={galleryRef}
+                name="avatar"
+                type="file"
+                accept="image/*"
+                className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
+              />
+            </label>
           </div>
           <button
             type="submit"

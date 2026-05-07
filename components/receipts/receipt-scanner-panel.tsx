@@ -21,7 +21,8 @@ const saveInitial: SaveReceiptState = {};
 
 export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<{
@@ -90,16 +91,45 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
             Photo in — total out. We stick it on the household receipt pile.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={phase === "reading"}
-          className="dm-scan-hero shrink-0 rounded-md px-4 py-2 text-sm font-semibold text-[#fffaf5] hover:brightness-105 disabled:pointer-events-none disabled:opacity-50"
-        >
-          {phase === "reading" ? "Reading…" : "Upload image"}
-        </button>
+        <div className="shrink-0 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => galleryInputRef.current?.click()}
+            disabled={phase === "reading"}
+            className="hidden sm:inline-flex dm-scan-hero rounded-md px-4 py-2 text-sm font-semibold text-[#fffaf5] hover:brightness-105 disabled:pointer-events-none disabled:opacity-50"
+          >
+            {phase === "reading" ? "Reading…" : "Upload image"}
+          </button>
+          <button
+            type="button"
+            onClick={() => galleryInputRef.current?.click()}
+            disabled={phase === "reading"}
+            className="sm:hidden rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text disabled:pointer-events-none disabled:opacity-50"
+          >
+            Gallery
+          </button>
+          <button
+            type="button"
+            onClick={() => cameraInputRef.current?.click()}
+            disabled={phase === "reading"}
+            className="sm:hidden dm-scan-hero rounded-md px-3 py-2 text-xs font-semibold text-[#fffaf5] disabled:pointer-events-none disabled:opacity-50"
+          >
+            Camera
+          </button>
+        </div>
         <input
-          ref={inputRef}
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            void onPickFile(f);
+            e.target.value = "";
+          }}
+        />
+        <input
+          ref={cameraInputRef}
           type="file"
           accept="image/*"
           capture="environment"

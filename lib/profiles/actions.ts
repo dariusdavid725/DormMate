@@ -54,7 +54,10 @@ export async function updateProfileDisplayName(
 
 export async function uploadProfileAvatar(formData: FormData): Promise<void> {
   const householdId = String(formData.get("household_id") ?? "");
-  const file = formData.get("avatar") as File | null;
+  const candidates = formData
+    .getAll("avatar")
+    .filter((x): x is File => x instanceof File);
+  const file = candidates.find((f) => f.size > 0) ?? null;
   if (!file || file.size === 0) {
     console.warn("[profiles] no avatar file");
     return;
@@ -64,7 +67,14 @@ export async function uploadProfileAvatar(formData: FormData): Promise<void> {
     return;
   }
 
-  const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  const allowed = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/heic",
+    "image/heif",
+  ];
   if (!allowed.includes(file.type)) {
     console.warn("[profiles] invalid avatar type");
     return;
@@ -85,6 +95,10 @@ export async function uploadProfileAvatar(formData: FormData): Promise<void> {
         ? "webp"
         : file.type === "image/gif"
           ? "gif"
+          : file.type === "image/heic"
+            ? "heic"
+            : file.type === "image/heif"
+              ? "heif"
           : "jpg";
   const path = `${user.id}/avatar.${ext}`;
 

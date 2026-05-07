@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { useRef } from "react";
 
 import {
   type ProfileDetailsState,
@@ -39,6 +40,9 @@ export function AccountPreferencesForm({
 }: {
   profile: ProfileSeed;
 }) {
+  const galleryRef = useRef<HTMLInputElement>(null);
+  const mobileGalleryRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const [state, formAction] = useActionState<ProfileDetailsState, FormData>(
     updateProfileDetails,
     {},
@@ -142,21 +146,55 @@ export function AccountPreferencesForm({
       </form>
 
       <form action={uploadProfileAvatar} encType="multipart/form-data" className="space-y-3 border-t border-[var(--dm-border)] pt-6">
-        <label className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
+        <p className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
           Avatar photo
+        </p>
+        <div className="sm:hidden flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => mobileGalleryRef.current?.click()}
+            className="rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text"
+          >
+            Choose from gallery
+          </button>
+          <button
+            type="button"
+            onClick={() => cameraRef.current?.click()}
+            className="rounded-md bg-dm-electric px-3 py-2 text-xs font-semibold text-white"
+          >
+            Take photo now
+          </button>
+        </div>
+        <input
+          ref={mobileGalleryRef}
+          type="file"
+          name="avatar"
+          accept="image/*"
+          className="sr-only sm:hidden"
+        />
+        <label className="hidden sm:block text-xs font-semibold uppercase tracking-wide text-dm-muted">
+          Upload from computer
           <input
+            ref={galleryRef}
             type="file"
             name="avatar"
             accept="image/*"
-            capture="environment"
             className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
           />
         </label>
+        <input
+          ref={cameraRef}
+          type="file"
+          name="avatar"
+          accept="image/*"
+          capture="environment"
+          className="sr-only"
+        />
         <button
           type="submit"
           className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-semibold text-dm-text"
         >
-          <Submit idle="Upload avatar" />
+          <Submit idle="Save avatar" />
         </button>
       </form>
     </div>
