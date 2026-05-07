@@ -154,7 +154,9 @@ export default async function HouseholdDetailPage(props: PageProps) {
     view === "tasks" ? await loadCompletedTasksForHousehold(id, 20) : null;
 
   const expensesPayload =
-    view === "expenses" ? await loadHouseholdExpenses(id) : null;
+    view === "expenses" || view === "receipts"
+      ? await loadHouseholdExpenses(id)
+      : null;
 
   const balancePayload =
     view === "expenses" ?
@@ -167,6 +169,13 @@ export default async function HouseholdDetailPage(props: PageProps) {
     expensesPayload.expenses.length ?
       await loadExpenseSplits(expensesPayload.expenses.map((e) => e.id))
     : null;
+
+  const linkedReceiptIds =
+    view === "receipts"
+      ? (expensesPayload?.expenses ?? [])
+          .map((e) => e.sourceReceiptId)
+          .filter((x): x is string => !!x)
+      : [];
 
   const eventsPayload =
     view === "events" ? await loadHouseholdEvents(id) : null;
@@ -389,6 +398,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 <ReceiptList
                   receipts={receiptsPayload?.receipts ?? []}
                   emptyHint="No slips yet — add a scanned photo above or jot a manual bill under Money."
+                  enableSplitAllAction
+                  linkedReceiptIds={linkedReceiptIds}
                 />
               </div>
             )}

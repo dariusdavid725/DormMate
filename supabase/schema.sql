@@ -625,6 +625,7 @@ comment on table public.household_activities is 'Append-only feed: household eve
 create table if not exists public.household_expenses (
   id uuid primary key default gen_random_uuid (),
   household_id uuid not null references public.households (id) on delete cascade,
+  source_receipt_id uuid references public.receipts (id) on delete set null,
   title text not null check (length (trim(title)) between 1 and 200),
   amount numeric (14, 2) not null check (amount > 0),
   currency text not null default 'EUR',
@@ -638,6 +639,14 @@ create table if not exists public.household_expenses (
 
 create index if not exists household_expenses_household_idx
   on public.household_expenses (household_id, created_at desc);
+
+alter table public.household_expenses
+  add column if not exists source_receipt_id uuid
+  references public.receipts (id) on delete set null;
+
+create unique index if not exists household_expenses_source_receipt_unique
+  on public.household_expenses (source_receipt_id)
+  where source_receipt_id is not null;
 
 create table if not exists public.household_expense_splits (
   expense_id uuid not null references public.household_expenses (id) on delete cascade,

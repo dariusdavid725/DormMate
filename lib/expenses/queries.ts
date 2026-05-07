@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export type HouseholdExpenseRow = {
   id: string;
   householdId: string;
+  sourceReceiptId: string | null;
   title: string;
   amount: number;
   currency: string;
@@ -24,7 +25,7 @@ export const loadHouseholdExpenses = cache(async (householdId: string) => {
   const { data, error } = await supabase
     .from("household_expenses")
     .select(
-      "id, household_id, title, amount, currency, expense_date, paid_by_user_id, status, notes, created_by, created_at",
+      "id, household_id, source_receipt_id, title, amount, currency, expense_date, paid_by_user_id, status, notes, created_by, created_at",
     )
     .eq("household_id", householdId)
     .order("expense_date", { ascending: false })
@@ -39,6 +40,7 @@ export const loadHouseholdExpenses = cache(async (householdId: string) => {
     const x = r as {
       id: string;
       household_id: string;
+      source_receipt_id: string | null;
       title: string;
       amount: string | number;
       currency: string;
@@ -52,6 +54,7 @@ export const loadHouseholdExpenses = cache(async (householdId: string) => {
     return {
       id: x.id,
       householdId: x.household_id,
+      sourceReceiptId: x.source_receipt_id,
       title: x.title,
       amount: Number(x.amount),
       currency: x.currency,

@@ -1,4 +1,5 @@
 import type { ReceiptRow } from "@/lib/receipts/types";
+import { createExpenseFromReceiptSplitAll } from "@/lib/expenses/actions";
 
 function fmtMoney(amount: number | null, currency: string) {
   if (amount == null) return "—";
@@ -26,9 +27,13 @@ function fmtWhen(iso: string) {
 export function ReceiptList({
   receipts,
   emptyHint,
+  enableSplitAllAction = false,
+  linkedReceiptIds = [],
 }: {
   receipts: ReceiptRow[];
   emptyHint: string;
+  enableSplitAllAction?: boolean;
+  linkedReceiptIds?: string[];
 }) {
   if (receipts.length === 0) {
     return (
@@ -41,11 +46,13 @@ export function ReceiptList({
   return (
     <div className="cozy-receipt cozy-tilt-xs overflow-hidden">
       <ul className="divide-y divide-dashed divide-[rgba(91,79,71,0.18)] px-4 py-3">
-        {receipts.map((r) => (
-          <li
-            key={r.id}
-            className="cozy-hover-wiggle flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0"
-          >
+        {receipts.map((r) => {
+          const alreadySplit = linkedReceiptIds.includes(r.id);
+          return (
+            <li
+              key={r.id}
+              className="cozy-hover-wiggle flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0"
+            >
             <div className="min-w-0">
               <p className="truncate font-semibold text-dm-text">
                 {r.merchant ?? "Unknown"}
@@ -67,9 +74,34 @@ export function ReceiptList({
                   }).format(new Date(r.purchased_at))}
                 </p>
               ) : null}
+              {enableSplitAllAction &&
+              r.total_amount != null &&
+              r.total_amount > 0 &&
+              !alreadySplit ? (
+                <form action={createExpenseFromReceiptSplitAll} className="mt-2">
+                  <input type="hidden" name="receipt_id" value={r.id} />
+                  <input
+                    type="hidden"
+                    name="household_id"
+                    value={r.household_id}
+                  />
+                  <button
+                    type="submit"
+                    className="text-[11px] font-semibold text-dm-electric hover:underline"
+                  >
+                    Split all members
+                  </button>
+                </form>
+              ) : null}
+              {enableSplitAllAction && alreadySplit ? (
+                <p className="mt-2 text-[11px] font-semibold text-dm-muted">
+                  Split already created
+                </p>
+              ) : null}
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </div>
   );
