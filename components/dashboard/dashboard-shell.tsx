@@ -91,7 +91,7 @@ export function DashboardShell({
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex-1 px-4 pb-8 pt-5 lg:px-8 lg:pb-10 lg:pt-7">
+          <main className="relative flex-1 px-4 pb-24 pt-5 lg:px-8 lg:pb-10 lg:pt-7">
             {children}
           </main>
           <footer className="hidden border-t border-[var(--dm-border-strong)] px-4 py-3 text-center text-[11px] text-dm-muted lg:block lg:px-10">
