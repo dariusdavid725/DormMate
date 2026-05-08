@@ -42,7 +42,7 @@ export default async function InventoryPage({ searchParams }: Props) {
   const boughtCount = groceries.items.length - openCount;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-7 lg:max-w-6xl lg:space-y-7">
+    <div className="dm-page-enter mx-auto max-w-2xl space-y-7 lg:max-w-6xl lg:space-y-7">
       <header className="dm-module dm-module-depth relative hidden overflow-hidden px-6 pb-6 pt-5 lg:block">
         <div className="absolute right-5 top-4 h-14 w-14 rounded-2xl border border-[var(--dm-border)] bg-[radial-gradient(circle_at_35%_35%,rgba(111,127,94,0.3),transparent_70%)]" aria-hidden />
         <div className="dm-chip">Grocery board</div>

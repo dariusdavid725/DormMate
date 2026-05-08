@@ -45,7 +45,7 @@ export function MobileActionCardLink({
   );
 
   const box = [
-    "touch-manipulation flex min-h-[56px] w-full max-w-full items-center gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid/60 px-4 py-3 text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.05)] transition-[transform,box-shadow] active:scale-[0.99] lg:min-h-[52px] lg:px-3 lg:py-2.5",
+    "dm-interactive dm-focus-ring touch-manipulation flex min-h-[56px] w-full max-w-full items-center gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid/60 px-4 py-3 text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.05)] transition-[transform,box-shadow] active:scale-[0.99] lg:min-h-[52px] lg:px-3 lg:py-2.5",
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dm-electric)]",
     className,
   ].join(" ");
@@ -79,7 +79,7 @@ export function MobileActionCardButton({
     <button
       type="button"
       className={[
-        "touch-manipulation flex min-h-[56px] w-full max-w-full items-center gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid/60 px-4 py-3 text-left text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.05)] transition-[transform,box-shadow] active:scale-[0.99] lg:min-h-[52px] lg:px-3 lg:py-2.5",
+        "dm-interactive dm-focus-ring touch-manipulation flex min-h-[56px] w-full max-w-full items-center gap-3 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid/60 px-4 py-3 text-left text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.05)] transition-[transform,box-shadow] active:scale-[0.99] lg:min-h-[52px] lg:px-3 lg:py-2.5",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--dm-electric)]",
         className,
       ].join(" ")}

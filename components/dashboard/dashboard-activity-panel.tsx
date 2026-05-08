@@ -62,7 +62,7 @@ export function DashboardActivityPanel({
   const previewItems = showSeeMore ? filtered.slice(0, 4) : filtered;
 
   return (
-    <section className={`dm-module p-5 ${className}`}>
+    <section className={`dm-module dm-module-rich dm-page-enter p-5 ${className}`}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 className="dm-section-heading">Home activity</h2>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -71,12 +71,13 @@ export function DashboardActivityPanel({
               key={tab.id}
               type="button"
               onClick={() => setFilter(tab.id)}
-              className={[
-                "rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all duration-200",
+                    className={[
+                      "dm-tab dm-focus-ring dm-interactive px-2.5 py-1 text-[11px] font-semibold",
                 filter === tab.id
-                  ? "bg-[color-mix(in_srgb,var(--dm-electric)_14%,#fff)] text-[var(--dm-electric-deep)] ring-1 ring-[var(--dm-electric-border)]"
-                  : "bg-dm-surface-mid/45 text-dm-muted hover:bg-dm-surface-mid/70 hover:text-dm-text",
+                        ? "ring-1 ring-[var(--dm-electric-border)]"
+                        : "bg-dm-surface-mid/45 hover:bg-dm-surface-mid/70 hover:text-dm-text",
               ].join(" ")}
+                    data-active={filter === tab.id ? "true" : "false"}
             >
               {tab.label}
             </button>
@@ -88,7 +89,7 @@ export function DashboardActivityPanel({
 
       {showSeeMore ? (
         <div className="mt-3 flex justify-end">
-          <Link href="/dashboard/activity" className="text-[12px] font-semibold text-dm-electric hover:underline">
+          <Link href="/dashboard/activity" className="dm-focus-ring dm-interactive rounded-md px-1.5 py-0.5 text-[12px] font-semibold text-dm-electric hover:underline">
             See more activity
           </Link>
         </div>

@@ -29,7 +29,7 @@ export function HouseActivityFeed({
           return (
             <li
               key={`g-${item.id}`}
-              className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+              className="dm-card-enter dm-hover-lift rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
               style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
             >
               <div className="flex items-start justify-between gap-2">
@@ -45,7 +45,7 @@ export function HouseActivityFeed({
               {item.href ?
                   <Link
                     href={item.href}
-                    className="mt-1.5 inline-flex text-[11px] font-semibold text-dm-electric hover:underline"
+                    className="dm-focus-ring dm-interactive mt-1.5 inline-flex rounded-sm px-1 py-0.5 text-[11px] font-semibold text-dm-electric hover:underline"
                   >
                     Peek
                   </Link>
@@ -58,7 +58,7 @@ export function HouseActivityFeed({
           return (
             <li
               key={`r-${item.id}`}
-              className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+              className="dm-card-enter dm-hover-lift rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
               style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
             >
               <div className="flex items-start justify-between gap-2">
@@ -79,7 +79,7 @@ export function HouseActivityFeed({
               <p className="mt-1">
                 <Link
                   href={`/dashboard/household/${item.householdId}?view=receipts`}
-                  className="text-[11px] font-semibold text-dm-electric hover:underline"
+                  className="dm-focus-ring dm-interactive rounded-sm px-1 py-0.5 text-[11px] font-semibold text-dm-electric hover:underline"
                 >
                   Open
                 </Link>
@@ -91,7 +91,7 @@ export function HouseActivityFeed({
         return (
           <li
             key={`t-${item.id}`}
-            className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+            className="dm-card-enter dm-hover-lift rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
             style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
           >
             <div className="flex items-start justify-between gap-2">
@@ -110,7 +110,7 @@ export function HouseActivityFeed({
             </div>
             <Link
               href={`/dashboard/household/${item.householdId}?view=tasks`}
-              className="mt-1.5 inline-block text-[11px] font-semibold text-dm-electric hover:underline"
+              className="dm-focus-ring dm-interactive mt-1.5 inline-block rounded-sm px-1 py-0.5 text-[11px] font-semibold text-dm-electric hover:underline"
             >
               Chores
             </Link>

@@ -42,7 +42,7 @@ export function MobileListItem({
   );
 
   const shell = [
-    "flex max-lg:flex-col max-lg:gap-1 max-lg:py-4 min-h-[52px] flex-row items-start gap-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface/90 px-4 py-3.5 shadow-[1px_2px_0_rgba(54,47,40,0.04)] lg:min-h-[48px] lg:flex-row lg:gap-3 lg:px-3 lg:py-3",
+    "dm-hover-lift flex max-lg:flex-col max-lg:gap-1 max-lg:py-4 min-h-[52px] flex-row items-start gap-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface/90 px-4 py-3.5 shadow-[1px_2px_0_rgba(54,47,40,0.04)] lg:min-h-[48px] lg:flex-row lg:gap-3 lg:px-3 lg:py-3",
     className,
   ].join(" ");
 
@@ -51,7 +51,7 @@ export function MobileListItem({
       <Link
         href={href}
         prefetch
-        className={`${shell} touch-manipulation max-w-full transition-colors active:bg-dm-elevated/80`}
+        className={`${shell} dm-interactive dm-focus-ring touch-manipulation max-w-full transition-colors active:bg-dm-elevated/80`}
       >
         {body}
       </Link>

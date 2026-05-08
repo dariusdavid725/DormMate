@@ -109,7 +109,7 @@ export default async function DashboardOverviewPage() {
       />
 
       <div className="hidden lg:block">
-        <div className="mx-auto w-full max-w-[1240px] pb-12">
+        <div className="dm-page-enter mx-auto w-full max-w-[1240px] pb-12">
           <div className="dm-dashboard-grid">
             <header className="dm-hero-module dm-module-depth dm-card-enter col-span-12 px-6 pb-6 pt-5 lg:col-span-8">
               <div className="flex flex-wrap items-start justify-between gap-4">

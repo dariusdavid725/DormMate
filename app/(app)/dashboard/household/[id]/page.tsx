@@ -554,7 +554,7 @@ function TabLink({
       scroll={false}
       aria-current={active ? "page" : undefined}
       className={[
-        "flex min-h-[46px] flex-[1_1_calc(50%-4px)] items-center justify-center rounded-lg px-2 py-2 text-center text-[13px] font-semibold leading-tight transition max-lg:max-w-[calc(50%-4px)] lg:max-w-none lg:min-h-0 lg:flex-none lg:min-w-[5.85rem] lg:rounded-sm lg:px-3 lg:py-2.5 lg:text-sm lg:whitespace-nowrap",
+        "dm-tab dm-focus-ring dm-interactive flex min-h-[46px] flex-[1_1_calc(50%-4px)] items-center justify-center rounded-lg px-2 py-2 text-center text-[13px] font-semibold leading-tight transition max-lg:max-w-[calc(50%-4px)] lg:max-w-none lg:min-h-0 lg:flex-none lg:min-w-[5.85rem] lg:rounded-sm lg:px-3 lg:py-2.5 lg:text-sm lg:whitespace-nowrap",
         active
           ? href.includes("receipts")
             ? "bg-dm-accent-warn-bg text-[var(--dm-accent-warn-text)] ring-1 ring-[var(--dm-border-strong)]"
@@ -565,6 +565,7 @@ function TabLink({
                 : "bg-[color-mix(in_srgb,var(--dm-electric)_18%,transparent)] text-dm-electric ring-1 ring-[var(--dm-border-strong)]"
           : "text-dm-muted hover:text-dm-text",
       ].join(" ")}
+      data-active={active ? "true" : "false"}
     >
       {label}
     </Link>

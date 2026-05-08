@@ -97,7 +97,7 @@ export function HouseholdMembersPanel({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="dm-page-enter space-y-8">
       <section className="dm-module dm-module-depth p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>

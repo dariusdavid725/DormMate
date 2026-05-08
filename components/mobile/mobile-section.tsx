@@ -20,7 +20,7 @@ export function MobileSection({
 }: Props) {
   return (
     <section
-      className={`rounded-2xl border border-[var(--dm-border)] bg-dm-surface/95 p-4 shadow-[var(--cozy-shadow-paper)] max-lg:p-[1.125rem] lg:rounded-xl lg:border-[var(--dm-border-strong)] lg:shadow-none ${className}`}
+      className={`dm-elevated-surface dm-accent-glow rounded-2xl border border-[var(--dm-border)] bg-dm-surface/95 p-4 shadow-[var(--cozy-shadow-paper)] max-lg:p-[1.125rem] lg:rounded-xl lg:border-[var(--dm-border-strong)] lg:shadow-none ${className}`}
     >
       <div className="mb-3 flex flex-wrap items-start justify-between gap-x-2 gap-y-3 max-lg:mb-3.5">
         <div className="min-w-0 flex-1">

@@ -108,7 +108,7 @@ export default async function FinancesPage() {
   const focusHousehold = rows[0] ?? null;
 
   return (
-    <div className="mx-auto w-full max-w-[1240px] space-y-7">
+    <div className="dm-page-enter mx-auto w-full max-w-[1240px] space-y-7">
       <header className="dm-hero-module dm-module-depth overflow-hidden px-6 pb-6 pt-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">

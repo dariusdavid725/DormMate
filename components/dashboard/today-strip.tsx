@@ -42,7 +42,7 @@ export function TodayStrip({
         {cells.map((c, i) => (
           <div
             key={c.label}
-            className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-3 py-2.5 dm-card-enter"
+            className="dm-hover-lift rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-3 py-2.5 dm-card-enter"
             style={{ animationDelay: `${i * 40}ms` }}
           >
             <p className="text-[10px] font-semibold uppercase tracking-wide text-dm-muted">
