@@ -443,6 +443,10 @@ body {
     box-shadow 0.22s ease;
 }
 
+.dm-hover-tap:active {
+  transform: scale(0.98);
+}
+
 .dm-shell-grid {
   display: grid;
   gap: 1rem;
@@ -453,6 +457,46 @@ body {
     grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr);
     gap: 1.1rem;
   }
+}
+
+.dm-dashboard-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .dm-dashboard-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+.dm-card-enter {
+  animation: dm-fade-in-up 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dm-hover-lift {
+  transition:
+    transform 160ms ease,
+    box-shadow 180ms ease,
+    border-color 160ms ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dm-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(45, 41, 37, 0.09);
+    border-color: color-mix(in srgb, var(--dm-electric) 35%, var(--dm-border-strong));
+  }
+}
+
+.dm-avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.dm-avatar-stack > * + * {
+  margin-left: -0.45rem;
 }
 
 .dm-hero-module {

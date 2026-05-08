@@ -17,31 +17,39 @@ export function HouseActivityFeed({
   }
 
   return (
-    <ul className="cozy-poster divide-y divide-dashed divide-[rgba(91,83,71,0.2)] px-3 py-2">
+    <ul className="space-y-2">
       {items.map((item, i) => {
         if (item.kind === "generic_note") {
+          const kindLabel =
+            item.href?.includes("view=tasks") ? "Chores"
+            : item.href?.includes("view=expenses") ? "Money"
+            : item.href?.includes("view=events") ? "Events"
+            : item.href?.includes("/dashboard/inventory") ? "Groceries"
+            : "Update";
           return (
             <li
               key={`g-${item.id}`}
-              className="cozy-drop-in px-3 py-3 cozy-hover-wiggle rounded-sm bg-[rgba(254,253,249,0.72)] sm:ml-2 sm:mr-6"
-              style={{ animationDelay: `${Math.min(i, 8) * 42}ms` }}
+              className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+              style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
             >
-              <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
-                {item.label}
-              </p>
-              <p className="mt-1 text-[13px] text-dm-text">{item.body}</p>
-              <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-dm-muted">
-                <span>{item.householdName}</span>
-                <span>{formatRelativeTime(item.at)}</span>
-                {item.href ?
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">{item.label}</p>
+                  <p className="mt-0.5 line-clamp-2 text-[13px] text-dm-text">{item.body}</p>
+                  <p className="mt-1 text-[11px] text-dm-muted">
+                    {item.householdName} · {formatRelativeTime(item.at)}
+                  </p>
+                </div>
+                <span className="dm-chip shrink-0">{kindLabel}</span>
+              </div>
+              {item.href ?
                   <Link
                     href={item.href}
-                    className="font-semibold text-dm-electric hover:underline"
+                    className="mt-1.5 inline-flex text-[11px] font-semibold text-dm-electric hover:underline"
                   >
                     Peek
                   </Link>
-                : null}
-              </p>
+              : null}
             </li>
           );
         }
@@ -50,24 +58,28 @@ export function HouseActivityFeed({
           return (
             <li
               key={`r-${item.id}`}
-              className="cozy-drop-in px-3 py-3 cozy-hover-wiggle rounded-sm bg-[rgba(254,253,249,0.65)] sm:ml-3 sm:mr-5"
-              style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}
+              className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+              style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
             >
-              <p className="text-[12px] font-medium uppercase tracking-wider text-dm-muted">
-                Receipt
-              </p>
-              <p className="mt-1 text-[13px] text-dm-text">
-                <span className="font-semibold">{item.savedByLabel}</span>
-                {" · "}
-                {item.merchant?.trim() || "shop"}{" "}
-                <span className="font-mono tabular-nums">{item.amountLabel}</span>
-              </p>
-              <p className="mt-1 text-[11px] text-dm-muted">{item.householdName}</p>
-              <p className="mt-2 flex items-center gap-3 text-[11px] text-dm-muted">
-                <span>{formatRelativeTime(item.at)}</span>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[12px] font-medium uppercase tracking-wider text-dm-muted">Receipt</p>
+                  <p className="mt-0.5 text-[13px] text-dm-text">
+                    <span className="font-semibold">{item.savedByLabel}</span>
+                    {" · "}
+                    {item.merchant?.trim() || "shop"}{" "}
+                    <span className="font-mono tabular-nums">{item.amountLabel}</span>
+                  </p>
+                  <p className="mt-1 text-[11px] text-dm-muted">
+                    {item.householdName} · {formatRelativeTime(item.at)}
+                  </p>
+                </div>
+                <span className="dm-chip shrink-0">Receipts</span>
+              </div>
+              <p className="mt-1">
                 <Link
                   href={`/dashboard/household/${item.householdId}?view=receipts`}
-                  className="font-semibold text-dm-electric hover:underline"
+                  className="text-[11px] font-semibold text-dm-electric hover:underline"
                 >
                   Open
                 </Link>
@@ -79,23 +91,23 @@ export function HouseActivityFeed({
         return (
           <li
             key={`t-${item.id}`}
-            className={[
-              "cozy-note cozy-drop-in mx-2 my-2 px-3 py-2.5 cozy-hover-wiggle cozy-tilt-xs-alt",
-              "border border-[rgba(91,79,54,0.12)] shadow-[var(--cozy-shadow-note)]",
-            ].join(" ")}
-            style={{ animationDelay: `${Math.min(i, 8) * 45}ms` }}
+            className="dm-card-enter rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5"
+            style={{ animationDelay: `${Math.min(i, 8) * 36}ms` }}
           >
-            <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
-              Chore done
-            </p>
-            <p className="mt-0.5 text-[13px] text-dm-text">
-              <span className="font-semibold">{item.completedByLabel}</span>
-              {": "}
-              {item.title}
-            </p>
-            <p className="mt-1 text-[11px] text-dm-muted">
-              +{item.points} pts · {item.householdName} · {formatRelativeTime(item.at)}
-            </p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">Chore done</p>
+                <p className="mt-0.5 text-[13px] text-dm-text">
+                  <span className="font-semibold">{item.completedByLabel}</span>
+                  {": "}
+                  {item.title}
+                </p>
+                <p className="mt-1 text-[11px] text-dm-muted">
+                  +{item.points} pts · {item.householdName} · {formatRelativeTime(item.at)}
+                </p>
+              </div>
+              <span className="dm-chip shrink-0">Chores</span>
+            </div>
             <Link
               href={`/dashboard/household/${item.householdId}?view=tasks`}
               className="mt-1.5 inline-block text-[11px] font-semibold text-dm-electric hover:underline"

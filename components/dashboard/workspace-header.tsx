@@ -22,7 +22,7 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/96 pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(45,41,37,0.08)] backdrop-blur-sm">
-      <div className="flex h-14 items-center justify-between gap-4 px-4 lg:h-16 lg:px-8">
+      <div className="mx-auto flex h-14 w-full max-w-[1240px] items-center justify-between gap-4 px-4 lg:h-16 lg:px-6">
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"

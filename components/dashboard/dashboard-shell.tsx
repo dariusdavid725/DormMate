@@ -48,7 +48,7 @@ export function DashboardShell({
         households={stripItems}
       />
       <div className="flex min-h-0 flex-1">
-        <aside className="dm-sidebar-glass hidden w-60 shrink-0 overflow-y-auto py-6 pl-6 pr-2 lg:flex lg:flex-col">
+        <aside className="dm-sidebar-glass hidden w-64 shrink-0 overflow-y-auto py-6 pl-5 pr-3 lg:flex lg:flex-col">
           <Link
             href="/dashboard"
             className="mb-5 mr-3 flex items-center gap-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3 py-2.5 shadow-[0_8px_18px_rgba(45,41,37,0.08)]"
@@ -60,7 +60,7 @@ export function DashboardShell({
               <p className="truncate text-[11px] leading-tight text-dm-muted">Shared home board</p>
             </div>
           </Link>
-          <nav aria-label="Workspace" className="flex flex-col gap-6">
+          <nav aria-label="Workspace" className="flex flex-col gap-5">
             <div>
               <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-dm-muted">
                 Main
@@ -128,8 +128,10 @@ export function DashboardShell({
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex-1 px-3 pb-[calc(7.65rem+env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:px-8 lg:pb-10 lg:pt-7">
-            <MobileAppShell>{children}</MobileAppShell>
+          <main className="relative flex-1 px-3 pb-[calc(7.65rem+env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:px-6 lg:pb-10 lg:pt-6">
+            <div className="mx-auto w-full max-w-[1240px]">
+              <MobileAppShell>{children}</MobileAppShell>
+            </div>
           </main>
           <footer className="hidden border-t border-[var(--dm-border-strong)] px-4 py-3 text-center text-[11px] text-dm-muted lg:block lg:px-10">
             Koti

@@ -169,35 +169,6 @@ export function MobileDashboardHome({
         </div>
       ) : null}
 
-      <MobileSection title="Today" hideDescriptionMobile>
-        <ul className="flex flex-col gap-3">
-          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
-            <span className="text-[14px] font-semibold text-dm-muted">Chores</span>
-            <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
-              {hasHouseholds ? choresDue : "—"}
-            </span>
-          </li>
-          <li className="dm-card-surface flex min-h-[52px] flex-row items-start justify-between gap-3 px-4 py-3.5">
-            <span className="shrink-0 pt-0.5 text-[14px] font-semibold text-dm-muted">Balance</span>
-            <span className="max-w-[65%] break-words text-right text-[15px] font-semibold leading-snug text-dm-text">
-              {hasHouseholds ? owedLabel : "—"}
-            </span>
-          </li>
-          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
-            <span className="text-[14px] font-semibold text-dm-muted">Receipts · 7 days</span>
-            <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
-              {hasHouseholds ? receiptsRecent : "—"}
-            </span>
-          </li>
-          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
-            <span className="text-[14px] font-semibold text-dm-muted">Groceries</span>
-            <span className="text-[16px] font-semibold text-dm-text">
-              {hasHouseholds ? "Open" : "—"}
-            </span>
-          </li>
-        </ul>
-      </MobileSection>
-
       <MobileSection title="Quick actions" hideDescriptionMobile>
         <div className="flex flex-col gap-3">
           <MobileActionCardLink href="/dashboard/tasks" label="Add chore" icon={<TaskGlyph />} />
@@ -234,15 +205,67 @@ export function MobileDashboardHome({
         )}
       </MobileSection>
 
+      <MobileSection title="Today" hideDescriptionMobile>
+        <ul className="flex flex-col gap-3">
+          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
+            <span className="text-[14px] font-semibold text-dm-muted">Chores</span>
+            <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
+              {hasHouseholds ? choresDue : "—"}
+            </span>
+          </li>
+          <li className="dm-card-surface flex min-h-[52px] flex-row items-start justify-between gap-3 px-4 py-3.5">
+            <span className="shrink-0 pt-0.5 text-[14px] font-semibold text-dm-muted">Balance</span>
+            <span className="max-w-[65%] break-words text-right text-[15px] font-semibold leading-snug text-dm-text">
+              {hasHouseholds ? owedLabel : "—"}
+            </span>
+          </li>
+          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
+            <span className="text-[14px] font-semibold text-dm-muted">Receipts · 7 days</span>
+            <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
+              {hasHouseholds ? receiptsRecent : "—"}
+            </span>
+          </li>
+        </ul>
+      </MobileSection>
+
+      <MobileSection title="Home previews" hideDescriptionMobile>
+        <ul className="flex flex-col gap-2">
+          <li>
+            <MobileListItem
+              title="Groceries"
+              subtitle={hasHouseholds ? "Open list for your home" : "Create a home first"}
+              href="/dashboard/inventory"
+              trailing={<span className="text-dm-muted">→</span>}
+            />
+          </li>
+          <li>
+            <MobileListItem
+              title="Chores"
+              subtitle={hasHouseholds ? `${choresDue} open now` : "No home selected"}
+              href="/dashboard/tasks"
+              trailing={<span className="text-dm-muted">→</span>}
+            />
+          </li>
+          <li>
+            <MobileListItem
+              title="Money"
+              subtitle={hasHouseholds ? owedLabel : "No home selected"}
+              href="/dashboard/finances"
+              trailing={<span className="text-dm-muted">→</span>}
+            />
+          </li>
+        </ul>
+      </MobileSection>
+
       <MobileSection
         title="House activity"
         hideDescriptionMobile
         action={
           <Link
-            href="/dashboard/more"
+            href="/dashboard/activity"
             className="touch-manipulation rounded-lg px-3 py-2 text-[14px] font-semibold text-dm-electric hover:bg-dm-elevated/80 hover:underline"
           >
-            More
+            See more
           </Link>
         }
       >
