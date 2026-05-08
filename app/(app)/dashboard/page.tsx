@@ -15,9 +15,11 @@ import {
 import { loadUserCrossHouseholdNetLabel } from "@/lib/dashboard/budget-preview";
 import { loadHouseActivityItems } from "@/lib/dashboard/house-activity";
 import { countReceiptsSince } from "@/lib/dashboard/home-metrics";
-import { loadHouseholdSummaries } from "@/lib/households/queries";
+import { loadHouseholdMembers, loadHouseholdSummaries } from "@/lib/households/queries";
+import { loadGroceriesForHousehold } from "@/lib/groceries/queries";
 import { loadReceiptFeedPreview } from "@/lib/receipts/feed-queries";
 import { loadOpenTasksForUser } from "@/lib/tasks/queries";
+import { loadHouseholdEvents } from "@/lib/events/queries";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -61,6 +63,19 @@ export default async function DashboardOverviewPage() {
   const primaryHouseholdId = households[0]?.id ?? null;
   const hasHouseholds = households.length > 0;
   const groceriesLabel = hasHouseholds ? "Open" : "—";
+  const spotlightHome = households[0] ?? null;
+  const [memberPreview, groceryPreview, eventPreview] = spotlightHome
+    ? await Promise.all([
+        loadHouseholdMembers(spotlightHome.id),
+        loadGroceriesForHousehold(spotlightHome.id),
+        loadHouseholdEvents(spotlightHome.id),
+      ])
+    : [[], { items: [], error: null }, { events: [], error: null }];
+  const roommateCount = Array.isArray(memberPreview) ? memberPreview.length : 0;
+  const openGroceries = (groceryPreview.items ?? []).filter((g) => !g.bought);
+  const upcomingEvents = (eventPreview.events ?? [])
+    .filter((ev) => new Date(ev.startsAt).getTime() >= Date.now())
+    .slice(0, 2);
 
   return (
     <>
@@ -80,20 +95,25 @@ export default async function DashboardOverviewPage() {
 
       <div className="hidden lg:block">
         <div className="mx-auto w-full max-w-4xl pb-12">
-          <header className="border-b border-[var(--dm-border-strong)] pb-5">
-        <h1 className="text-[2.2rem] font-semibold leading-tight tracking-tight text-dm-text sm:text-[2.6rem]">
-          Koti board
-        </h1>
-        <p className="mt-1 font-cozy-display text-[0.95rem] text-dm-muted">today at home</p>
-        {!hasHouseholds ? (
-          <p className="mt-2 text-[13px] text-dm-muted">
-            Create your first home to unlock chores, money, groceries, and receipts.
-          </p>
-        ) : (
-          <p className="mt-2 text-[13px] text-dm-muted">
-            Today&apos;s chores, money, groceries, and house updates.
-          </p>
-        )}
+          <header className="dm-hero-module px-6 pb-6 pt-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
+                <div className="dm-chip dm-chip-accent">Koti board</div>
+                <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-tight text-dm-text sm:text-[2.45rem]">
+                  {spotlightHome ? `${spotlightHome.name} at a glance` : "Your shared home hub"}
+                </h1>
+                <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-dm-muted">
+                  {hasHouseholds
+                    ? "Today’s chores, money, groceries, and house updates in one clear board."
+                    : "Create your first home to unlock chores, groceries, money, receipts, and events."}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="dm-chip">{openTasks.length} chores</span>
+                <span className="dm-chip">{receiptsLast7d} receipts / 7d</span>
+                <span className="dm-chip">{roommateCount} roommates</span>
+              </div>
+            </div>
           </header>
 
           {error ? (
@@ -105,38 +125,92 @@ export default async function DashboardOverviewPage() {
         </div>
           ) : null}
 
-          <div className="mt-6 space-y-7">
-            <TodayStrip
-          choresDue={openTasks.length}
-          owedLabel={owedPreview}
-          receiptsRecent={receiptsLast7d}
-          groceriesLabel={groceriesLabel}
-          hasHouseholds={hasHouseholds}
-            />
+          <div className="dm-shell-grid mt-6">
+            <div className="space-y-4">
+              <TodayStrip
+                choresDue={openTasks.length}
+                owedLabel={owedPreview}
+                receiptsRecent={receiptsLast7d}
+                groceriesLabel={groceriesLabel}
+                hasHouseholds={hasHouseholds}
+              />
 
-            <GettingStartedHint hasHouseholds={hasHouseholds} />
+              <DashboardQuickActions />
 
-            <DashboardQuickActions />
-
-            <section aria-labelledby="activity-heading" className="dm-card-surface p-5">
-              <div className="mb-3 flex flex-wrap items-end gap-x-3 gap-y-2">
-                <h2 id="activity-heading" className="text-[1.2rem] font-semibold tracking-tight text-dm-text">
-                  House activity
-                </h2>
-                <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
-                  <Link href="/dashboard/tasks" className="hover:underline">
-                    Chores
-                  </Link>
-                  <Link href="/dashboard/finances" className="hover:underline">
-                    Money
-                  </Link>
+              <section aria-labelledby="activity-heading" className="dm-module p-5">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+                  <h2 id="activity-heading" className="dm-section-heading">
+                    House activity
+                  </h2>
+                  <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
+                    <Link href="/dashboard/tasks" className="hover:underline">
+                      Chores
+                    </Link>
+                    <Link href="/dashboard/finances" className="hover:underline">
+                      Money
+                    </Link>
+                  </div>
                 </div>
-              </div>
-              {activityErr ? (
-                <p className="mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
-              ) : null}
-              <HouseActivityFeed items={houseActivity} />
-            </section>
+                {activityErr ? (
+                  <p className="mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
+                ) : null}
+                <HouseActivityFeed items={houseActivity} />
+              </section>
+            </div>
+
+            <div className="space-y-4">
+              <section className="dm-module dm-module-muted p-4">
+                <h2 className="dm-section-heading">Next important item</h2>
+                {openTasks[0] ? (
+                  <div className="mt-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3.5 py-3">
+                    <p className="text-sm font-semibold text-dm-text">{openTasks[0].title}</p>
+                    <p className="mt-1 text-[12px] text-dm-muted">
+                      {openTasks[0].householdName} · +{openTasks[0].rewardPoints} pts
+                    </p>
+                    <Link
+                      href="/dashboard/tasks"
+                      className="mt-2 inline-flex text-[12px] font-semibold text-dm-electric hover:underline"
+                    >
+                      Open chores
+                    </Link>
+                  </div>
+                ) : (
+                  <p className="mt-3 text-[13px] text-dm-muted">No urgent chores right now.</p>
+                )}
+              </section>
+
+              <section className="dm-module p-4">
+                <h2 className="dm-section-heading">Home previews</h2>
+                <div className="mt-3 space-y-2.5">
+                  <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/50 px-3 py-2.5">
+                    <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
+                      Roommates
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-dm-text">
+                      {roommateCount} active in {spotlightHome?.name ?? "your home"}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/50 px-3 py-2.5">
+                    <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
+                      Groceries
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-dm-text">
+                      {openGroceries.length} items pending
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/50 px-3 py-2.5">
+                    <p className="text-[12px] font-semibold uppercase tracking-wide text-dm-muted">
+                      Events
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-dm-text">
+                      {upcomingEvents.length ? `${upcomingEvents.length} upcoming` : "No upcoming events"}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <GettingStartedHint hasHouseholds={hasHouseholds} />
+            </div>
           </div>
 
           {!hasHouseholds ? (

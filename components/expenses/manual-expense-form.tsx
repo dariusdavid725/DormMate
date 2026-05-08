@@ -140,14 +140,14 @@ export function ManualExpenseForm({
         </div>
       </fieldset>
 
-      <p className="text-[11px] text-dm-muted">
-        Tip: picking only the folks who drank the oat milk keeps the vibes fair without a spreadsheet duel.
+      <p className="rounded-lg border border-[var(--dm-border)] bg-dm-surface-mid/45 px-3 py-2 text-[11px] text-dm-muted">
+        Tip: split only with people involved in the purchase to keep balances accurate.
       </p>
 
       <button
         type="submit"
         disabled={sorted.length === 0}
-        className="rounded-md bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white hover:brightness-105 disabled:opacity-50"
+        className="rounded-lg bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(200,104,69,0.25)] hover:brightness-105 disabled:opacity-50"
       >
         <SubmitChip idle="Log expense" />
       </button>

@@ -64,9 +64,9 @@ export default async function FinancesPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8">
-      <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="font-cozy-display text-[2.35rem] leading-[1.1] text-dm-text">
+    <div className="mx-auto w-full max-w-5xl space-y-8">
+      <header className="hidden border-b border-[var(--dm-border-strong)] pb-6 lg:block">
+        <h1 className="text-[2rem] font-semibold leading-[1.1] tracking-tight text-dm-text">
           Money overview
         </h1>
         <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
@@ -76,7 +76,7 @@ export default async function FinancesPage() {
       </header>
 
       <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Money</h1>
+        <h1 className="text-[1.8rem] font-semibold leading-tight tracking-tight text-dm-text">Money</h1>
         <p className="mt-2 text-[14px] leading-snug text-dm-muted">
           Your balance on open bills — tap a household for the full ledger.
         </p>
@@ -139,7 +139,7 @@ export default async function FinancesPage() {
         </MobileSection>
       </div>
 
-      <div className="cozy-receipt cozy-tilt-xs hidden overflow-hidden rounded-[2px] lg:block">
+      <div className="dm-module hidden overflow-hidden lg:block">
         <table className="min-w-full text-left text-sm">
           <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg text-[11px] font-medium uppercase tracking-wide text-dm-muted">
             <tr>
@@ -187,7 +187,7 @@ export default async function FinancesPage() {
         </table>
       </div>
 
-      <section className="cozy-note cozy-tilt-xs hidden p-5 text-[13px] leading-relaxed text-dm-muted shadow-[var(--cozy-shadow-note)] lg:block">
+      <section className="dm-module dm-module-muted hidden p-5 text-[13px] leading-relaxed text-dm-muted lg:block">
         Scan receipts under each home&apos;s Receipts tab. When you tap &quot;Turn into split&quot;, the split
         uses that receipt’s currency. After people pay each other outside the app, open the bill and
         tap <strong className="text-dm-text">We settled up — close bill</strong> so it stops counting.

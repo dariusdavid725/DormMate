@@ -221,12 +221,12 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-dashed border-[var(--dm-border-strong)] pb-6 max-lg:flex-col max-lg:gap-4 lg:gap-5 lg:pb-7">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--dm-border-strong)] pb-6 max-lg:flex-col max-lg:gap-4 lg:gap-5 lg:pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
             Shared home
           </p>
-          <h1 className="font-cozy-display mt-2 max-lg:break-words max-lg:text-[2.05rem] max-lg:leading-[1.08] text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
+          <h1 className="mt-2 max-lg:break-words max-lg:text-[2.05rem] max-lg:leading-[1.08] text-[2.55rem] font-semibold leading-[1.05] tracking-tight text-dm-text md:text-[2.9rem]">
             {household.name}
           </h1>
           <p className="mt-3 text-[14px] leading-relaxed text-dm-muted max-lg:mt-2 lg:mt-4 lg:text-[15px]">
@@ -251,7 +251,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
       </div>
 
       <div className="mt-6 pb-2 max-lg:mt-5 lg:mt-7">
-        <div className="flex flex-wrap gap-2 rounded-xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[var(--cozy-shadow-paper)] max-lg:justify-between lg:flex lg:flex-wrap lg:gap-1 lg:rounded-[3px] lg:p-1">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[0_8px_18px_rgba(45,41,37,0.08)] max-lg:justify-between lg:flex lg:flex-wrap lg:gap-1 lg:p-1">
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
           <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Chores" />
           <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="Money" />
@@ -294,8 +294,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </OverviewCard>
           </div>
 
-          <section className="dm-card-surface cozy-tilt-xs-alt mt-8 p-5">
-            <h2 className="font-cozy-display text-2xl text-dm-text">Home settings</h2>
+          <section className="dm-card-surface mt-8 p-5">
+            <h2 className="dm-section-heading">Home settings</h2>
             <p className="mt-2 text-sm text-dm-muted">
               {canRename
                 ? "Rename is available to whoever created this household."
@@ -344,8 +344,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
           : (
             <>
               <div className="order-3 lg:order-none">
-                <div className="cozy-poster cozy-tilt-xs p-5 sm:p-6 max-lg:rounded-2xl max-lg:p-4">
-                  <h2 className="font-cozy-display text-2xl text-dm-text max-lg:text-[1.65rem]">
+                <div className="dm-module dm-module-muted p-5 sm:p-6 max-lg:rounded-2xl max-lg:p-4">
+                  <h2 className="dm-section-heading max-lg:text-[1.2rem]">
                     New sticky
                   </h2>
                   <CreateHouseholdTaskForm
@@ -371,7 +371,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
               </div>
               {doneTasksPayload?.tasks?.length ?
                 <div className="order-2 lg:order-none">
-                  <div className="cozy-receipt cozy-tilt-xs-alt p-5 max-lg:rounded-2xl max-lg:p-4">
+                  <div className="dm-module p-5 max-lg:rounded-2xl max-lg:p-4">
                     <h3 className="text-[15px] font-semibold text-dm-text lg:text-sm">
                       Freshly peeled
                     </h3>
@@ -452,8 +452,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
             <div className="text-sm text-dm-danger">Could not load expenses.</div>
           : (
             <>
-              <div className="cozy-poster cozy-tilt-xs p-5">
-                <h2 className="font-cozy-display text-3xl text-dm-text">Split costs</h2>
+              <div className="dm-module dm-module-muted p-5">
+                <h2 className="dm-section-heading text-[1.2rem]">Split costs</h2>
                 <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
                   Add a shared bill here, or turn a scanned receipt into a split from the Receipts tab.
                   Currency follows this home&apos;s setting.
@@ -475,8 +475,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 )}
               </div>
 
-              <div className="cozy-note cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-note)]">
-                <h3 className="font-cozy-display text-2xl text-dm-text">Who owes who</h3>
+              <div className="dm-module p-5">
+                <h3 className="dm-section-heading">Who owes who</h3>
                 <p className="mt-2 text-[12px] text-dm-muted">
                   Only open bills count. Positive means that person paid more than their share for these
                   totals (others still owe them). Negative means they still owe others.

@@ -443,6 +443,91 @@ body {
     box-shadow 0.22s ease;
 }
 
+.dm-shell-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .dm-shell-grid {
+    grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr);
+    gap: 1.1rem;
+  }
+}
+
+.dm-hero-module {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--dm-border-strong);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(200, 104, 69, 0.18), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(111, 127, 94, 0.16), transparent 45%),
+    var(--dm-surface);
+  box-shadow: 0 14px 34px rgba(45, 41, 37, 0.08);
+}
+
+.dm-hero-module::after {
+  content: "";
+  position: absolute;
+  right: -22px;
+  top: -22px;
+  width: 130px;
+  height: 130px;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--dm-electric) 42%, #ffffff 58%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.dm-section-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--dm-text);
+}
+
+.dm-section-heading::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dm-electric) 72%, #ffffff 28%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--dm-electric) 14%, transparent);
+}
+
+.dm-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--dm-border-strong);
+  background: color-mix(in srgb, var(--dm-surface) 86%, #ffffff 14%);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--dm-muted);
+}
+
+.dm-chip-accent {
+  border-color: color-mix(in srgb, var(--dm-electric) 40%, var(--dm-border-strong));
+  background: color-mix(in srgb, var(--dm-electric) 9%, #ffffff 91%);
+  color: var(--dm-electric-deep);
+}
+
+.dm-module {
+  border-radius: 14px;
+  border: 1px solid var(--dm-border-strong);
+  background: var(--dm-surface);
+  box-shadow: 0 10px 22px rgba(45, 41, 37, 0.06);
+}
+
+.dm-module-muted {
+  background: linear-gradient(180deg, var(--dm-surface) 0%, var(--dm-surface-mid) 100%);
+}
+
 .dm-flash-check {
   animation: dm-check-pop 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

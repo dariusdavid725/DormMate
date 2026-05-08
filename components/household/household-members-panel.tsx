@@ -98,7 +98,7 @@ export function HouseholdMembersPanel({
 
   return (
     <div className="space-y-10">
-      <section className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5 sm:p-6">
+      <section className="dm-module p-5 sm:p-6">
         <h3 className="text-sm font-medium text-dm-text">Your profile</h3>
         <p className="mt-1 text-[13px] text-dm-muted">
           Display name and optional avatar visible to roommates.
@@ -214,7 +214,7 @@ export function HouseholdMembersPanel({
       </section>
 
       {canManageInvites ? (
-        <section className="cozy-note cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-note)]">
+        <section className="dm-module dm-module-muted p-5">
           <h3 className="text-sm font-semibold text-dm-text">Koti invite</h3>
           <p className="mt-2 text-[12px] text-dm-muted">
             Share this link with roommates to join this Koti home.
@@ -260,7 +260,7 @@ export function HouseholdMembersPanel({
 
             return (
               <li key={m.userId}>
-                <article className="flex gap-4 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-4">
+                <article className="flex gap-4 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-4 shadow-[0_8px_16px_rgba(45,41,37,0.05)]">
                   <div className="relative shrink-0">
                     {m.avatarUrl ?
                       // eslint-disable-next-line @next/next/no-img-element -- CDN

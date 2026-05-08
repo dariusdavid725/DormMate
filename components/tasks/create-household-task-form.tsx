@@ -185,7 +185,7 @@ export function CreateHouseholdTaskForm({
 
       <button
         type="submit"
-        className="dm-scan-hero dm-hover-tap mt-6 w-full rounded-md px-6 py-3 text-sm font-semibold text-[#fffaf5] shadow-[var(--cozy-shadow-paper)] transition hover:brightness-110 sm:w-auto"
+        className="dm-hover-tap mt-6 w-full rounded-lg border border-[color-mix(in_srgb,var(--dm-electric)_48%,transparent)] bg-dm-electric px-6 py-3 text-sm font-semibold text-[#fffaf5] shadow-[0_10px_20px_rgba(200,104,69,0.25)] transition hover:brightness-110 sm:w-auto"
       >
         <SubmitPending idle="Drop task for the room" />
       </button>

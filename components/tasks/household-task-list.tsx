@@ -41,7 +41,7 @@ export function HouseholdTaskList({
 
   return (
     <ul className="space-y-3">
-      {tasks.map((t, i) => {
+      {tasks.map((t, index) => {
         const blocked =
           t.assignedToUserId != null &&
           t.assignedToUserId !== currentUserId;
@@ -55,11 +55,10 @@ export function HouseholdTaskList({
             <form
               action={completeHouseholdTaskForm}
               className={[
-                "relative cozy-note cozy-hover-wiggle cozy-drop-in px-4 pb-4 pt-7 shadow-[var(--cozy-shadow-note)]",
+                "relative cozy-note cozy-drop-in px-4 pb-4 pt-7",
                 blocked ? "opacity-[0.92]" : "",
-                i % 2 === 0 ? "cozy-tilt-xs" : "cozy-tilt-xs-alt",
               ].join(" ")}
-              style={{ animationDelay: `${Math.min(i, 8) * 55}ms` }}
+              style={{ animationDelay: `${Math.min(index, 8) * 55}ms` }}
             >
               <span
                 className="cozy-pin absolute left-1/2 top-2 -translate-x-1/2"
@@ -69,7 +68,7 @@ export function HouseholdTaskList({
               <input type="hidden" name="household_id" value={t.householdId} />
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-bold uppercase tracking-wide text-dm-muted">
+                  <p className="dm-chip text-[11px] font-bold uppercase tracking-wide text-dm-muted">
                     +{t.rewardPoints} pts
                   </p>
                   <p className="mt-1 text-[15px] font-semibold text-dm-text">{t.title}</p>
@@ -86,7 +85,7 @@ export function HouseholdTaskList({
                     </p>
                   )}
                   {dueLabel ? (
-                    <p className="mt-1 text-[11px] font-medium text-[var(--dm-accent-warn-text)]">
+                    <p className="mt-1 inline-flex rounded-full bg-[var(--dm-accent-warn-bg)] px-2 py-0.5 text-[11px] font-medium text-[var(--dm-accent-warn-text)]">
                       Due {dueLabel}
                     </p>
                   ) : null}

@@ -39,18 +39,18 @@ export default async function InventoryPage({ searchParams }: Props) {
   const memberRows = Array.isArray(members) ? members : [];
 
   return (
-    <div className="mx-auto max-w-xl space-y-7 lg:space-y-7">
-      <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="font-cozy-display text-[2.35rem] text-dm-text leading-[1.1]">
+    <div className="mx-auto max-w-2xl space-y-7 lg:max-w-4xl lg:space-y-7">
+      <header className="hidden border-b border-[var(--dm-border-strong)] pb-6 lg:block">
+        <h1 className="text-[2rem] font-semibold leading-[1.1] tracking-tight text-dm-text">
           Groceries
         </h1>
         <p className="mt-2 text-[13px] text-dm-muted">
-          Shared shopping list for your current household.
+          Shared shopping flow with priorities, assignees, and quick status.
         </p>
       </header>
 
       <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Groceries</h1>
+        <h1 className="text-[1.8rem] font-semibold leading-tight tracking-tight text-dm-text">Groceries</h1>
         <p className="mt-2 text-[14px] leading-snug text-dm-muted">
           Add items, assign them, and mark bought.
         </p>
@@ -63,7 +63,7 @@ export default async function InventoryPage({ searchParams }: Props) {
       ) : null}
 
       {households.length > 1 ? (
-        <form className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-3">
+        <form className="dm-module p-3">
           <label className="text-xs font-semibold uppercase tracking-wide text-dm-muted" htmlFor="inv-household">
             Household
           </label>
@@ -89,7 +89,7 @@ export default async function InventoryPage({ searchParams }: Props) {
       ) : null}
 
       {!selected ? (
-        <div className="cozy-note p-5 shadow-[var(--cozy-shadow-note)]">
+        <div className="dm-module p-5">
           <p className="text-sm text-dm-muted">
             Join or create a household first from{" "}
             <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">

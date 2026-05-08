@@ -68,7 +68,7 @@ export function HouseholdExpenseList({
         return (
           <li
             key={e.id}
-            className="cozy-receipt cozy-tilt-xs rounded-[2px] px-4 py-3 max-lg:rounded-xl max-lg:px-4 max-lg:py-4"
+            className="dm-module px-4 py-3 max-lg:rounded-xl max-lg:px-4 max-lg:py-4"
           >
             <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 max-lg:flex-col max-lg:gap-4">
               <div className="min-w-0 max-w-full flex-1">

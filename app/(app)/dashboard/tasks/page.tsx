@@ -90,11 +90,11 @@ export default async function DashboardTasksPage() {
   const householdOptions = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-8 lg:max-w-[56rem]">
-      <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="font-cozy-display text-4xl text-dm-text">Chores board</h1>
+    <div className="mx-auto w-full max-w-2xl space-y-8 lg:max-w-[58rem]">
+      <header className="hidden border-b border-[var(--dm-border-strong)] pb-6 lg:block">
+        <h1 className="text-[2rem] font-semibold tracking-tight text-dm-text">Chores board</h1>
         <p className="mt-1 text-[13px] text-dm-muted">
-          Sticky notes for the flat.&nbsp;
+          Keep home chores moving without the group chat chaos.&nbsp;
           <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
             Board
           </Link>
@@ -102,7 +102,7 @@ export default async function DashboardTasksPage() {
       </header>
 
       <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Chores</h1>
+        <h1 className="text-[1.8rem] font-semibold leading-tight tracking-tight text-dm-text">Chores</h1>
         <p className="mt-2 text-[14px] leading-snug text-dm-muted">
           Open stickies for your households — tap to claim what&apos;s yours.
         </p>
@@ -137,7 +137,7 @@ export default async function DashboardTasksPage() {
       />
 
       <div className="space-y-4 lg:hidden">
-        <h2 className="font-cozy-display text-xl text-dm-text">New chore</h2>
+        <h2 className="text-[1.15rem] font-semibold tracking-tight text-dm-text">New chore</h2>
         {householdOptions.length === 0 ? (
           <p className="rounded-xl border border-dashed border-[var(--dm-border-strong)] px-4 py-4 text-[14px] text-dm-muted">
             Create a household on{" "}
@@ -148,22 +148,22 @@ export default async function DashboardTasksPage() {
           </p>
         ) : (
           <CreateHouseholdTaskForm
-            className="space-y-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/95 p-4 shadow-[var(--cozy-shadow-paper)]"
+            className="space-y-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface p-4 shadow-[0_10px_20px_rgba(45,41,37,0.06)]"
             households={householdOptions}
             memberOptions={assignOptions}
           />
         )}
       </div>
 
-      <section className="hidden gap-8 lg:grid lg:grid-cols-[1fr,minmax(280px,380px)]">
-        <div className="space-y-2">
-          <h2 className="font-cozy-display text-xl text-dm-muted">Open chores</h2>
+      <section className="hidden gap-6 lg:grid lg:grid-cols-[1.3fr,minmax(290px,390px)]">
+        <div className="space-y-3">
+          <h2 className="dm-section-heading">Open chores</h2>
           <HouseholdTaskList
             tasks={tasks}
             currentUserId={user.id}
             memberLabels={memberLabels}
           />
-          <div className="cozy-receipt cozy-tilt-xs-alt mt-8 px-4 py-4">
+          <div className="dm-module mt-8 px-4 py-4">
             <h3 className="text-sm font-semibold text-dm-text">
               Peeled lately
             </h3>
@@ -174,11 +174,9 @@ export default async function DashboardTasksPage() {
           </div>
         </div>
 
-        <div className="cozy-poster cozy-tilt-xs-alt p-5">
-          <h2 className="font-cozy-display text-2xl text-dm-text">New sticky</h2>
-          <p className="mt-1 text-[13px] text-dm-muted">
-            Title, points, optional note.
-          </p>
+        <div className="dm-module dm-module-muted p-5">
+          <h2 className="dm-section-heading">Create chore</h2>
+          <p className="mt-2 text-[13px] text-dm-muted">Add title, assignee, and reward in one quick form.</p>
           {householdOptions.length === 0 ? (
             <p className="mt-4 rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-3 text-[13px] text-dm-muted">
               Create a household on{" "}

@@ -35,8 +35,8 @@ export function HouseholdGroceryBoard({
 
   return (
     <section className="space-y-6">
-      <div className="cozy-poster p-4 sm:p-5">
-        <h2 className="font-cozy-display text-2xl text-dm-text">Add grocery</h2>
+      <div className="dm-module dm-module-muted p-4 sm:p-5">
+        <h2 className="dm-section-heading">Add grocery</h2>
         <p className="mt-1 text-[13px] text-dm-muted">
           Shared list for {householdName}. Mark items bought as you go.
         </p>
@@ -116,7 +116,7 @@ export function HouseholdGroceryBoard({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white hover:brightness-105 disabled:opacity-60"
+            className="rounded-lg bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(200,104,69,0.25)] hover:brightness-105 disabled:opacity-60"
           >
             {pending ? "Adding..." : "Add grocery item"}
           </button>
@@ -124,7 +124,7 @@ export function HouseholdGroceryBoard({
       </div>
 
       <section>
-        <h3 className="font-cozy-display text-2xl text-dm-text">Current list</h3>
+        <h3 className="dm-section-heading">Current list</h3>
         {open.length === 0 ? (
           <p className="mt-2 text-[13px] text-dm-muted">
             Your grocery board is empty. Add the first thing before someone forgets the toilet paper.
@@ -132,12 +132,14 @@ export function HouseholdGroceryBoard({
         ) : (
           <ul className="mt-4 space-y-3">
             {open.map((item) => (
-              <li key={item.id} className="cozy-note rounded-xl px-4 py-3 shadow-[var(--cozy-shadow-note)]">
+              <li key={item.id} className="dm-module px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-dm-text">{item.name}</p>
                     <p className="mt-1 text-[13px] text-dm-muted">
-                      {item.quantity} · {item.category} · {item.priority}
+                      {item.quantity} · {item.category}
+                      <span className="mx-1">·</span>
+                      <span className="dm-chip">{item.priority}</span>
                       {item.assignedTo ? ` · ${labels.get(item.assignedTo) ?? "Assigned"}` : ""}
                     </p>
                     {item.notes ? <p className="mt-1 text-[12px] text-dm-muted">{item.notes}</p> : null}
@@ -148,7 +150,7 @@ export function HouseholdGroceryBoard({
                     <input type="hidden" name="next_bought" value="1" />
                     <button
                       type="submit"
-                      className="rounded-md border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2 text-xs font-semibold text-dm-text hover:border-dm-electric"
+                      className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2 text-xs font-semibold text-dm-text hover:border-dm-electric"
                     >
                       Mark bought
                     </button>
@@ -162,10 +164,10 @@ export function HouseholdGroceryBoard({
 
       {bought.length > 0 ? (
         <section>
-          <h3 className="font-cozy-display text-xl text-dm-muted">Bought</h3>
+          <h3 className="dm-section-heading">Bought</h3>
           <ul className="mt-3 space-y-2">
             {bought.map((item) => (
-              <li key={item.id} className="rounded-md border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/80 px-3 py-2.5">
+              <li key={item.id} className="rounded-xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/80 px-3 py-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <p className="text-sm text-dm-text line-through">{item.name}</p>
