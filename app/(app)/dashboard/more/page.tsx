@@ -89,6 +89,14 @@ export default async function DashboardMorePage() {
         <ul className="flex flex-col gap-2">
           <li>
             <MobileListItem
+              title="Activity timeline"
+              subtitle="See full home activity history."
+              href="/dashboard/activity"
+              trailing={<span className="text-dm-muted">→</span>}
+            />
+          </li>
+          <li>
+            <MobileListItem
               title="Join with code"
               subtitle="Enter an invite and land in the home."
               href="/dashboard/join"

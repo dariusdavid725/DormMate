@@ -6,14 +6,15 @@ import { usePathname } from "next/navigation";
 type Item = {
   href: string;
   label: string;
+  icon: string;
 };
 
 const NAV: readonly Item[] = [
-  { href: "/dashboard", label: "Home" },
-  { href: "/dashboard/tasks", label: "Chores" },
-  { href: "/dashboard/finances", label: "Money" },
-  { href: "/dashboard/inventory", label: "Groceries" },
-  { href: "/dashboard/more", label: "More" },
+  { href: "/dashboard", label: "Home", icon: "⌂" },
+  { href: "/dashboard/tasks", label: "Chores", icon: "✓" },
+  { href: "/dashboard/finances", label: "Money", icon: "$" },
+  { href: "/dashboard/inventory", label: "Groceries", icon: "◧" },
+  { href: "/dashboard/more", label: "More", icon: "…" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -23,6 +24,7 @@ function isActive(pathname: string, href: string) {
   if (href === "/dashboard/more") {
     return (
       pathname === "/dashboard/more" ||
+      pathname === "/dashboard/activity" ||
       pathname.startsWith("/dashboard/settings") ||
       pathname.startsWith("/dashboard/admin") ||
       pathname === "/dashboard/join"
@@ -58,6 +60,9 @@ export function MobileBottomNav() {
                     : "text-dm-muted hover:bg-dm-elevated/85 hover:text-dm-text",
                 ].join(" ")}
               >
+                <span className="text-[11px] leading-none opacity-85" aria-hidden>
+                  {item.icon}
+                </span>
                 {item.label}
               </Link>
             </li>

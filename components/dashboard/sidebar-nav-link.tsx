@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
 type Props = {
@@ -8,9 +9,10 @@ type Props = {
   title: string;
   hint?: string;
   exact?: boolean;
+  icon?: ReactNode;
 };
 
-export function SidebarNavLink({ href, title, hint, exact }: Props) {
+export function SidebarNavLink({ href, title, hint, exact, icon }: Props) {
   const pathname = usePathname();
   const active = exact
     ? pathname === href
@@ -26,13 +28,28 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
           : "border border-transparent text-dm-muted hover:border-[var(--dm-border-strong)] hover:bg-dm-surface hover:text-dm-text",
       ].join(" ")}
     >
-      <div className="min-w-0">
-        <span className="block truncate">{title}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        {icon ? (
+          <span
+            className={[
+              "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[12px]",
+              active
+                ? "bg-[color-mix(in_srgb,var(--dm-electric)_22%,#fff)] text-[var(--dm-electric-deep)]"
+                : "bg-dm-surface-mid/70 text-dm-muted",
+            ].join(" ")}
+            aria-hidden
+          >
+            {icon}
+          </span>
+        ) : null}
+        <span className="min-w-0 flex-1">
+          <span className="block truncate">{title}</span>
         {hint ? (
           <span className="mt-0.5 block truncate text-[11px] font-normal opacity-85">
             {hint}
           </span>
         ) : null}
+        </span>
       </div>
     </Link>
   );

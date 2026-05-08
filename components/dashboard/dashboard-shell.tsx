@@ -66,17 +66,19 @@ export function DashboardShell({
                 Main
               </p>
               <div className="flex flex-col gap-0.5">
-                <SidebarNavLink href="/dashboard" title="Home" exact />
-                <SidebarNavLink href="/dashboard/tasks" title="Chores" exact />
-                <SidebarNavLink href="/dashboard/finances" title="Money" exact />
-                <SidebarNavLink href="/dashboard/inventory" title="Groceries" exact />
-                <SidebarNavLink href="/dashboard/more" title="More" exact />
-                <SidebarNavLink href="/dashboard/join" title="Join home" exact />
-                <SidebarNavLink href="/dashboard/settings" title="Account" exact />
+                <SidebarNavLink href="/dashboard" title="Home" icon="⌂" exact />
+                <SidebarNavLink href="/dashboard/tasks" title="Chores" icon="✓" exact />
+                <SidebarNavLink href="/dashboard/finances" title="Money" icon="$" exact />
+                <SidebarNavLink href="/dashboard/inventory" title="Groceries" icon="◧" exact />
+                <SidebarNavLink href="/dashboard/activity" title="Activity" icon="◴" exact />
+                <SidebarNavLink href="/dashboard/more" title="More" icon="…" exact />
+                <SidebarNavLink href="/dashboard/join" title="Join home" icon="+" exact />
+                <SidebarNavLink href="/dashboard/settings" title="Account" icon="⚙" exact />
                 {showAdmin ? (
                   <SidebarNavLink
                     href="/dashboard/admin"
                     title="Site admin"
+                    icon="★"
                     exact
                   />
                 ) : null}

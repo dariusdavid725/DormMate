@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { CreateHouseholdForm } from "@/components/dashboard/create-household-form";
 import { GettingStartedHint } from "@/components/dashboard/getting-started-hint";
 import { MobileDashboardHome } from "@/components/mobile/mobile-dashboard-home";
-import { HouseActivityFeed } from "@/components/dashboard/house-activity-feed";
+import { DashboardActivityPanel } from "@/components/dashboard/dashboard-activity-panel";
 import { DashboardQuickActions } from "@/components/dashboard/quick-actions";
 import { TodayStrip } from "@/components/dashboard/today-strip";
 import {
@@ -137,25 +137,10 @@ export default async function DashboardOverviewPage() {
 
               <DashboardQuickActions />
 
-              <section aria-labelledby="activity-heading" className="dm-module p-5">
-                <div className="mb-3 flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
-                  <h2 id="activity-heading" className="dm-section-heading">
-                    House activity
-                  </h2>
-                  <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
-                    <Link href="/dashboard/tasks" className="hover:underline">
-                      Chores
-                    </Link>
-                    <Link href="/dashboard/finances" className="hover:underline">
-                      Money
-                    </Link>
-                  </div>
-                </div>
-                {activityErr ? (
-                  <p className="mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
-                ) : null}
-                <HouseActivityFeed items={houseActivity} />
-              </section>
+              {activityErr ? (
+                <p className="mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
+              ) : null}
+              <DashboardActivityPanel items={houseActivity} />
             </div>
 
             <div className="space-y-4">
