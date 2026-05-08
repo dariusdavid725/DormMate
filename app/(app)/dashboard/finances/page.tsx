@@ -111,11 +111,11 @@ export default async function FinancesPage() {
     <div className="dm-page-enter mx-auto w-full max-w-[1240px] space-y-7">
       <header className="dm-money-page-hero dm-module-depth relative overflow-hidden px-6 pb-7 pt-6 lg:px-10 lg:pb-8 lg:pt-7">
         <span
-          className="pointer-events-none absolute -right-16 top-6 h-44 w-44 rounded-full border border-[color-mix(in_srgb,var(--dm-info)_28%,transparent)] bg-[radial-gradient(circle_at_40%_35%,rgba(78,120,168,0.14),transparent_68%)] opacity-80"
+          className="dm-ambient-drift pointer-events-none absolute -right-16 top-6 h-44 w-44 rounded-full border border-[color-mix(in_srgb,var(--dm-info)_28%,transparent)] bg-[radial-gradient(circle_at_40%_35%,rgba(78,120,168,0.14),transparent_68%)] opacity-80"
           aria-hidden
         />
         <span
-          className="pointer-events-none absolute -left-10 bottom-4 h-36 w-48 rotate-6 rounded-[2.5rem] bg-[linear-gradient(135deg,rgba(208,106,74,0.12),transparent)]"
+          className="dm-ambient-drift-rev pointer-events-none absolute -left-10 bottom-4 h-36 w-48 rotate-6 rounded-[2.5rem] bg-[linear-gradient(135deg,rgba(208,106,74,0.12),transparent)]"
           aria-hidden
         />
         <div className="relative flex flex-wrap items-start justify-between gap-6">
@@ -133,24 +133,24 @@ export default async function FinancesPage() {
               Balances, receipts, and who-settled-what—kept human so nobody has to be the “finance admin” forever.
             </p>
           </div>
-          <div className="grid min-w-0 w-full max-w-[min(100%,22rem)] shrink-0 grid-cols-2 gap-2">
-            <div className="dm-interactive rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
+          <div className="dm-stagger-metrics grid min-w-0 w-full max-w-[min(100%,22rem)] shrink-0 grid-cols-2 gap-2">
+            <div className="dm-hover-lift dm-interactive dm-settle-chip rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Pending bills</p>
-              <p className="text-lg font-semibold tabular-nums text-dm-text">{globalPending}</p>
+              <p className="dm-value-settle text-lg font-semibold tabular-nums text-dm-text">{globalPending}</p>
             </div>
-            <div className="dm-interactive rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
+            <div className="dm-hover-lift dm-interactive dm-settle-chip rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Settled</p>
-              <p className="text-lg font-semibold tabular-nums text-dm-text">{globalSettled}</p>
+              <p className="dm-value-settle text-lg font-semibold tabular-nums text-dm-text">{globalSettled}</p>
             </div>
-            <div className="dm-interactive rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_28%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_7%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.85)_inset]">
+            <div className="dm-hover-lift dm-interactive dm-settle-chip rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_28%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_7%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.85)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Month spending</p>
-              <p className="break-words text-sm font-semibold leading-snug text-[color-mix(in_srgb,var(--dm-success)_92%,var(--dm-text)_8%)]">
+              <p className="dm-value-settle break-words text-sm font-semibold leading-snug text-[color-mix(in_srgb,var(--dm-success)_92%,var(--dm-text)_8%)]">
                 {formatMoneySafe(globalMonthSpend, dominantCurrency)}
               </p>
             </div>
-            <div className="col-span-2 min-w-0 rounded-xl border border-[color-mix(in_srgb,var(--dm-social)_36%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-social)_8%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.88)_inset]">
+            <div className="dm-hover-lift dm-interactive dm-settle-chip col-span-2 min-w-0 rounded-xl border border-[color-mix(in_srgb,var(--dm-social)_36%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-social)_8%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.88)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Open balance</p>
-              <p className="mt-0.5 min-w-0 break-words text-xs font-semibold leading-relaxed text-dm-text">
+              <p className="dm-value-settle mt-0.5 min-w-0 break-words text-xs font-semibold leading-relaxed text-dm-text">
                 {focusRows.map((r) => r.balanceLabel).join(" · ") || "Even"}
               </p>
             </div>
@@ -204,7 +204,7 @@ export default async function FinancesPage() {
       </div>
 
       <div className="hidden gap-5 lg:grid lg:grid-cols-12">
-        <section className="dm-money-ledger dm-module-depth col-span-7 overflow-hidden p-5">
+        <section className="dm-money-ledger dm-scroll-reveal dm-scroll-reveal-slow dm-module-depth col-span-7 overflow-hidden p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="dm-section-heading">Open balances</h2>
             <span className="dm-chip border-[color-mix(in_srgb,var(--dm-info)_22%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-info)_6%,white)]">
@@ -213,13 +213,15 @@ export default async function FinancesPage() {
           </div>
           <div className="divide-y divide-[var(--dm-border)] rounded-xl border border-[var(--dm-border-strong)] bg-white/80">
             {rows.map((r) => (
-              <article key={r.id} className="dm-money-ledger-row dm-interactive px-3.5 py-3.5 transition-colors hover:bg-[color-mix(in_srgb,var(--dm-info)_5%,white)]">
+              <article key={r.id} className="dm-money-ledger-row dm-tactile-row px-3.5 py-3.5 first:rounded-t-xl last:rounded-b-xl hover:bg-[color-mix(in_srgb,var(--dm-info)_6%,white)]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-dm-text">{r.name}</p>
                     <p className="mt-1 text-[12px] text-dm-muted">{r.whoOwes}</p>
                   </div>
-                  <span className="max-w-[11rem] text-right text-sm font-semibold tabular-nums text-dm-text">{r.balanceLabel}</span>
+                  <span className="max-w-[min(11rem,calc(100vw-480px))] min-w-0 break-words text-right text-sm font-semibold tabular-nums leading-snug text-dm-text">
+                    {r.balanceLabel}
+                  </span>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[12px] text-dm-muted">
                   <span>
@@ -237,9 +239,9 @@ export default async function FinancesPage() {
           </div>
         </section>
 
-        <section className="relative col-span-5 overflow-hidden rounded-[18px] border border-[var(--dm-border-strong)] bg-[linear-gradient(180deg,#fffdfb_0%,#f4f1ea_100%)] p-5 shadow-[0_14px_32px_rgba(45,41,37,0.07)]">
+        <section className="dm-scroll-reveal dm-scroll-reveal-slow relative col-span-5 overflow-hidden rounded-[18px] border border-[var(--dm-border-strong)] bg-[linear-gradient(180deg,#fffdfb_0%,#f4f1ea_100%)] p-5 shadow-[0_14px_32px_rgba(45,41,37,0.07)]">
           <span
-            className="pointer-events-none absolute right-3 top-3 h-16 w-16 rounded-full border border-dashed border-[color-mix(in_srgb,var(--dm-electric)_35%,transparent)] opacity-60"
+            className="dm-ambient-drift pointer-events-none absolute right-3 top-3 h-16 w-16 rounded-full border border-dashed border-[color-mix(in_srgb,var(--dm-electric)_35%,transparent)] opacity-60"
             aria-hidden
           />
           <div className="relative mb-3 flex items-center justify-between gap-2">
@@ -248,13 +250,17 @@ export default async function FinancesPage() {
           </div>
           <ul className="dm-fin-receipt-stack space-y-2.5">
             {receiptsPreview.slice(0, 6).map((r) => (
-              <li key={r.id} className="cozy-receipt dm-hover-lift px-3 py-2.5">
+              <li key={r.id} className="cozy-receipt dm-tactile-receipt px-3 py-2.5">
                 <p className="truncate text-sm font-semibold text-dm-text">{r.merchant || "Receipt"}</p>
                 <p className="mt-0.5 text-[12px] text-dm-muted">
                   {r.householdName} · {r.savedByLabel}
                 </p>
-                <p className="mt-1 text-[12px] font-semibold text-[color-mix(in_srgb,var(--dm-success)_88%,var(--dm-text)_12%)]">
-                  {r.totalAmount !== null ? formatMoneySafe(r.totalAmount, r.currency) : "Amount pending"}
+                <p className="mt-1 min-w-0 select-all text-[12px] font-semibold tabular-nums text-[color-mix(in_srgb,var(--dm-success)_88%,var(--dm-text)_12%)]">
+                  {r.totalAmount !== null ? (
+                    <span className="inline-block max-w-full break-all">{formatMoneySafe(r.totalAmount, r.currency)}</span>
+                  ) : (
+                    "Amount pending"
+                  )}
                 </p>
               </li>
             ))}
@@ -268,7 +274,7 @@ export default async function FinancesPage() {
       </div>
 
       {focusHousehold ? (
-        <section className="hidden gap-5 lg:grid lg:grid-cols-12">
+        <section className="dm-scroll-reveal dm-scroll-reveal-slow hidden gap-5 lg:grid lg:grid-cols-12">
           <div className="col-span-8">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <h2 className="dm-section-heading">Recent ledger lines</h2>
@@ -294,20 +300,22 @@ export default async function FinancesPage() {
               <span className="dm-chip dm-chip-accent">This season</span>
             </div>
             <div className="rounded-[18px] border border-[color-mix(in_srgb,var(--dm-social)_22%,var(--dm-border-strong))] bg-[linear-gradient(200deg,color-mix(in_srgb,var(--dm-social)_7%,white)_0%,#fffefb_52%)] p-4 shadow-[0_14px_30px_rgba(28,39,56,0.07)]">
-              <div className="grid gap-2">
-                <div className="rounded-xl border border-[var(--dm-border)] bg-white/85 px-3 py-3">
+              <div className="dm-stagger-settle grid gap-2">
+                <div className="dm-hover-lift dm-settle-chip rounded-xl border border-[var(--dm-border)] bg-white/85 px-3 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">Pending</p>
-                  <p className="mt-1 text-xl font-semibold tabular-nums text-dm-text">{focusHousehold.pendingCount}</p>
+                  <p className="dm-value-settle mt-1 text-xl font-semibold tabular-nums text-dm-text">{focusHousehold.pendingCount}</p>
                 </div>
-                <div className="rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_30%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_9%,white)] px-3 py-3">
+                <div className="dm-hover-lift dm-settle-chip rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_30%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_9%,white)] px-3 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">Settled</p>
-                  <p className="mt-1 text-xl font-semibold tabular-nums text-[color-mix(in_srgb,var(--dm-success)_90%,var(--dm-text)_10%)]">
+                  <p className="dm-value-settle mt-1 text-xl font-semibold tabular-nums text-[color-mix(in_srgb,var(--dm-success)_90%,var(--dm-text)_10%)]">
                     {focusHousehold.settledCount}
                   </p>
                 </div>
-                <div className="rounded-xl border border-[var(--dm-border)] bg-white/80 px-3 py-3">
+                <div className="dm-hover-lift dm-settle-chip rounded-xl border border-[var(--dm-border)] bg-white/80 px-3 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">Who owes whom</p>
-                  <p className="mt-1 text-sm font-semibold leading-snug text-dm-text">{focusHousehold.whoOwes}</p>
+                  <p className="dm-value-settle mt-1 min-w-0 break-words text-sm font-semibold leading-snug text-dm-text">
+                    {focusHousehold.whoOwes}
+                  </p>
                 </div>
               </div>
             </div>

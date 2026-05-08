@@ -33,8 +33,14 @@ export function HouseholdTaskList({
 }) {
   if (!tasks.length) {
     return (
-      <div className="cozy-note cozy-tilt-xs px-4 py-6 text-center text-[13px] text-dm-muted shadow-[var(--cozy-shadow-note)]">
-        All clear. No chores waiting right now.
+      <div className="dm-empty-well shadow-[var(--cozy-shadow-note)]" role="status">
+        <span className="dm-empty-well__glyph" aria-hidden>
+          ✨
+        </span>
+        <p className="text-sm font-semibold text-dm-text">Nothing on the hook</p>
+        <p className="mt-2 text-[13px] leading-relaxed text-dm-muted">
+          All clear—no chores waiting. When something&apos;s shared, pin it here so it doesn&apos;t get lost in chat.
+        </p>
       </div>
     );
   }
@@ -55,7 +61,7 @@ export function HouseholdTaskList({
             <form
               action={completeHouseholdTaskForm}
               className={[
-                "relative cozy-note cozy-drop-in px-4 pb-4 pt-7",
+                "dm-hover-lift dm-interactive relative cozy-note cozy-drop-in px-4 pb-4 pt-7",
                 blocked ? "opacity-[0.92]" : "",
               ].join(" ")}
               style={{ animationDelay: `${Math.min(index, 8) * 55}ms` }}
@@ -102,7 +108,7 @@ export function HouseholdTaskList({
                 ) : (
                   <button
                     type="submit"
-                    className="cozy-complete shrink-0 rounded-md border border-[rgba(54,47,40,0.12)] bg-dm-electric px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] min-h-[44px] hover:brightness-105 sm:min-h-0 sm:py-2 touch-manipulation"
+                    className="cozy-complete dm-btn-task-claim dm-focus-ring shrink-0 rounded-md border border-[rgba(54,47,40,0.12)] bg-dm-electric px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] min-h-[44px] hover:brightness-105 sm:min-h-0 sm:py-2 touch-manipulation"
                   >
                     <CompleteChip idle="Claim" />
                   </button>

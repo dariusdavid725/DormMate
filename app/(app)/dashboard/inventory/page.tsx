@@ -45,11 +45,11 @@ export default async function InventoryPage({ searchParams }: Props) {
     <div className="dm-page-enter mx-auto max-w-2xl space-y-7 lg:max-w-6xl lg:space-y-7">
       <header className="dm-pantry-page-hero dm-module-depth relative hidden overflow-hidden px-6 pb-8 pt-7 lg:block lg:px-10 lg:pb-9 lg:pt-8">
         <span
-          className="pointer-events-none absolute right-[12%] top-6 h-28 w-28 rounded-full bg-[radial-gradient(circle_at_35%_35%,rgba(239,201,125,0.34),transparent_72%)] blur-[1px]"
+          className="dm-ambient-drift pointer-events-none absolute right-[12%] top-6 h-28 w-28 rounded-full bg-[radial-gradient(circle_at_35%_35%,rgba(239,201,125,0.34),transparent_72%)] blur-[1px]"
           aria-hidden
         />
         <span
-          className="pointer-events-none absolute bottom-2 left-8 h-14 w-36 -rotate-6 rounded-full border border-dashed border-[color-mix(in_srgb,var(--dm-accent)_35%,transparent)] opacity-70"
+          className="dm-ambient-drift-rev pointer-events-none absolute bottom-2 left-8 h-14 w-36 -rotate-6 rounded-full border border-dashed border-[color-mix(in_srgb,var(--dm-accent)_35%,transparent)] opacity-70"
           aria-hidden
         />
         <div className="relative flex flex-wrap items-center gap-2">
@@ -131,7 +131,7 @@ export default async function InventoryPage({ searchParams }: Props) {
           Could not load groceries.
         </p>
       ) : (
-        <div className="grid gap-5 lg:grid-cols-12">
+        <div className="dm-scroll-reveal dm-scroll-reveal-slow grid gap-5 lg:grid-cols-12">
           <div className="lg:col-span-8">
             <HouseholdGroceryBoard
               householdId={selected.id}

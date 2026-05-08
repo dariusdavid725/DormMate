@@ -51,9 +51,15 @@ export function HouseholdExpenseList({
 }) {
   if (!expenses.length) {
     return (
-      <p className="mt-6 text-[13px] text-dm-muted">
-        No expenses yet — add one above, or scan a receipt under Receipts and turn it into a split.
-      </p>
+      <div className="dm-empty-well mt-6" role="status">
+        <span className="dm-empty-well__glyph" aria-hidden>
+          🧾
+        </span>
+        <p className="text-sm font-semibold text-dm-text">No ledger lines yet</p>
+        <p className="mt-2 max-w-md text-[13px] leading-relaxed text-dm-muted">
+          Add a split above—or scan a receipt from your household and turn it into a split here.
+        </p>
+      </div>
     );
   }
 
@@ -68,7 +74,7 @@ export function HouseholdExpenseList({
         return (
           <li
             key={e.id}
-            className="dm-module px-4 py-3 max-lg:rounded-xl max-lg:px-4 max-lg:py-4"
+            className="dm-expense-row dm-hover-lift dm-module rounded-xl px-4 py-3 max-lg:px-4 max-lg:py-4"
           >
             <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 max-lg:flex-col max-lg:gap-4">
               <div className="min-w-0 max-w-full flex-1">
@@ -88,8 +94,8 @@ export function HouseholdExpenseList({
                 </p>
               </div>
               <div className="flex w-full shrink-0 flex-col items-end gap-2 max-lg:w-full max-lg:items-start">
-                <span className="font-mono text-lg font-semibold tabular-nums text-dm-text">
-                  {formatMoneySafe(e.amount, e.currency)}
+                <span className="min-w-0 max-w-full select-all font-mono text-lg font-semibold tabular-nums text-dm-text">
+                  <span className="inline-block max-w-full break-all">{formatMoneySafe(e.amount, e.currency)}</span>
                 </span>
                 {!settled ? (
                   <SettleExpenseForm

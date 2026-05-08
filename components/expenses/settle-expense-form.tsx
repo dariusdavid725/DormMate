@@ -41,7 +41,7 @@ export function SettleExpenseForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-md border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/80 px-3 py-1.5 text-[11px] font-semibold text-dm-text transition hover:border-dm-electric hover:text-dm-electric disabled:pointer-events-none disabled:opacity-55 max-lg:min-h-[48px] max-lg:w-full max-lg:rounded-xl max-lg:px-4 max-lg:py-3 max-lg:text-[13px] max-lg:leading-snug lg:w-auto lg:py-1.5 lg:text-[11px]"
+        className="dm-focus-ring dm-press-soft rounded-md border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/80 px-3 py-1.5 text-[11px] font-semibold text-dm-text hover:border-dm-electric hover:text-dm-electric disabled:pointer-events-none disabled:opacity-55 max-lg:min-h-[48px] max-lg:w-full max-lg:rounded-xl max-lg:px-4 max-lg:py-3 max-lg:text-[13px] max-lg:leading-snug lg:w-auto lg:py-1.5 lg:text-[11px]"
       >
         {pending ? "Saving…" : "We settled up — close bill"}
       </button>

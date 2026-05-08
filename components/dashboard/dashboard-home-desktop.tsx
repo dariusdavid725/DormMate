@@ -179,8 +179,8 @@ export function DashboardHomeDesktop({
     <div className="dm-page-enter mx-auto w-full max-w-[1240px] pb-12">
       {/* Hero */}
       <section className="dm-home-hero dm-card-enter relative px-6 pb-8 pt-6 lg:px-8 lg:pb-9 lg:pt-8">
-        <span className="dm-home-hero__mesh" aria-hidden />
-        <span className="dm-home-hero__grid" aria-hidden />
+        <span className="dm-home-hero__mesh dm-ambient-drift" aria-hidden />
+        <span className="dm-home-hero__grid dm-ambient-drift-rev" aria-hidden />
         <div className="relative z-[1] flex flex-col gap-8 lg:flex-row lg:items-stretch lg:justify-between lg:gap-10">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
@@ -369,7 +369,7 @@ export function DashboardHomeDesktop({
 
       {/* Previews */}
       <div className="dm-dashboard-grid mt-6">
-        <section className="dm-preview-money dm-hover-lift dm-card-enter relative col-span-12 flex flex-col p-5 pb-7 lg:col-span-5" style={{ animationDelay: "150ms" }}>
+        <section className="dm-preview-money dm-scroll-reveal dm-scroll-reveal-slow dm-hover-lift relative col-span-12 flex flex-col p-5 pb-7 lg:col-span-5">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[color-mix(in_srgb,var(--dm-info)_65%,var(--dm-muted)_35%)]">
@@ -397,7 +397,7 @@ export function DashboardHomeDesktop({
           </div>
         </section>
 
-        <section className="dm-preview-groceries dm-hover-lift dm-card-enter col-span-12 p-5 lg:col-span-3" style={{ animationDelay: "180ms" }}>
+        <section className="dm-preview-groceries dm-scroll-reveal dm-scroll-reveal-slow dm-hover-lift col-span-12 p-5 lg:col-span-3">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[color-mix(in_srgb,var(--dm-accent)_70%,var(--dm-muted)_30%)]">
             Pantry board
           </p>
@@ -437,7 +437,7 @@ export function DashboardHomeDesktop({
           </div>
         </section>
 
-        <section className="dm-preview-chores dm-hover-lift dm-card-enter col-span-12 p-5 lg:col-span-4" style={{ animationDelay: "210ms" }}>
+        <section className="dm-preview-chores dm-scroll-reveal dm-scroll-reveal-slow dm-hover-lift col-span-12 p-5 lg:col-span-4">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-dm-muted">Task pinboard</p>
           <h2 className="mt-2 text-lg font-semibold tracking-tight text-dm-text">Chores</h2>
           <p className="mt-2 text-[13px] leading-relaxed text-dm-muted">
@@ -465,7 +465,7 @@ export function DashboardHomeDesktop({
           </div>
         </section>
 
-        <section className="dm-preview-events dm-hover-lift dm-card-enter col-span-12 p-5 lg:col-span-12" style={{ animationDelay: "240ms" }}>
+        <section className="dm-preview-events dm-scroll-reveal dm-scroll-reveal-slow dm-hover-lift col-span-12 p-5 lg:col-span-12">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[color-mix(in_srgb,var(--dm-social)_55%,var(--dm-muted)_45%)]">
@@ -505,7 +505,7 @@ export function DashboardHomeDesktop({
 
       {/* Activity stage */}
       <div className="dm-dashboard-grid mt-6">
-        <div className="dm-activity-stage dm-card-enter col-span-12 overflow-hidden p-1 lg:col-span-12" style={{ animationDelay: "270ms" }}>
+        <div className="dm-activity-stage dm-scroll-reveal dm-scroll-reveal-slow col-span-12 overflow-hidden p-1 lg:col-span-12">
           {activityPanel}
         </div>
       </div>
