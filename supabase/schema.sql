@@ -803,7 +803,27 @@ create table if not exists public.household_expense_splits (
   primary key (expense_id, user_id)
 );
 
-comment on column public.household_expense_splits.weight is 'Share of expense total; debit per user = amount * weight / sum(weights).';
+alter table public.household_expense_splits
+  add column if not exists weight numeric (14, 6);
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'household_expense_splits'
+      and column_name = 'weight'
+  ) then
+    execute 'update public.household_expense_splits set weight = 1 where weight is null';
+    execute 'alter table public.household_expense_splits alter column weight set default 1';
+    execute 'alter table public.household_expense_splits alter column weight set not null';
+    execute 'alter table public.household_expense_splits drop constraint if exists household_expense_splits_weight_check';
+    execute 'alter table public.household_expense_splits add constraint household_expense_splits_weight_check check (weight > 0)';
+    execute 'comment on column public.household_expense_splits.weight is ''Share of expense total; debit per user = amount * weight / sum(weights).''';
+  end if;
+end;
+$$;
 
 -------------------------------------------------------------------------------
 -- Events + RSVP
@@ -885,58 +905,9 @@ revoke all on function public.allocate_household_invite_code () from public;
 grant execute on function public.allocate_household_invite_code () to authenticated;
 
 -------------------------------------------------------------------------------
--- RPC: join via invite code (idempotent if already a member)
+-- RPC: join via invite code
+-- NOTE: canonical definition is declared later (returns table with joined flag)
 -------------------------------------------------------------------------------
-create or replace function public.join_household_by_invite_code (p_code text)
-returns uuid
-language plpgsql
-volatile
-security definer
-set search_path = public
-as $$
-declare
-  hid uuid;
-  uid uuid;
-  cleaned text;
-begin
-  uid := auth.uid ();
-  cleaned := upper(trim (both from coalesce (p_code, '')));
-
-  if uid is null then
-    raise exception 'not authenticated' using errcode = '42501';
-  end if;
-
-  if length (cleaned) < 4 then
-    raise exception 'invalid invite code' using errcode = '22023';
-  end if;
-
-  select h.id
-    into hid
-    from public.households h
-   where h.invite_code = cleaned;
-
-  if hid is null then
-    raise exception 'invalid invite code' using errcode = '42501';
-  end if;
-
-  if exists (
-    select 1
-    from public.household_members m
-    where m.household_id = hid
-      and m.user_id = uid
-  ) then
-    return hid;
-  end if;
-
-  insert into public.household_members (household_id, user_id, role)
-  values (hid, uid, 'member');
-
-  return hid;
-end;
-$$;
-
-revoke all on function public.join_household_by_invite_code (text) from public;
-grant execute on function public.join_household_by_invite_code (text) to authenticated;
 
 -------------------------------------------------------------------------------
 -- RPC: regenerate invite (owner/admin)
@@ -1717,18 +1688,24 @@ execute procedure public.log_activity_event_created ();
 alter table public.receipts
   add column if not exists shopping_category text;
 
-alter table public.household_expense_splits
-  add column if not exists weight numeric (14, 6);
+do $$
+begin
+  alter table public.household_expense_splits
+    add column if not exists weight numeric (14, 6);
 
-update public.household_expense_splits
-set weight = 1
-where weight is null;
-
-alter table public.household_expense_splits
-  alter column weight set default 1;
-
-alter table public.household_expense_splits
-  alter column weight set not null;
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'household_expense_splits'
+      and column_name = 'weight'
+  ) then
+    execute 'update public.household_expense_splits set weight = 1 where weight is null';
+    execute 'alter table public.household_expense_splits alter column weight set default 1';
+    execute 'alter table public.household_expense_splits alter column weight set not null';
+  end if;
+end;
+$$;
 
 -------------------------------------------------------------------------------
 -- v3 additions: household currency + groceries + invite/profile/currency activity

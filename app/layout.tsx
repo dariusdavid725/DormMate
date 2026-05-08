@@ -42,7 +42,11 @@ export const metadata: Metadata = {
   description:
     "Chores with tiny rewards, receipts, and groceries — built for dorms and flats.",
   icons: {
-    icon: [{ url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" }],
+    icon: [
+      { url: "/favicon.png", sizes: "any", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: [{ url: "/favicon.png", type: "image/png" }],
     apple: [
       {
         url: "/icons/apple-touch-icon.png",

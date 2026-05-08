@@ -26,8 +26,10 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="text-xl font-semibold text-dm-text md:text-[1.35rem]"
+            className="inline-flex items-center gap-2 text-xl font-semibold text-dm-text md:text-[1.35rem]"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
+            <img src="/logo.png" alt="" className="h-7 w-7 rounded-md object-cover" aria-hidden />
             DormMate
           </Link>
           <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-text sm:inline-flex">

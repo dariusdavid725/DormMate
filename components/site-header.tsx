@@ -21,8 +21,10 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6">
         <Link
           href="/"
-          className="font-cozy-display text-2xl text-dm-text sm:text-[1.85rem]"
+          className="inline-flex items-center gap-2 font-cozy-display text-2xl text-dm-text sm:text-[1.85rem]"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
+          <img src="/logo.png" alt="" className="h-8 w-8 rounded-md object-cover" aria-hidden />
           DormMate
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
