@@ -6,6 +6,12 @@ import {
   shouldExposeSupabaseError,
   PUBLIC_TRY_AGAIN,
 } from "@/lib/errors/public";
+import {
+  AVATAR_MAX_BYTES,
+  contentTypeForUpload,
+  extForMime,
+  resolveAvatarMime,
+} from "@/lib/profiles/avatar-mime";
 import { createClient } from "@/lib/supabase/server";
 
 function shortNameFromEmail(email: string | undefined | null) {
@@ -70,104 +76,170 @@ export async function updateProfileDisplayName(
   });
 }
 
-export async function uploadProfileAvatar(formData: FormData): Promise<void> {
+export type AvatarUploadState = {
+  ok?: boolean;
+  error?: string;
+};
+
+function friendlyAvatarStorageError(raw: string | undefined): string {
+  const msg = (raw ?? "").trim();
+  const low = msg.toLowerCase();
+  if (/bucket|bucket not found|does not exist|object not found/.test(low)) {
+    return "Avatar storage is not configured yet. Run the latest schema.sql migration in Supabase.";
+  }
+  if (
+    /payload too large|entity too large|413|maximum|file size|size limit/i.test(
+      msg,
+    )
+  ) {
+    return "Couldn't upload avatar. Please try a smaller image.";
+  }
+  if (/mime|invalid|unsupported|not an allowed|wrong type/i.test(low)) {
+    return "This file type is not supported.";
+  }
+  return "Couldn't upload avatar. Please try again.";
+}
+
+export async function uploadProfileAvatar(
+  _prev: AvatarUploadState | void,
+  formData: FormData,
+): Promise<AvatarUploadState> {
   const householdId = String(formData.get("household_id") ?? "");
-  const candidates = formData
-    .getAll("avatar")
-    .filter((x): x is File => x instanceof File);
-  const file = candidates.find((f) => f.size > 0) ?? null;
-  if (!file || file.size === 0) {
-    console.warn("[profiles] no avatar file");
-    return;
+
+  try {
+    const candidates = formData
+      .getAll("avatar")
+      .filter((x): x is File => x instanceof File);
+    const file = candidates.find((f) => f.size > 0) ?? null;
+    if (!file || file.size === 0) {
+      console.warn("[profiles] avatar: no file in form data");
+      return { error: "No image selected." };
+    }
+
+    if (file.size > AVATAR_MAX_BYTES) {
+      return {
+        error: "This image is too large. Maximum size is 5MB.",
+      };
+    }
+
+    const mime = await resolveAvatarMime(file);
+    if (!mime) {
+      console.error("[profiles] avatar: rejected mime after sniff", file.type);
+      return { error: "This file type is not supported." };
+    }
+
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return { error: "Not signed in." };
+    }
+
+    const safeExt = extForMime(mime);
+    const path = `${user.id}/avatar-${Date.now()}.${safeExt}`;
+
+    const { error: uploadErr } = await supabase.storage
+      .from("avatars")
+      .upload(path, file, {
+        upsert: false,
+        contentType: contentTypeForUpload(mime),
+      });
+
+    if (uploadErr?.message) {
+      console.error(
+        "[profiles] storage upload",
+        uploadErr.message,
+        uploadErr,
+      );
+      return { error: friendlyAvatarStorageError(uploadErr.message) };
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("avatars").getPublicUrl(path);
+
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    const previousAvatar =
+      (existing as { avatar_url: string | null } | null)?.avatar_url ?? null;
+
+    const { error: dbErr } = await supabase.from("profiles").upsert(
+      {
+        id: user.id,
+        display_name:
+          (existing as { display_name: string | null } | null)?.display_name ??
+          shortNameFromEmail(user.email),
+        avatar_url: publicUrl,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
+
+    if (dbErr?.message) {
+      console.error("[profiles] upsert avatar_url", dbErr.message, dbErr);
+      void supabase.storage.from("avatars").remove([path]).catch(() => {});
+      return {
+        error: "Couldn't upload avatar. Please try again.",
+      };
+    }
+
+    void supabase.storage
+      .from("avatars")
+      .remove(previousAvatarParts(previousAvatar))
+      .catch((e: unknown) => {
+        console.error("[profiles] cleanup old avatar", e);
+      });
+
+    if (householdId) {
+      revalidatePath(`/dashboard/household/${householdId}`);
+    }
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/settings");
+    try {
+      await logProfileUpdatedActivity(user.id, {
+        source: "avatar_upload",
+        avatar_changed: true,
+      });
+    } catch (e: unknown) {
+      console.error("[profiles] avatar activity log failed", e);
+    }
+    return { ok: true };
+  } catch (e: unknown) {
+    console.error("[profiles] avatar upload unexpected", e);
+    return {
+      error: "Couldn't upload avatar. Please try again.",
+    };
   }
-  if (file.size > 2 * 1024 * 1024) {
-    console.warn("[profiles] avatar too large");
-    return;
+}
+
+function previousAvatarParts(
+  avatarUrl: string | null | undefined,
+): string[] {
+  if (!avatarUrl?.trim()) return [];
+  try {
+    const marker = "/object/public/avatars/";
+    const i = avatarUrl.indexOf(marker);
+    let objectPath = "";
+    if (i >= 0) {
+      objectPath = decodeURIComponent(
+        avatarUrl.slice(i + marker.length).split("?")[0]?.trim() ?? "",
+      );
+    } else if (avatarUrl.includes("/avatars/")) {
+      const tail = avatarUrl.split("/avatars/")[1]?.split("?")[0];
+      objectPath =
+        typeof tail === "string" ?
+          decodeURIComponent(tail.trim())
+        : "";
+    }
+    return objectPath ? [objectPath] : [];
+  } catch {
+    return [];
   }
-
-  const allowed = [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-    "image/heic",
-    "image/heif",
-  ];
-  if (!allowed.includes(file.type)) {
-    console.warn("[profiles] invalid avatar type");
-    return;
-  }
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return;
-  }
-
-  const ext =
-    file.type === "image/png"
-      ? "png"
-      : file.type === "image/webp"
-        ? "webp"
-        : file.type === "image/gif"
-          ? "gif"
-          : file.type === "image/heic"
-            ? "heic"
-            : file.type === "image/heif"
-              ? "heif"
-          : "jpg";
-  const path = `${user.id}/avatar.${ext}`;
-
-  const { error: uploadErr } = await supabase.storage
-    .from("avatars")
-    .upload(path, file, {
-      upsert: true,
-      contentType: file.type,
-    });
-
-  if (uploadErr) {
-    console.error("[profiles] storage upload", uploadErr.message);
-    return;
-  }
-
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from("avatars").getPublicUrl(path);
-
-  const { data: existing } = await supabase
-    .from("profiles")
-    .select("display_name")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const { error: dbErr } = await supabase.from("profiles").upsert(
-    {
-      id: user.id,
-      display_name:
-        (existing as { display_name: string | null } | null)?.display_name ??
-        shortNameFromEmail(user.email),
-      avatar_url: publicUrl,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "id" },
-  );
-
-  if (dbErr) {
-    console.error("[profiles] upsert avatar url", dbErr.message);
-    return;
-  }
-
-  if (householdId) {
-    revalidatePath(`/dashboard/household/${householdId}`);
-  }
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/settings");
-  await logProfileUpdatedActivity(user.id, {
-    source: "avatar_upload",
-    avatar_changed: true,
-  });
 }
 
 export type ProfileDetailsState = {

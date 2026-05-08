@@ -1,14 +1,20 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { useRef } from "react";
+import { useRouter } from "next/navigation";
 
 import {
+  type AvatarUploadState,
   type ProfileDetailsState,
   updateProfileDetails,
   uploadProfileAvatar,
 } from "@/lib/profiles/actions";
+import { AVATAR_MAX_BYTES } from "@/lib/profiles/avatar-mime";
+import {
+  assignAvatarFileToInput,
+  clearFileInput,
+} from "@/lib/profiles/avatar-input";
 
 type ProfileSeed = {
   displayName: string;
@@ -16,6 +22,7 @@ type ProfileSeed = {
   genderIdentity: string;
   bio: string;
   dietaryPreferences: string[];
+  avatarUrl?: string | null;
 };
 
 const DIETARY = [
@@ -30,9 +37,14 @@ const DIETARY = [
   { id: "none", label: "No specific preference" },
 ] as const;
 
-function Submit({ idle }: { idle: string }) {
+function SubmitDetails({ idle }: { idle: string }) {
   const { pending } = useFormStatus();
   return pending ? "Saving..." : idle;
+}
+
+function AvatarSubmitIdle({ idle }: { idle: string }) {
+  const { pending } = useFormStatus();
+  return pending ? "Uploading…" : idle;
 }
 
 export function AccountPreferencesForm({
@@ -40,15 +52,23 @@ export function AccountPreferencesForm({
 }: {
   profile: ProfileSeed;
 }) {
+  const router = useRouter();
   const galleryRef = useRef<HTMLInputElement>(null);
   const mobileGalleryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+  const avatarSubmitRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [hasPendingAvatar, setHasPendingAvatar] = useState(false);
+  const [avatarClientErr, setAvatarClientErr] = useState<string | null>(null);
   const [state, formAction] = useActionState<ProfileDetailsState, FormData>(
     updateProfileDetails,
     {},
   );
+  const [avatarState, avatarFormAction] = useActionState<
+    AvatarUploadState,
+    FormData
+  >(uploadProfileAvatar, {});
+  const [avatarSavedFlash, setAvatarSavedFlash] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -56,9 +76,34 @@ export function AccountPreferencesForm({
     };
   }, [previewUrl]);
 
-  function onAvatarChange(file: File | null | undefined) {
+  useEffect(() => {
+    if (!avatarState.ok) return;
+    setAvatarSavedFlash(true);
+    router.refresh();
+    clearAvatarSelection();
+    const tid = window.setTimeout(() => setAvatarSavedFlash(false), 3500);
+    return () => window.clearTimeout(tid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- avatar ok + refresh sync
+  }, [avatarState.ok, router]);
+
+  async function onAvatarChange(file: File | null | undefined) {
     if (!file) return;
+    setAvatarClientErr(null);
+    const { resolveAvatarMime } = await import("@/lib/profiles/avatar-mime");
+
+    if (file.size > AVATAR_MAX_BYTES) {
+      setAvatarClientErr("This image is too large. Maximum size is 5MB.");
+      return;
+    }
+    const mime = await resolveAvatarMime(file);
+    if (!mime) {
+      setAvatarClientErr("This file type is not supported.");
+      return;
+    }
+
     setHasPendingAvatar(true);
+    assignAvatarFileToInput(file, avatarSubmitRef.current);
+
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
@@ -67,13 +112,15 @@ export function AccountPreferencesForm({
 
   function clearAvatarSelection() {
     setHasPendingAvatar(false);
+    setAvatarClientErr(null);
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
-    if (galleryRef.current) galleryRef.current.value = "";
-    if (mobileGalleryRef.current) mobileGalleryRef.current.value = "";
-    if (cameraRef.current) cameraRef.current.value = "";
+    clearFileInput(galleryRef.current);
+    clearFileInput(mobileGalleryRef.current);
+    clearFileInput(cameraRef.current);
+    clearFileInput(avatarSubmitRef.current);
   }
 
   return (
@@ -169,82 +216,118 @@ export function AccountPreferencesForm({
         </label>
 
         <button className="rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white">
-          <Submit idle="Save profile" />
+          <SubmitDetails idle="Save profile" />
         </button>
       </form>
 
-      <form action={uploadProfileAvatar} encType="multipart/form-data" className="space-y-3 border-t border-[var(--dm-border)] pt-6">
+      <form
+        action={avatarFormAction}
+        encType="multipart/form-data"
+        className="space-y-3 border-t border-[var(--dm-border)] pt-6"
+      >
+        <input ref={avatarSubmitRef} type="file" name="avatar" tabIndex={-1} aria-hidden className="sr-only" />
         <p className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
           Avatar photo
         </p>
-        {previewUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- local object URL preview
-          <img
-            src={previewUrl}
-            alt="Avatar preview"
-            className="h-20 w-20 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
-          />
-        ) : (
-          <p className="text-xs text-dm-muted">
-            Select a photo to preview. It will upload only after you confirm Save avatar.
+        {(avatarClientErr ?? avatarState.error) ? (
+          <p role="alert" className="rounded-md border border-dm-danger/40 px-3 py-2 text-sm text-dm-danger">
+            {avatarClientErr ?? avatarState.error}
           </p>
-        )}
-        <div className="sm:hidden flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => mobileGalleryRef.current?.click()}
-            className="rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text"
-          >
-            Choose from gallery
-          </button>
-          <button
-            type="button"
-            onClick={() => cameraRef.current?.click()}
-            className="rounded-md bg-dm-electric px-3 py-2 text-xs font-semibold text-white"
-          >
-            Take photo now
-          </button>
+        ) : null}
+        {avatarSavedFlash ?
+          <p className="rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-sm text-dm-muted">
+            Avatar updated.
+          </p>
+        : null}
+
+        <div className="flex gap-4">
+          {previewUrl ?
+            // eslint-disable-next-line @next/next/no-img-element -- local object URL preview
+            <img
+              src={previewUrl}
+              alt="Avatar preview"
+              className="h-20 w-20 shrink-0 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
+            />
+          : profile.avatarUrl ?
+            // eslint-disable-next-line @next/next/no-img-element -- persisted avatar URL
+            <img
+              src={profile.avatarUrl}
+              alt="Your current avatar"
+              className="h-20 w-20 shrink-0 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
+            />
+          : (
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-dashed border-[var(--dm-border-strong)] bg-dm-bg/50 text-[11px] text-dm-muted">
+              No photo yet
+            </div>
+          )}
+          <div className="min-w-0 flex-1 space-y-2">
+            <p className="text-xs text-dm-muted">
+              Select JPEG, PNG, or WebP — up to 5MB. Your current avatar stays visible until the new upload succeeds.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => mobileGalleryRef.current?.click()}
+                className="min-h-[44px] rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-text touch-manipulation sm:hidden max-sm:flex-1"
+              >
+                Choose from gallery
+              </button>
+              <button
+                type="button"
+                onClick={() => cameraRef.current?.click()}
+                className="min-h-[44px] rounded-md bg-dm-electric px-4 py-2 text-xs font-semibold text-white touch-manipulation sm:hidden max-sm:flex-1"
+              >
+                Take photo
+              </button>
+              <label className="hidden min-h-[44px] cursor-pointer items-center rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-text touch-manipulation sm:inline-flex">
+                Upload from computer
+                <input
+                  ref={galleryRef}
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => onAvatarChange(e.target.files?.[0])}
+                />
+              </label>
+            </div>
+          </div>
         </div>
         <input
           ref={mobileGalleryRef}
           type="file"
-          name="avatar"
           accept="image/*"
-          className="sr-only sm:hidden"
-          onChange={(e) => onAvatarChange(e.target.files?.[0])}
+          className="sr-only"
+          tabIndex={-1}
+          onChange={(e) => {
+            void onAvatarChange(e.target.files?.[0]);
+          }}
+          aria-hidden
         />
-        <label className="hidden sm:block text-xs font-semibold uppercase tracking-wide text-dm-muted">
-          Upload from computer
-          <input
-            ref={galleryRef}
-            type="file"
-            name="avatar"
-            accept="image/*"
-            className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
-            onChange={(e) => onAvatarChange(e.target.files?.[0])}
-          />
-        </label>
         <input
           ref={cameraRef}
           type="file"
-          name="avatar"
           accept="image/*"
           capture="environment"
           className="sr-only"
-          onChange={(e) => onAvatarChange(e.target.files?.[0])}
+          tabIndex={-1}
+          onChange={(e) => {
+            void onAvatarChange(e.target.files?.[0]);
+          }}
+          aria-hidden
         />
+
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="submit"
             disabled={!hasPendingAvatar}
-            className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-semibold text-dm-text disabled:opacity-50"
+            className="min-h-[44px] rounded-md border border-[var(--dm-border-strong)] px-5 py-2 text-sm font-semibold text-dm-text disabled:opacity-50 touch-manipulation"
           >
-            <Submit idle="Save avatar" />
+            <AvatarSubmitIdle idle="Save avatar" />
           </button>
           <button
             type="button"
             onClick={clearAvatarSelection}
-            className="rounded-md px-3 py-2 text-xs font-semibold text-dm-muted hover:text-dm-text"
+            className="min-h-[44px] rounded-md px-4 py-2 text-xs font-semibold text-dm-muted hover:text-dm-text touch-manipulation"
           >
             Clear
           </button>
@@ -253,4 +336,3 @@ export function AccountPreferencesForm({
     </div>
   );
 }
-

@@ -1,18 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
 
 import type { HouseholdMemberRow } from "@/lib/households/queries";
 import {
   promoteHouseholdMemberToAdmin,
   removeHouseholdMember,
 } from "@/lib/households/actions";
-import { RegenerateInviteButton } from "@/components/household/regenerate-invite-form";
 import {
+  type AvatarUploadState,
   updateProfileDisplayName,
   uploadProfileAvatar,
 } from "@/lib/profiles/actions";
+import { AVATAR_MAX_BYTES } from "@/lib/profiles/avatar-mime";
+import {
+  assignAvatarFileToInput,
+  clearFileInput,
+} from "@/lib/profiles/avatar-input";
+import { RegenerateInviteButton } from "@/components/household/regenerate-invite-form";
 import { getSiteUrl } from "@/lib/site-url";
 
 function formatJoined(iso: string) {
@@ -31,9 +38,22 @@ function labelHeadline(m: HouseholdMemberRow) {
   return `Member · ${m.userId.slice(0, 8)}`;
 }
 
+function prettyRole(role: string) {
+  const r = role.toLowerCase();
+  if (r === "owner") return "Owner";
+  if (r === "admin") return "Admin";
+  if (r === "member") return "Member";
+  return role;
+}
+
 function SubmitPending({ idle }: { idle: string }) {
   const { pending } = useFormStatus();
   return <>{pending ? "Saving…" : idle}</>;
+}
+
+function AvatarSavePending({ idle }: { idle: string }) {
+  const { pending } = useFormStatus();
+  return pending ? <>Uploading…</> : <>{idle}</>;
 }
 
 export function HouseholdMembersPanel({
@@ -53,16 +73,25 @@ export function HouseholdMembersPanel({
   householdCreatorId: string;
   currentRole: string;
 }) {
+  const router = useRouter();
   const galleryRef = useRef<HTMLInputElement>(null);
   const mobileGalleryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+  const avatarSubmitRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [hasPendingAvatar, setHasPendingAvatar] = useState(false);
-  const sorted = [...members].sort((a, b) => {
-    if (a.userId === currentUserId) return -1;
-    if (b.userId === currentUserId) return 1;
-    return labelHeadline(a).localeCompare(labelHeadline(b));
-  });
+  const [avatarClientErr, setAvatarClientErr] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [avatarSavedFlash, setAvatarSavedFlash] = useState(false);
+  const sorted = [...members].sort((a, b) =>
+    labelHeadline(a).localeCompare(labelHeadline(b)),
+  );
+  const me = members.find((m) => m.userId === currentUserId);
+
+  const [avatarState, avatarFormAction] = useActionState<
+    AvatarUploadState,
+    FormData
+  >(uploadProfileAvatar, {});
 
   const site = getSiteUrl();
   const joinUrl =
@@ -76,9 +105,43 @@ export function HouseholdMembersPanel({
     };
   }, [previewUrl]);
 
-  function onAvatarChange(file: File | null | undefined) {
+  useEffect(() => {
+    if (!avatarState.ok) return;
+    setAvatarSavedFlash(true);
+    router.refresh();
+    clearAvatarSelection();
+    const tid = window.setTimeout(() => setAvatarSavedFlash(false), 3500);
+    return () => window.clearTimeout(tid);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [avatarState.ok, router]);
+
+  async function copyInviteLink() {
+    if (!joinUrl) return;
+    try {
+      await navigator.clipboard.writeText(joinUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2200);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  async function onAvatarChange(file: File | null | undefined) {
     if (!file) return;
+    setAvatarClientErr(null);
+
+    const { resolveAvatarMime } = await import("@/lib/profiles/avatar-mime");
+    if (file.size > AVATAR_MAX_BYTES) {
+      setAvatarClientErr("This image is too large. Maximum size is 5MB.");
+      return;
+    }
+    const mime = await resolveAvatarMime(file);
+    if (!mime) {
+      setAvatarClientErr("This file type is not supported.");
+      return;
+    }
     setHasPendingAvatar(true);
+    assignAvatarFileToInput(file, avatarSubmitRef.current);
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
@@ -87,181 +150,49 @@ export function HouseholdMembersPanel({
 
   function clearAvatarSelection() {
     setHasPendingAvatar(false);
+    setAvatarClientErr(null);
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
       return null;
     });
-    if (galleryRef.current) galleryRef.current.value = "";
-    if (mobileGalleryRef.current) mobileGalleryRef.current.value = "";
-    if (cameraRef.current) cameraRef.current.value = "";
+    clearFileInput(galleryRef.current);
+    clearFileInput(mobileGalleryRef.current);
+    clearFileInput(cameraRef.current);
+    clearFileInput(avatarSubmitRef.current);
   }
 
-  return (
-    <div className="dm-page-enter space-y-8">
-      <section className="dm-module dm-module-depth p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-semibold text-dm-text">Your profile</h3>
-            <p className="mt-1 text-[13px] text-dm-muted">
-              Display name and optional avatar visible to roommates.
-            </p>
-          </div>
-          <span className="dm-chip">social identity</span>
-        </div>
-        <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
-          <input type="hidden" name="household_id" value={householdId} />
-          <label className="sr-only" htmlFor="display_name">
-            Display name
-          </label>
-          <input
-            id="display_name"
-            name="display_name"
-            type="text"
-            maxLength={80}
-            placeholder="Name shown to roommates"
-            defaultValue={
-              sorted.find((x) => x.userId === currentUserId)?.displayName ?? ""
-            }
-            className="min-w-[12rem] flex-1 rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-4 py-2.5 text-sm text-dm-text outline-none focus:border-dm-electric focus:ring-2 focus:ring-dm-electric/15"
-          />
-          <button
-            type="submit"
-            className="rounded-md bg-dm-electric px-5 py-2.5 text-sm font-medium text-white hover:brightness-105"
-          >
-            <SubmitPending idle="Save" />
-          </button>
-        </form>
-
-        <form
-          action={uploadProfileAvatar}
-          encType="multipart/form-data"
-          className="mt-8 flex flex-wrap items-end gap-4 border-t border-[var(--dm-border)] pt-8"
-        >
-          <input type="hidden" name="household_id" value={householdId} />
-          <div className="min-w-0 flex-1">
-            <p className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
-              Photo
-            </p>
-            {previewUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element -- local object URL preview
-              <img
-                src={previewUrl}
-                alt="Profile photo preview"
-                className="mt-2 h-20 w-20 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
-              />
-            ) : (
-              <p className="mt-2 text-xs text-dm-muted">
-                Pick a photo to preview. Upload happens only after Save.
-              </p>
-            )}
-            <div className="sm:hidden mt-2 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => mobileGalleryRef.current?.click()}
-                className="rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text"
-              >
-                Choose gallery
-              </button>
-              <button
-                type="button"
-                onClick={() => cameraRef.current?.click()}
-                className="rounded-md bg-dm-electric px-3 py-2 text-xs font-semibold text-white"
-              >
-                Take photo
-              </button>
-            </div>
-            <input
-              ref={mobileGalleryRef}
-              name="avatar"
-              type="file"
-              accept="image/*"
-              className="sr-only sm:hidden"
-              onChange={(e) => onAvatarChange(e.target.files?.[0])}
-            />
-            <input
-              ref={cameraRef}
-              name="avatar"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="sr-only"
-              onChange={(e) => onAvatarChange(e.target.files?.[0])}
-            />
-            <label className="hidden sm:block mt-2 text-xs text-dm-muted">
-              Upload from computer
-              <input
-                ref={galleryRef}
-                name="avatar"
-                type="file"
-                accept="image/*"
-                className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
-                onChange={(e) => onAvatarChange(e.target.files?.[0])}
-              />
-            </label>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="submit"
-              disabled={!hasPendingAvatar}
-              className="rounded-full border border-[var(--dm-border-strong)] bg-dm-surface px-6 py-2.5 text-sm font-semibold text-dm-text shadow-sm hover:border-dm-electric disabled:opacity-50"
-            >
-              <SubmitPending idle="Save photo" />
-            </button>
-            <button
-              type="button"
-              onClick={clearAvatarSelection}
-              className="text-xs font-semibold text-dm-muted hover:text-dm-text"
-            >
-              Clear
-            </button>
-          </div>
-        </form>
-      </section>
-
-      {canManageInvites ? (
-        <section className="dm-module dm-module-muted p-5">
-          <h3 className="text-sm font-semibold text-dm-text">Koti invite</h3>
-          <p className="mt-2 text-[12px] text-dm-muted">
-            Share this link with roommates to join this Koti home.
+  const listSection = (
+    <section className="min-w-0 space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-cozy-display text-xl leading-tight tracking-tight text-dm-text sm:text-[1.35rem]">
+            Roommates
+          </h2>
+          <p className="mt-1 text-[12px] text-dm-muted">
+            {members.length}{" "}
+            {members.length === 1 ? "person calls this place home." : "people in this home."}
           </p>
-          {inviteCode?.length ?
-            <>
-              <p className="mt-4 rounded-md bg-dm-surface px-3 py-2 font-mono text-sm tracking-[0.06em] text-dm-text">
-                {inviteCode}
-              </p>
-              {joinUrl ?
-                <p className="mt-2 break-all text-[12px] text-dm-muted">
-                  <span className="font-semibold text-dm-text">Link:</span> {joinUrl}
-                </p>
-              : null}
-            </>
-          : (
-            <p className="mt-4 text-[13px] text-dm-danger">
-              Invite code missing — run the latest migration in SQL.
-            </p>
-          )}
-          <RegenerateInviteButton householdId={householdId} />
-        </section>
-      ) : null}
-
-      <div>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 className="text-sm font-semibold text-dm-text">Roommates</h3>
-            <p className="mt-1 text-[12px] text-dm-muted">{members.length} roommates total.</p>
-          </div>
-          <span className="dm-chip">{members.filter((m) => m.role === "owner" || m.role === "admin").length} admins</span>
         </div>
-        {members.length === 0 ? (
-          <p className="mt-4 rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-3 text-[13px] text-dm-muted">
-            It&apos;s quiet here. Invite your roommates to make this home useful.
+        <span className="shrink-0 rounded-full bg-[color-mix(in_srgb,var(--dm-accent)_18%,transparent)] px-3 py-1 text-[11px] font-semibold text-dm-accent-ink ring-1 ring-[var(--dm-border)]">
+          {members.filter((m) => m.role === "owner" || m.role === "admin").length}{" "}
+          {members.filter((m) => m.role === "owner" || m.role === "admin").length === 1 ? "admin" : "admins"}
+        </span>
+      </div>
+      {members.length === 0 ?
+        <div className="rounded-2xl border border-dashed border-[var(--dm-border-strong)] bg-dm-bg/40 px-4 py-10 text-center">
+          <p className="text-sm font-semibold text-dm-text">No roommates yet</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-dm-muted">
+            When someone joins with your invite link, they&apos;ll show up here with you.
           </p>
-        ) : null}
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+        </div>
+      : (
+        <ul className="grid gap-3 sm:grid-cols-2 sm:gap-4">
           {sorted.map((m) => {
             const isYou = m.userId === currentUserId;
             const canRemoveOthers =
-              (currentRole === "owner" || currentRole === "admin") && !isYou && m.role !== "owner";
+              (currentRole === "owner" || currentRole === "admin") &&
+              !isYou &&
+              m.role !== "owner";
 
             const canPromoteMember =
               householdCreatorId === currentUserId &&
@@ -270,73 +201,79 @@ export function HouseholdMembersPanel({
 
             return (
               <li key={m.userId}>
-                <article className="dm-module dm-hover-lift flex gap-4 p-4">
-                  <div className="relative shrink-0">
-                    {m.avatarUrl ?
-                      // eslint-disable-next-line @next/next/no-img-element -- CDN
-                      <img
-                        src={m.avatarUrl}
-                        alt=""
-                        className="h-14 w-14 rounded-2xl object-cover ring-1 ring-[var(--dm-border)]"
-                      />
-                    : (
-                      <div
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--dm-accent-soft)] text-sm font-semibold text-dm-accent-ink"
-                        aria-hidden
-                      >
-                        {labelHeadline(m).slice(0, 2).toUpperCase()}
+                <article className="group relative overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-gradient-to-br from-dm-bg to-dm-bg/80 p-4 shadow-[0_14px_40px_-26px_rgb(15_23_42/0.55)] ring-1 ring-black/[0.03] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_18px_44px_-24px_rgb(15_23_42/0.45)]">
+                  <div className="pointer-events-none absolute -right-6 -top-8 h-24 w-24 rounded-full bg-[color-mix(in_srgb,var(--dm-fun)_22%,transparent)] blur-2xl opacity-70" aria-hidden />
+                  <div className="relative flex gap-3">
+                    <div className="relative shrink-0">
+                      {m.avatarUrl ?
+                        // eslint-disable-next-line @next/next/no-img-element -- storage URL
+                        <img
+                          src={m.avatarUrl}
+                          alt=""
+                          className="h-14 w-14 rounded-2xl object-cover shadow-sm ring-2 ring-[var(--dm-border)]"
+                        />
+                      : (
+                        <div
+                          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--dm-accent-soft)] text-sm font-bold text-dm-accent-ink ring-2 ring-[var(--dm-border)]"
+                          aria-hidden
+                        >
+                          {labelHeadline(m).slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                      {isYou ?
+                        <span className="absolute -bottom-1 -right-1 rounded-full bg-dm-electric px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white shadow-sm">
+                          You
+                        </span>
+                      : null}
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1.5">
+                      <p className="truncate font-semibold leading-snug text-dm-text">
+                        {labelHeadline(m)}
+                      </p>
+                      {m.email?.trim() ?
+                        <p className="truncate text-[12px] text-dm-muted">{m.email.trim()}</p>
+                      : null}
+                      <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-dm-muted">
+                        <span className="inline-flex rounded-full bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] px-2.5 py-1 font-semibold text-dm-text">
+                          {prettyRole(m.role)}
+                        </span>
+                        <span aria-hidden className="text-dm-muted/50">
+                          ·
+                        </span>
+                        <span>Joined {formatJoined(m.joinedAt)}</span>
+                        <span aria-hidden className="text-dm-muted/50">
+                          ·
+                        </span>
+                        <span className="inline-flex items-center rounded-md bg-dm-bg/90 px-1.5 py-0.5 font-semibold tabular-nums text-dm-text ring-1 ring-[var(--dm-border)]">
+                          {m.rewardPoints} pts
+                        </span>
                       </div>
-                    )}
-                    {isYou ?
-                      <span className="absolute -bottom-1 -right-1 rounded-full bg-dm-electric px-2 py-0.5 text-[10px] font-semibold uppercase text-white shadow-sm">
-                        You
-                      </span>
-                    : null}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-2">
-                    <p className="truncate font-semibold text-dm-text">
-                      {labelHeadline(m)}
-                    </p>
-                    {m.email?.trim() && m.email !== labelHeadline(m) ?
-                      <p className="truncate text-[12px] text-dm-muted">{m.email}</p>
-                    : null}
-                    <p className="text-[13px] text-dm-muted capitalize">
-                      <span className="rounded-full bg-dm-bg px-2 py-0.5 text-xs font-semibold">
-                        {m.role}
-                      </span>
-                      <span className="mx-2 opacity-35">·</span>
-                      joined {formatJoined(m.joinedAt)}
-                      <span className="mx-2 opacity-35">·</span>
-                      <span className="inline-flex rounded-md bg-[color-mix(in_srgb,var(--dm-fun)_20%,transparent)] px-1.5 py-px text-[11px] font-semibold tabular-nums text-dm-text ring-1 ring-[var(--dm-border)]">
-                        {m.rewardPoints} pts
-                      </span>
-                    </p>
-
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {canPromoteMember ?
-                        <form action={promoteHouseholdMemberToAdmin}>
-                          <input type="hidden" name="household_id" value={householdId} />
-                          <input type="hidden" name="target_user_id" value={m.userId} />
-                          <button
-                            type="submit"
-                            className="rounded-md border border-[var(--dm-border-strong)] px-3 py-1.5 text-[11px] font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-electric"
-                          >
-                            Promote admin
-                          </button>
-                        </form>
-                      : null}
-                      {(canRemoveOthers || (isYou && m.role !== "owner")) ?
-                        <form action={removeHouseholdMember}>
-                          <input type="hidden" name="household_id" value={householdId} />
-                          <input type="hidden" name="target_user_id" value={m.userId} />
-                          <button
-                            type="submit"
-                            className="rounded-md px-3 py-1.5 text-[11px] font-semibold text-dm-danger hover:underline"
-                          >
-                            {isYou ? "Leave flat" : "Remove"}
-                          </button>
-                        </form>
-                      : null}
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        {canPromoteMember ?
+                          <form action={promoteHouseholdMemberToAdmin}>
+                            <input type="hidden" name="household_id" value={householdId} />
+                            <input type="hidden" name="target_user_id" value={m.userId} />
+                            <button
+                              type="submit"
+                              className="min-h-[44px] rounded-xl border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-electric touch-manipulation"
+                            >
+                              Promote admin
+                            </button>
+                          </form>
+                        : null}
+                        {(canRemoveOthers || (isYou && m.role !== "owner")) ?
+                          <form action={removeHouseholdMember}>
+                            <input type="hidden" name="household_id" value={householdId} />
+                            <input type="hidden" name="target_user_id" value={m.userId} />
+                            <button
+                              type="submit"
+                              className="min-h-[44px] rounded-xl px-4 py-2 text-xs font-semibold text-dm-danger hover:bg-dm-danger/5 touch-manipulation"
+                            >
+                              {isYou ? "Leave flat" : "Remove"}
+                            </button>
+                          </form>
+                        : null}
+                      </div>
                     </div>
                   </div>
                 </article>
@@ -344,6 +281,224 @@ export function HouseholdMembersPanel({
             );
           })}
         </ul>
+      )}
+    </section>
+  );
+
+  const inviteSection =
+    canManageInvites ?
+      <section className="dm-module dm-module-muted shrink-0 overflow-hidden rounded-2xl p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-dm-text">Invite roommate</h3>
+            <p className="mt-1 text-[11px] leading-snug text-dm-muted">
+              Share your link below — newcomers land here as members.
+            </p>
+          </div>
+          {inviteCode?.length ?
+            <span className="shrink-0 rounded-full bg-dm-bg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-dm-muted ring-1 ring-[var(--dm-border)]">
+              Active invite
+            </span>
+          : null}
+        </div>
+
+        {inviteCode?.length ?
+          <>
+            <p className="mt-4 break-all rounded-xl bg-dm-surface px-3 py-2.5 font-mono text-[13px] tracking-[0.04em] text-dm-text">
+              {inviteCode}
+            </p>
+            {joinUrl ?
+              <p className="mt-2 line-clamp-2 break-all text-[11px] text-dm-muted">
+                Link:{" "}
+                <span className="font-medium text-dm-text">{joinUrl}</span>
+              </p>
+            : null}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  void copyInviteLink();
+                }}
+                disabled={!joinUrl}
+                className="min-h-[44px] flex-1 rounded-xl bg-dm-electric px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:brightness-105 disabled:opacity-50 touch-manipulation sm:flex-none"
+              >
+                {copied ? "Copied!" : "Copy invite link"}
+              </button>
+            </div>
+          </>
+        : (
+          <p className="mt-4 text-[13px] text-dm-danger">
+            Invite code missing — apply the latest <code className="text-xs font-mono">schema.sql</code> in Supabase,
+            then refresh.
+          </p>
+        )}
+        <RegenerateInviteButton householdId={householdId} />
+      </section>
+    : null;
+
+  const profileSection = (
+    <section className="dm-module dm-module-depth shrink-0 overflow-hidden rounded-2xl p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold text-dm-text">Your profile</h3>
+          <p className="mt-1 text-[11px] text-dm-muted">
+            How roommates see you in this home (name + photo).
+          </p>
+        </div>
+      </div>
+      <form action={updateProfileDisplayName} className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <input type="hidden" name="household_id" value={householdId} />
+        <label className="sr-only" htmlFor={`display_name_${householdId}`}>
+          Display name
+        </label>
+        <input
+          id={`display_name_${householdId}`}
+          name="display_name"
+          type="text"
+          maxLength={80}
+          placeholder="Name shown to roommates"
+          defaultValue={me?.displayName ?? ""}
+          className="min-h-[44px] min-w-[12rem] flex-1 rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-4 py-2.5 text-sm text-dm-text outline-none focus:border-dm-electric focus:ring-2 focus:ring-dm-electric/15"
+        />
+        <button
+          type="submit"
+          className="min-h-[44px] shrink-0 rounded-xl bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white hover:brightness-105 touch-manipulation"
+        >
+          <SubmitPending idle="Save name" />
+        </button>
+      </form>
+
+      <form
+        action={avatarFormAction}
+        encType="multipart/form-data"
+        className="mt-6 border-t border-[var(--dm-border)] pt-6"
+      >
+        <input
+          ref={avatarSubmitRef}
+          type="file"
+          name="avatar"
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden
+        />
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+          Photo
+        </p>
+        {(avatarClientErr ?? avatarState.error) ?
+          <p className="mt-2 rounded-lg border border-dm-danger/35 px-3 py-2 text-[12px] text-dm-danger" role="alert">
+            {avatarClientErr ?? avatarState.error}
+          </p>
+        : null}
+        {avatarSavedFlash ?
+          <p className="mt-2 rounded-lg border border-[var(--dm-border-strong)] px-3 py-2 text-[12px] text-dm-muted">
+            Avatar updated.
+          </p>
+        : null}
+        <div className="mt-3 flex flex-wrap gap-3">
+          {previewUrl ?
+            // eslint-disable-next-line @next/next/no-img-element -- local preview
+            <img
+              src={previewUrl}
+              alt=""
+              className="h-16 w-16 shrink-0 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
+            />
+          : me?.avatarUrl ?
+            // eslint-disable-next-line @next/next/no-img-element -- profile URL
+            <img
+              src={me.avatarUrl}
+              alt=""
+              className="h-16 w-16 shrink-0 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
+            />
+          : (
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-dashed border-[var(--dm-border-strong)] bg-dm-bg/50 text-[10px] text-dm-muted">
+              No photo
+            </div>
+          )}
+          <div className="min-w-0 flex-1 space-y-2">
+            <p className="text-[11px] text-dm-muted">
+              JPEG / PNG / WebP, max 5MB. Your saved photo stays until the upload succeeds.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="min-h-[44px] rounded-xl border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-text touch-manipulation sm:hidden"
+                onClick={() => mobileGalleryRef.current?.click()}
+              >
+                Gallery
+              </button>
+              <button
+                type="button"
+                className="min-h-[44px] rounded-xl bg-dm-electric px-4 py-2 text-xs font-semibold text-white touch-manipulation sm:hidden"
+                onClick={() => cameraRef.current?.click()}
+              >
+                Camera
+              </button>
+              <label className="hidden min-h-[44px] cursor-pointer items-center rounded-xl border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-text touch-manipulation sm:inline-flex">
+                Upload file
+                <input
+                  ref={galleryRef}
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => {
+                    void onAvatarChange(e.target.files?.[0]);
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+        <input
+          ref={mobileGalleryRef}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          tabIndex={-1}
+          onChange={(e) => {
+            void onAvatarChange(e.target.files?.[0]);
+          }}
+          aria-hidden
+        />
+        <input
+          ref={cameraRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="sr-only"
+          tabIndex={-1}
+          onChange={(e) => {
+            void onAvatarChange(e.target.files?.[0]);
+          }}
+          aria-hidden
+        />
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <button
+            type="submit"
+            disabled={!hasPendingAvatar}
+            className="min-h-[44px] rounded-full border border-[var(--dm-border-strong)] bg-dm-surface px-6 py-2.5 text-sm font-semibold text-dm-text shadow-sm hover:border-dm-electric disabled:opacity-50 touch-manipulation"
+          >
+            <AvatarSavePending idle="Save photo" />
+          </button>
+          <button
+            type="button"
+            className="min-h-[44px] px-3 text-xs font-semibold text-dm-muted hover:text-dm-text touch-manipulation"
+            onClick={clearAvatarSelection}
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+
+  return (
+    <div className="dm-page-enter">
+      <div className="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-10">
+        <div className="min-w-0 lg:col-span-7">{listSection}</div>
+        <aside className="flex min-w-0 flex-col gap-6 lg:col-span-5">
+          {inviteSection}
+          {profileSection}
+        </aside>
       </div>
     </div>
   );

@@ -692,6 +692,8 @@ using (
   and split_part (name, '/', 1) = (select auth.uid ())::text
 );
 
+-- Avatar object paths: `{auth.uid()}/avatar-{timestamp}.{jpg|png|webp}` (first path segment must match auth.uid(); app uses timestamps to avoid CDN/browser cache staleness).
+
 -------------------------------------------------------------------------------
 -- Auth: profile row on signup (optional — skip if your project disallows triggers on auth.users)
 -------------------------------------------------------------------------------
