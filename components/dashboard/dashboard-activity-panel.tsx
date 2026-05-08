@@ -52,19 +52,28 @@ export function DashboardActivityPanel({
   items,
   showSeeMore = true,
   className = "",
+  embedded = false,
+  title = "Home activity",
 }: {
   items: HouseActivityItem[];
   showSeeMore?: boolean;
   className?: string;
+  /** Nested inside a richer parent surface (e.g. home board stage). */
+  embedded?: boolean;
+  title?: string;
 }) {
   const [filter, setFilter] = useState<ActivityFilter>("all");
   const filtered = useMemo(() => items.filter((item) => matchesFilter(item, filter)), [items, filter]);
   const previewItems = showSeeMore ? filtered.slice(0, 4) : filtered;
 
+  const shell = embedded
+    ? `rounded-[14px] bg-transparent p-5 ${className}`
+    : `dm-module dm-module-rich dm-page-enter p-5 ${className}`;
+
   return (
-    <section className={`dm-module dm-module-rich dm-page-enter p-5 ${className}`}>
+    <section className={shell}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="dm-section-heading">Home activity</h2>
+        <h2 className="dm-section-heading">{title}</h2>
         <div className="flex flex-wrap items-center gap-1.5">
           {FILTERS.map((tab) => (
             <button
