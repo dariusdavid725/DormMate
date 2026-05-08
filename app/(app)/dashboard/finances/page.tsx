@@ -105,6 +105,7 @@ export default async function FinancesPage() {
   const globalMonthSpend = rows.reduce((s, r) => s + r.monthSpend, 0);
   const dominantCurrency = households[0]?.currency ?? "RON";
   const focusRows = rows.slice(0, 3);
+  const focusHousehold = rows[0] ?? null;
 
   return (
     <div className="mx-auto w-full max-w-[1240px] space-y-7">
@@ -237,21 +238,43 @@ export default async function FinancesPage() {
         </section>
       </div>
 
-      {rows[0] ? (
-        <section className="hidden lg:block">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="dm-section-heading">Recent expenses</h2>
-            <Link href={`/dashboard/household/${rows[0].id}?view=expenses`} className="text-sm font-semibold text-dm-electric hover:underline">
-              Open full settlements
-            </Link>
+      {focusHousehold ? (
+        <section className="hidden gap-4 lg:grid lg:grid-cols-12">
+          <div className="col-span-8">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="dm-section-heading">Recent expenses</h2>
+              <Link href={`/dashboard/household/${focusHousehold.id}?view=expenses`} className="text-sm font-semibold text-dm-electric hover:underline">
+                Open full settlements
+              </Link>
+            </div>
+            <div className="dm-module p-4">
+              <HouseholdExpenseList
+                householdId={focusHousehold.id}
+                expenses={focusHousehold.expenses.slice(0, 5)}
+                splitPartsByExpenseId={focusHousehold.splitMap}
+                memberLabels={focusHousehold.memberLabels}
+              />
+            </div>
           </div>
-          <div className="dm-module p-4">
-            <HouseholdExpenseList
-              householdId={rows[0].id}
-              expenses={rows[0].expenses.slice(0, 5)}
-              splitPartsByExpenseId={rows[0].splitMap}
-              memberLabels={rows[0].memberLabels}
-            />
+          <div className="col-span-4">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="dm-section-heading">Settlement status</h2>
+              <span className="dm-chip">current month</span>
+            </div>
+            <div className="dm-module p-4">
+              <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5">
+                <p className="text-[11px] uppercase tracking-wide text-dm-muted">Pending</p>
+                <p className="mt-1 text-lg font-semibold text-dm-text">{focusHousehold.pendingCount}</p>
+              </div>
+              <div className="mt-2 rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5">
+                <p className="text-[11px] uppercase tracking-wide text-dm-muted">Settled</p>
+                <p className="mt-1 text-lg font-semibold text-emerald-700">{focusHousehold.settledCount}</p>
+              </div>
+              <div className="mt-2 rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-3 py-2.5">
+                <p className="text-[11px] uppercase tracking-wide text-dm-muted">Who owes whom</p>
+                <p className="mt-1 text-sm font-semibold text-dm-text">{focusHousehold.whoOwes}</p>
+              </div>
+            </div>
           </div>
         </section>
       ) : null}

@@ -97,12 +97,17 @@ export function HouseholdMembersPanel({
   }
 
   return (
-    <div className="space-y-10">
-      <section className="dm-module p-5 sm:p-6">
-        <h3 className="text-sm font-medium text-dm-text">Your profile</h3>
-        <p className="mt-1 text-[13px] text-dm-muted">
-          Display name and optional avatar visible to roommates.
-        </p>
+    <div className="space-y-8">
+      <section className="dm-module dm-module-depth p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 className="text-sm font-semibold text-dm-text">Your profile</h3>
+            <p className="mt-1 text-[13px] text-dm-muted">
+              Display name and optional avatar visible to roommates.
+            </p>
+          </div>
+          <span className="dm-chip">social identity</span>
+        </div>
         <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
           <input type="hidden" name="household_id" value={householdId} />
           <label className="sr-only" htmlFor="display_name">
@@ -240,14 +245,19 @@ export function HouseholdMembersPanel({
       ) : null}
 
       <div>
-        <h3 className="text-sm font-medium text-dm-text">Roommates</h3>
-        <p className="mt-1 text-[12px] text-dm-muted">{members.length} roommates total.</p>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 className="text-sm font-semibold text-dm-text">Roommates</h3>
+            <p className="mt-1 text-[12px] text-dm-muted">{members.length} roommates total.</p>
+          </div>
+          <span className="dm-chip">{members.filter((m) => m.role === "owner" || m.role === "admin").length} admins</span>
+        </div>
         {members.length === 0 ? (
           <p className="mt-4 rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-3 text-[13px] text-dm-muted">
             It&apos;s quiet here. Invite your roommates to make this home useful.
           </p>
         ) : null}
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+        <ul className="mt-4 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => {
             const isYou = m.userId === currentUserId;
             const canRemoveOthers =
@@ -260,7 +270,7 @@ export function HouseholdMembersPanel({
 
             return (
               <li key={m.userId}>
-                <article className="flex gap-4 rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-4 shadow-[0_8px_16px_rgba(45,41,37,0.05)]">
+                <article className="dm-module dm-hover-lift flex gap-4 p-4">
                   <div className="relative shrink-0">
                     {m.avatarUrl ?
                       // eslint-disable-next-line @next/next/no-img-element -- CDN
@@ -291,7 +301,7 @@ export function HouseholdMembersPanel({
                       <p className="truncate text-[12px] text-dm-muted">{m.email}</p>
                     : null}
                     <p className="text-[13px] text-dm-muted capitalize">
-                      <span className="rounded-full bg-dm-bg px-2 py-0.5 text-xs font-medium">
+                      <span className="rounded-full bg-dm-bg px-2 py-0.5 text-xs font-semibold">
                         {m.role}
                       </span>
                       <span className="mx-2 opacity-35">·</span>

@@ -123,16 +123,19 @@ export function HouseholdGroceryBoard({
         </form>
       </div>
 
-      <section>
-        <h3 className="dm-section-heading">Current list</h3>
+      <section className="dm-module p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="dm-section-heading">Current list</h3>
+          <span className="dm-chip">{open.length} pending</span>
+        </div>
         {open.length === 0 ? (
-          <p className="mt-2 text-[13px] text-dm-muted">
+          <p className="mt-2 rounded-lg border border-dashed border-[var(--dm-border-strong)] bg-dm-surface-mid/35 px-3 py-3 text-[13px] text-dm-muted">
             Your grocery board is empty. Add the first thing before someone forgets the toilet paper.
           </p>
         ) : (
           <ul className="mt-4 space-y-3">
             {open.map((item) => (
-              <li key={item.id} className="dm-module px-4 py-3">
+              <li key={item.id} className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/35 px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-dm-text">{item.name}</p>
@@ -163,8 +166,11 @@ export function HouseholdGroceryBoard({
       </section>
 
       {bought.length > 0 ? (
-        <section>
-          <h3 className="dm-section-heading">Bought</h3>
+        <section className="dm-module p-4 sm:p-5">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="dm-section-heading">Bought</h3>
+            <span className="dm-chip">{bought.length} items</span>
+          </div>
           <ul className="mt-3 space-y-2">
             {bought.map((item) => (
               <li key={item.id} className="rounded-xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface/80 px-3 py-2.5">

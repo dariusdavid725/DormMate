@@ -111,7 +111,7 @@ export default async function DashboardOverviewPage() {
       <div className="hidden lg:block">
         <div className="mx-auto w-full max-w-[1240px] pb-12">
           <div className="dm-dashboard-grid">
-            <header className="dm-hero-module dm-module-depth dm-card-enter col-span-12 px-6 pb-6 pt-5 lg:col-span-7">
+            <header className="dm-hero-module dm-module-depth dm-card-enter col-span-12 px-6 pb-6 pt-5 lg:col-span-8">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
@@ -131,18 +131,71 @@ export default async function DashboardOverviewPage() {
                     <span className="dm-chip">{spotlightOpenTasks.length} chores</span>
                   <span className="dm-chip">{openGroceries.length} groceries pending</span>
                   <span className="dm-chip">{receiptsLast7d} receipts / 7d</span>
+                  <span className="dm-chip">{roommateCount} roommates</span>
                 </div>
               </div>
             </header>
 
-            <section className="dm-module dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-5" style={{ animationDelay: "40ms" }}>
+            <section className="dm-module dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "40ms" }}>
               <div className="flex items-center justify-between">
-                <h2 className="dm-section-heading">Roommate presence</h2>
+                <h2 className="dm-section-heading">Needs attention</h2>
+                <Link href={spotlightHome ? `/dashboard/household/${spotlightHome.id}?view=members` : "/dashboard/more"} className="text-[12px] font-semibold text-dm-electric hover:underline">
+                  View home
+                </Link>
+              </div>
+              <div className="mt-3 space-y-2">
+                <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/45 px-3.5 py-3">
+                  <p className="text-[11px] uppercase tracking-wide text-dm-muted">Next important</p>
+                  <p className="mt-1 line-clamp-2 text-sm font-semibold text-dm-text">
+                    {nextTask ? nextTask.title : "No urgent chores right now."}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/45 px-3.5 py-3">
+                  <p className="text-[11px] uppercase tracking-wide text-dm-muted">Money pulse</p>
+                  <p className="mt-1 text-sm font-semibold text-dm-text">{owedPreview}</p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {error ? (
+            <div
+              role="alert"
+              className="mt-6 rounded-md border border-dm-danger/40 bg-dm-surface px-4 py-3 text-sm text-dm-danger"
+            >
+              {shouldExposeSupabaseError() ? error : PUBLIC_TRY_AGAIN}
+            </div>
+          ) : null}
+
+          <div className="dm-dashboard-grid mt-6">
+            <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-3" style={{ animationDelay: "80ms" }}>
+              <h2 className="dm-section-heading">Quick actions</h2>
+              <div className="mt-3">
+                <DashboardQuickActions />
+              </div>
+            </section>
+
+            <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-5" style={{ animationDelay: "110ms" }}>
+              <h2 className="dm-section-heading">Today status</h2>
+              <div className="mt-3">
+                <TodayStrip
+                  choresDue={openTasks.length}
+                  owedLabel={owedPreview}
+                  receiptsRecent={receiptsLast7d}
+                  groceriesLabel={groceriesLabel}
+                  hasHouseholds={hasHouseholds}
+                />
+              </div>
+            </section>
+
+            <section className="dm-module dm-module-muted dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "140ms" }}>
+              <div className="flex items-center justify-between">
+                <h2 className="dm-section-heading">Roommates</h2>
                 <Link href={spotlightHome ? `/dashboard/household/${spotlightHome.id}?view=members` : "/dashboard/more"} className="text-[12px] font-semibold text-dm-electric hover:underline">
                   View members
                 </Link>
               </div>
-              <div className="mt-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/45 px-3.5 py-3">
+              <div className="mt-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3.5 py-3">
                 <div className="dm-avatar-stack">
                   {roommateMembers.slice(0, 5).map((member) =>
                     member.avatarUrl ? (
@@ -160,60 +213,11 @@ export default async function DashboardOverviewPage() {
                     ),
                   )}
                 </div>
-                <p className="mt-2 text-sm font-semibold text-dm-text">{roommateCount} roommates active</p>
+                <p className="mt-2 text-sm font-semibold text-dm-text">{roommateCount} active</p>
                 <p className="mt-0.5 text-[12px] text-dm-muted">
                   {spotlightHome ? `In ${spotlightHome.name}` : "Open a home to see members"}
                 </p>
               </div>
-            </section>
-          </div>
-
-          {error ? (
-            <div
-              role="alert"
-              className="mt-6 rounded-md border border-dm-danger/40 bg-dm-surface px-4 py-3 text-sm text-dm-danger"
-            >
-              {shouldExposeSupabaseError() ? error : PUBLIC_TRY_AGAIN}
-            </div>
-          ) : null}
-
-          <div className="dm-dashboard-grid mt-6">
-            <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "80ms" }}>
-              <h2 className="dm-section-heading">Quick actions</h2>
-              <div className="mt-3">
-                <DashboardQuickActions />
-              </div>
-            </section>
-
-            <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "110ms" }}>
-              <h2 className="dm-section-heading">Today status</h2>
-              <div className="mt-3">
-                <TodayStrip
-                  choresDue={openTasks.length}
-                  owedLabel={owedPreview}
-                  receiptsRecent={receiptsLast7d}
-                  groceriesLabel={groceriesLabel}
-                  hasHouseholds={hasHouseholds}
-                />
-              </div>
-            </section>
-
-            <section className="dm-module dm-module-muted dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "140ms" }}>
-              <h2 className="dm-section-heading">Next important</h2>
-              {nextTask ? (
-                <div className="mt-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3.5 py-3">
-                  <p className="line-clamp-2 text-sm font-semibold text-dm-text">{nextTask.title}</p>
-                  <p className="mt-1 text-[12px] text-dm-muted">
-                    {nextTask.dueAt ? `Due ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(nextTask.dueAt))}` : "No due date"}
-                    {" · "}+{nextTask.rewardPoints} pts
-                  </p>
-                  <Link href="/dashboard/tasks" className="mt-2 inline-flex text-[12px] font-semibold text-dm-electric hover:underline">
-                    View chores
-                  </Link>
-                </div>
-              ) : (
-                <p className="mt-3 text-[13px] text-dm-muted">No urgent chores right now.</p>
-              )}
             </section>
 
             <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "170ms" }}>
