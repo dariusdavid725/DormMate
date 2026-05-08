@@ -40,110 +40,117 @@ export function MobileTopBar({
     }) ?? households[0];
 
   return (
-    <header className="dm-topbar-shell sticky top-0 z-40 border-b border-[var(--dm-border-strong)] pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(28,39,56,0.08)] backdrop-blur-md lg:hidden">
-      <div className="flex min-h-[52px] items-center gap-2 px-3 pb-2 pt-1">
-        <div className="min-w-0 flex-1">
-          <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-dm-muted">
-            {/* eslint-disable-next-line @next/next/no-img-element -- static brand logo in public */}
-            <img src="/logo.png" alt="" className="h-4 w-4 rounded object-cover" aria-hidden />
-            Home
-          </p>
-          {households.length === 0 ? (
-            <p className="truncate font-cozy-display text-[1.35rem] leading-tight text-dm-text">
-              Welcome
-            </p>
-          ) : (
-            <>
-              <label className="sr-only" htmlFor="dm-mobile-top-household">
-                Active household
-              </label>
-              <select
-                id="dm-mobile-top-household"
-                value={current?.id ?? ""}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  if (!id) return;
-                  router.push(`/dashboard/household/${id}`);
-                }}
-              className="mt-0.5 max-w-full min-h-[48px] w-full touch-manipulation rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-[1.02rem] font-semibold leading-snug text-dm-text shadow-[0_6px_14px_rgba(28,39,56,0.07)] sm:text-[1.08rem]"
-              >
-                {households.map((h) => (
-                  <option key={h.id} value={h.id}>
-                    {h.name}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-        </div>
-
-        <details className="relative shrink-0">
-          <summary className="touch-manipulation list-none [&::-webkit-details-marker]:hidden">
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element -- user avatars from Supabase storage
-              <img
-                src={avatarUrl}
-                alt={profileLabel}
-                className="h-11 w-11 rounded-xl border border-[var(--dm-border-strong)] object-cover shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
-              />
-            ) : (
-              <span className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[11px] font-bold uppercase tracking-wide text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]">
-                {initials}
-              </span>
-            )}
-            <span className="sr-only">Account menu</span>
-          </summary>
-          <div
-            className="absolute right-0 mt-2 w-[min(17rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[0_14px_28px_rgba(28,39,56,0.16)]"
-            role="menu"
+    <header className="sticky top-0 z-40 lg:hidden">
+      <div className="border-b border-[color-mix(in_srgb,var(--dm-border-strong)_85%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_92%,transparent)] pt-[env(safe-area-inset-top)] shadow-[0_10px_24px_rgba(28,39,56,0.06)] backdrop-blur-lg supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--dm-surface)_86%,transparent)]">
+        <div className="mx-auto flex h-[56px] max-w-lg items-center gap-2 px-3 sm:h-[60px] sm:gap-3 sm:px-4">
+          <Link
+            href="/dashboard"
+            prefetch
+            className="touch-manipulation flex shrink-0 items-center gap-2 rounded-xl py-2 pr-2 active:bg-dm-elevated/80"
           >
-            <p className="truncate px-2 py-1 text-[11px] text-dm-muted" title={email}>
-              {email}
-            </p>
-            <Link
-              href="/dashboard/settings"
-              prefetch
-              className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-medium text-dm-text hover:bg-dm-elevated/90"
-              role="menuitem"
+            {/* eslint-disable-next-line @next/next/no-img-element -- static brand */}
+            <img src="/logo.png" alt="" className="h-8 w-8 rounded-lg object-cover shadow-sm" width={32} height={32} />
+            <span className="hidden max-w-[5.5rem] truncate text-[13px] font-bold leading-tight text-dm-text min-[380px]:inline">
+              Koti
+            </span>
+          </Link>
+
+          <div className="min-w-0 flex-1 flex justify-center px-1">
+            {households.length === 0 ? (
+              <span className="rounded-full border border-dashed border-[var(--dm-border-strong)] px-3 py-1.5 text-[12px] font-semibold text-dm-muted">
+                No home yet
+              </span>
+            ) : (
+              <div className="relative w-full max-w-[200px] sm:max-w-[240px]">
+                <label className="sr-only" htmlFor="dm-mobile-top-household">
+                  Household
+                </label>
+                <select
+                  id="dm-mobile-top-household"
+                  value={current?.id ?? ""}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    if (!id) return;
+                    router.push(`/dashboard/household/${id}`);
+                  }}
+                  className="dm-focus-ring w-full min-h-[44px] cursor-pointer appearance-none rounded-full border border-[color-mix(in_srgb,var(--dm-social)_22%,var(--dm-border-strong))] bg-[linear-gradient(180deg,#fffefb_0%,#f4f5fa_100%)] py-2.5 pl-3.5 pr-9 text-[13px] font-semibold text-dm-text shadow-[0_4px_12px_rgba(28,39,56,0.07),inset_0_1px_0_rgba(255,255,255,0.75)]"
+                >
+                  {households.map((h) => (
+                    <option key={h.id} value={h.id}>
+                      {h.name}
+                    </option>
+                  ))}
+                </select>
+                <span
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-dm-muted"
+                  aria-hidden
+                >
+                  ▼
+                </span>
+              </div>
+            )}
+          </div>
+
+          <details className="relative shrink-0">
+            <summary className="touch-manipulation list-none [&::-webkit-details-marker]:hidden">
+              {avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- storage avatars
+                <img
+                  src={avatarUrl}
+                  alt={profileLabel}
+                  className="h-11 w-11 rounded-2xl border border-[var(--dm-border-strong)] object-cover shadow-sm active:scale-[0.97]"
+                />
+              ) : (
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[11px] font-bold uppercase tracking-wide text-dm-text shadow-sm active:scale-[0.97]">
+                  {initials}
+                </span>
+              )}
+              <span className="sr-only">Account</span>
+            </summary>
+            <div
+              className="absolute right-0 mt-2 w-[min(18rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[0_16px_40px_rgba(28,39,56,0.18)]"
+              role="menu"
             >
-              Settings
-            </Link>
-            <Link
-              href="/dashboard/join"
-              prefetch
-              className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-medium text-dm-text hover:bg-dm-elevated/90"
-              role="menuitem"
-            >
-              Join home
-            </Link>
-            {showAdmin ? (
+              <p className="truncate px-2 py-1.5 text-[11px] text-dm-muted" title={email}>
+                {email}
+              </p>
               <Link
-                href="/dashboard/admin"
+                href="/dashboard/settings"
                 prefetch
-                className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-semibold text-dm-electric hover:bg-dm-elevated/90"
+                className="flex min-h-[48px] items-center rounded-xl px-3 text-[15px] font-medium text-dm-text active:bg-dm-elevated/90"
                 role="menuitem"
               >
-                Site admin
+                Profile & settings
               </Link>
-            ) : null}
-            <Link
-              href="/dashboard/more"
-              prefetch
-              className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-medium text-dm-muted hover:bg-dm-elevated/90"
-              role="menuitem"
-            >
-              More & homes
-            </Link>
-            <form action={signOut} className="mt-1 border-t border-[var(--dm-border)] pt-1">
-              <button
-                type="submit"
-                className="touch-manipulation flex min-h-[44px] w-full items-center rounded-lg px-2 text-left text-[14px] font-semibold text-dm-muted hover:bg-dm-elevated/90 hover:text-dm-text"
+              <Link
+                href="/dashboard/join"
+                prefetch
+                className="flex min-h-[48px] items-center rounded-xl px-3 text-[15px] font-medium text-dm-text active:bg-dm-elevated/90"
+                role="menuitem"
               >
-                Sign out
-              </button>
-            </form>
-          </div>
-        </details>
+                Join home
+              </Link>
+              {showAdmin ? (
+                <Link
+                  href="/dashboard/admin"
+                  prefetch
+                  className="flex min-h-[48px] items-center rounded-xl px-3 text-[15px] font-semibold text-dm-electric active:bg-dm-elevated/90"
+                  role="menuitem"
+                >
+                  Site admin
+                </Link>
+              ) : null}
+              <form action={signOut} className="mt-1 border-t border-[var(--dm-border)] pt-1">
+                <button
+                  type="submit"
+                  className="flex min-h-[48px] w-full items-center rounded-xl px-3 text-left text-[15px] font-semibold text-dm-muted active:bg-dm-elevated/90 active:text-dm-text"
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
+          </details>
+        </div>
       </div>
     </header>
   );

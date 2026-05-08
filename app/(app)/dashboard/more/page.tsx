@@ -26,15 +26,16 @@ export default async function DashboardMorePage() {
   const { households, error } = await loadHouseholdSummaries(user.id);
   const { data: adminFlag } = await supabase.rpc("is_platform_super_admin");
   const showAdmin = adminFlag === true;
+  const firstHousehold = households[0] ?? null;
 
   return (
     <div className="mx-auto w-full max-w-lg space-y-5 pb-6 lg:max-w-2xl lg:pb-10">
-      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5 lg:pb-6">
-        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text lg:text-[2.35rem]">
+      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-4 lg:pb-6">
+        <h1 className="font-cozy-display text-[1.65rem] leading-tight text-dm-text max-lg:font-bold lg:text-[2.35rem]">
           More
         </h1>
-        <p className="mt-2 text-[14px] leading-snug text-dm-muted lg:hidden">
-          Homes, settings, and invites.
+        <p className="mt-1.5 text-[13px] leading-snug text-dm-muted lg:hidden">
+          The rest of your home—in one menu.
         </p>
         <p className="mt-2 hidden text-[13px] leading-snug text-dm-muted lg:block">
           Homes, invites, and account — everything beyond the daily tabs.
@@ -45,6 +46,53 @@ export default async function DashboardMorePage() {
         <p className="rounded-xl border border-dm-danger/35 px-4 py-3 text-[13px] text-dm-danger">
           Could not load homes.
         </p>
+      : null}
+
+      {firstHousehold ?
+        <MobileSection
+          title="Around your home"
+          hideDescriptionMobile
+          description="Shortcuts into your first household. Switch homes anytime from Home or the picker above."
+          className="lg:border-[var(--dm-border-strong)] lg:shadow-[var(--cozy-shadow-note)]"
+        >
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <li className="min-w-0 sm:col-span-1">
+              <MobileListItem
+                title="Roommates"
+                subtitle={`${firstHousehold.name} · People & invites`}
+                href={`/dashboard/household/${firstHousehold.id}?view=members`}
+                trailing={<span className="text-[12px] font-semibold text-dm-electric">Open</span>}
+              />
+            </li>
+            <li className="min-w-0 sm:col-span-1">
+              <MobileListItem
+                title="Receipts"
+                subtitle="Saved uploads & totals"
+                href={`/dashboard/household/${firstHousehold.id}?view=receipts`}
+                trailing={<span className="text-[12px] font-semibold text-dm-electric">Open</span>}
+              />
+            </li>
+            <li className="min-w-0 sm:col-span-1">
+              <MobileListItem
+                title="Events"
+                subtitle="What’s happening together"
+                href={`/dashboard/household/${firstHousehold.id}?view=events`}
+                trailing={<span className="text-[12px] font-semibold text-dm-electric">Open</span>}
+              />
+            </li>
+          </ul>
+          {households.length > 1 ?
+            <p className="mt-3 text-[12px] leading-snug text-dm-muted">
+              You have {households.length} homes—these shortcuts use <span className="font-semibold text-dm-text">{firstHousehold.name}</span>.
+              Pick another from{" "}
+              <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
+                Home
+              </Link>{" "}
+              or{" "}
+              <span className="font-semibold text-dm-text">Your homes</span> below.
+            </p>
+          : null}
+        </MobileSection>
       : null}
 
       <MobileSection
@@ -105,8 +153,8 @@ export default async function DashboardMorePage() {
           </li>
           <li>
             <MobileListItem
-              title="Account & profile"
-              subtitle="Display name, preferences, privacy links."
+              title="Profile & settings"
+              subtitle="Display name, privacy, notifications."
               href="/dashboard/settings"
               trailing={<span className="text-dm-muted">→</span>}
             />

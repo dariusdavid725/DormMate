@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { MobileListItem } from "@/components/mobile/mobile-list-item";
-import { MobileSection } from "@/components/mobile/mobile-section";
+import { MoneyMobileTabs } from "@/components/mobile/money-mobile-tabs";
 import { formatMoneySafe } from "@/lib/currency/format-money";
 import { computePendingBalanceSections } from "@/lib/expenses/compute-pending-balances";
 import {
@@ -106,10 +105,39 @@ export default async function FinancesPage() {
   const dominantCurrency = households[0]?.currency ?? "RON";
   const focusRows = rows.slice(0, 3);
   const focusHousehold = rows[0] ?? null;
+  const balanceOverview = focusRows.map((r) => r.balanceLabel).join(" · ") || "Even";
+  const mobileHouses = rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    role: r.role,
+    balanceLabel: r.balanceLabel,
+    balanceError: !!r.balanceError,
+    pendingCount: r.pendingCount,
+    settledCount: r.settledCount,
+    whoOwes: r.whoOwes,
+  }));
+  const mobileReceipts = receiptsPreview.map((r) => ({
+    id: r.id,
+    householdId: r.householdId,
+    merchant: r.merchant,
+    householdName: r.householdName,
+    savedByLabel: r.savedByLabel,
+    totalAmount: r.totalAmount,
+    currency: r.currency,
+  }));
+  const focusPulse =
+    focusHousehold ?
+      {
+        householdId: focusHousehold.id,
+        pendingCount: focusHousehold.pendingCount,
+        settledCount: focusHousehold.settledCount,
+        whoOwes: focusHousehold.whoOwes,
+      }
+    : null;
 
   return (
     <div className="dm-page-enter mx-auto w-full max-w-[1240px] space-y-7">
-      <header className="dm-money-page-hero dm-module-depth relative overflow-hidden px-6 pb-7 pt-6 lg:px-10 lg:pb-8 lg:pt-7">
+      <header className="dm-money-page-hero dm-module-depth relative hidden overflow-hidden px-6 pb-7 pt-6 lg:block lg:px-10 lg:pb-8 lg:pt-7">
         <span
           className="dm-ambient-drift pointer-events-none absolute -right-16 top-6 h-44 w-44 rounded-full border border-[color-mix(in_srgb,var(--dm-info)_28%,transparent)] bg-[radial-gradient(circle_at_40%_35%,rgba(78,120,168,0.14),transparent_68%)] opacity-80"
           aria-hidden
@@ -164,43 +192,22 @@ export default async function FinancesPage() {
         </div>
       : null}
 
-      <div className="lg:hidden">
-        <MobileSection
-          title="Money summary"
-          hideDescriptionMobile
-          description="Across homes"
-          className="border-[var(--dm-border-strong)] shadow-[var(--cozy-shadow-note)]"
-        >
-          {households.length === 0 ?
-            <p className="text-[14px] text-dm-muted">
-              Create a home from{" "}
-              <Link className="font-semibold text-dm-electric hover:underline" href="/dashboard">
-                Home
-              </Link>
-              .
-            </p>
-          : (
-            <ul className="flex flex-col gap-2">
-              {rows.map((r) => (
-                <li key={r.id}>
-                  <MobileListItem
-                    title={r.name}
-                    subtitle={`Role · ${r.role}`}
-                    meta={
-                      r.balanceError ?
-                        <span className="text-dm-muted">Could not load balance</span>
-                      : r.balanceLabel
-                    }
-                    href={`/dashboard/household/${r.id}?view=expenses`}
-                    trailing={
-                      <span className="text-[12px] font-semibold text-dm-electric">Ledger</span>
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
-        </MobileSection>
+      <div className="space-y-3 px-0.5 lg:hidden">
+        <header>
+          <h1 className="text-[1.4rem] font-bold leading-tight tracking-tight text-dm-text">Money</h1>
+          <p className="mt-0.5 text-[13px] text-dm-muted">Balances, receipts, settle-up</p>
+        </header>
+        <MoneyMobileTabs
+          houses={mobileHouses}
+          receipts={mobileReceipts}
+          focusPulse={focusPulse}
+          dominantCurrency={dominantCurrency}
+          globalPending={globalPending}
+          globalSettled={globalSettled}
+          globalMonthSpend={globalMonthSpend}
+          balanceOverview={balanceOverview}
+          hasHouseholds={households.length > 0}
+        />
       </div>
 
       <div className="hidden gap-5 lg:grid lg:grid-cols-12">

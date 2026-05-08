@@ -9,29 +9,28 @@ type Item = {
   icon: string;
 };
 
+/** Native-style primary nav: matches spec order (tablet/desktop hidden via lg:hidden on nav). */
 const NAV: readonly Item[] = [
   { href: "/dashboard", label: "Home", icon: "⌂" },
+  { href: "/dashboard/inventory", label: "Groceries", icon: "◧" },
   { href: "/dashboard/tasks", label: "Chores", icon: "✓" },
   { href: "/dashboard/finances", label: "Money", icon: "$" },
-  { href: "/dashboard/inventory", label: "Groceries", icon: "◧" },
   { href: "/dashboard/more", label: "More", icon: "…" },
 ] as const;
 
-function isActive(pathname: string, href: string) {
+function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard") {
-    return pathname === "/dashboard" || pathname.startsWith("/dashboard/household");
+    return pathname === "/dashboard";
   }
   if (href === "/dashboard/more") {
     return (
-      pathname === "/dashboard/more" ||
-      pathname === "/dashboard/activity" ||
-      pathname.startsWith("/dashboard/settings") ||
-      pathname.startsWith("/dashboard/admin") ||
-      pathname === "/dashboard/join"
+      pathname === "/dashboard/more"
+      || pathname === "/dashboard/activity"
+      || pathname.startsWith("/dashboard/settings")
+      || pathname.startsWith("/dashboard/admin")
+      || pathname === "/dashboard/join"
+      || pathname.startsWith("/dashboard/household/")
     );
-  }
-  if (href === "/dashboard/tasks") {
-    return pathname === "/dashboard/tasks";
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -41,34 +40,43 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      aria-label="Mobile primary"
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--dm-border-strong)] bg-dm-surface/[0.98] px-1 pb-[max(0.55rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_24px_rgba(28,39,56,0.1)] backdrop-blur-md lg:hidden"
+      aria-label="Primary"
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
     >
-      <ul className="mx-auto grid max-w-lg grid-cols-5 gap-x-0.5 gap-y-1 px-1">
-        {NAV.map((item) => {
-          const active = isActive(pathname, item.href);
-          return (
-            <li key={item.href} className="min-w-0">
-              <Link
-                href={item.href}
-                prefetch
-                aria-current={active ? "page" : undefined}
-                className={[
-                  "touch-manipulation flex min-h-[54px] flex-col items-center justify-center rounded-xl px-0.5 py-1.5 text-center text-[12px] font-semibold leading-[1.15] tracking-tight transition-[transform,colors,box-shadow] active:scale-[0.97]",
-                  active
-                    ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,#fff)] text-[var(--dm-electric-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_16px_rgba(28,39,56,0.12)]"
-                    : "text-dm-muted hover:bg-dm-elevated/85 hover:text-dm-text",
-                ].join(" ")}
-              >
-                <span className="text-[11px] leading-none opacity-85" aria-hidden>
-                  {item.icon}
-                </span>
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[-1px] bg-gradient-to-t from-black/[0.04] to-transparent" aria-hidden />
+      <div className="border-t border-[color-mix(in_srgb,var(--dm-border-strong)_90%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_94%,transparent)] px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-12px_32px_rgba(28,39,56,0.12)] backdrop-blur-xl supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--dm-surface)_88%,transparent)]">
+        <ul className="mx-auto grid max-w-md grid-cols-5 gap-0.5">
+          {NAV.map((item) => {
+            const active = isActive(pathname, item.href);
+            return (
+              <li key={item.href} className="min-w-0">
+                <Link
+                  href={item.href}
+                  prefetch
+                  aria-current={active ? "page" : undefined}
+                  className={[
+                    "dm-mobile-nav-item touch-manipulation flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.06em] transition-[transform,box-shadow,background-color,color] duration-200 active:scale-[0.96]",
+                    active
+                      ? "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--dm-electric)_18%,#fff)_0%,color-mix(in_srgb,var(--dm-social)_10%,#fff)_100%)] text-[var(--dm-electric-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_8px_18px_rgba(126,106,209,0.12)]"
+                      : "text-dm-muted active:bg-dm-elevated/80",
+                  ].join(" ")}
+                >
+                  <span
+                    className={[
+                      "text-[15px] leading-none transition-transform duration-200",
+                      active ? "scale-110" : "opacity-80",
+                    ].join(" ")}
+                    aria-hidden
+                  >
+                    {item.icon}
+                  </span>
+                  <span className="max-w-full truncate normal-case tracking-tight">{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

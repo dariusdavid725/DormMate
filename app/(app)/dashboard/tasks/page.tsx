@@ -106,10 +106,10 @@ export default async function DashboardTasksPage() {
         </p>
       </header>
 
-      <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="text-[1.8rem] font-semibold leading-tight tracking-tight text-dm-text">Chores</h1>
-        <p className="mt-2 text-[14px] leading-snug text-dm-muted">
-          Open stickies for your households — tap to claim what&apos;s yours.
+      <header className="border-b border-[var(--dm-border-strong)] pb-3 lg:hidden">
+        <h1 className="text-[1.35rem] font-bold leading-tight tracking-tight text-dm-text">Chores</h1>
+        <p className="mt-1 text-[13px] leading-snug text-dm-muted">
+          Tap tasks to knock them off your list.
         </p>
       </header>
 

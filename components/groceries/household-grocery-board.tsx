@@ -34,13 +34,146 @@ export function HouseholdGroceryBoard({
   const bought = items.filter((x) => x.bought);
 
   return (
-    <section className="space-y-6">
-      <div className="dm-module dm-module-muted dm-hover-lift p-4 sm:p-5">
-        <h2 className="dm-section-heading">Add grocery</h2>
-        <p className="mt-1 text-[13px] text-dm-muted">
-          Shared list for {householdName}. Mark items bought as you go.
-        </p>
-        <form action={action} className="mt-5 space-y-4">
+    <section className="relative flex flex-col space-y-5 lg:space-y-6">
+      <a
+        href="#mobile-add-grocery"
+        className="dm-focus-ring fixed bottom-[calc(5.35rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 min-w-[56px] items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--dm-electric)_35%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-electric)_22%,#fff)_0%,white_100%)] px-5 text-[13px] font-bold text-[var(--dm-electric-deep)] shadow-[0_12px_28px_rgba(126,106,209,0.22)] backdrop-blur-sm transition-[transform,box-shadow] duration-200 active:scale-95 motion-reduce:transition-none lg:hidden"
+      >
+        + Add
+      </a>
+
+      <div className="order-2 max-lg:order-1">
+        <section className="dm-module dm-hover-lift p-4 sm:p-5 max-lg:border-0 max-lg:bg-transparent max-lg:p-0 max-lg:shadow-none">
+          <div className="flex items-center justify-between gap-2 max-lg:px-0.5">
+            <h3 className="dm-section-heading text-[1rem] max-lg:text-[15px]">Your list</h3>
+            <span className="dm-chip shrink-0 text-[11px] max-lg:border-[color-mix(in_srgb,var(--dm-info)_25%,var(--dm-border-strong))] max-lg:bg-[color-mix(in_srgb,var(--dm-info)_8%,white)]">
+              {open.length} left
+            </span>
+          </div>
+          {open.length === 0 ? (
+            <div className="dm-empty-well mt-4 max-lg:rounded-[20px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-white/85" role="status">
+              <span className="dm-empty-well__glyph" aria-hidden>
+                🛒
+              </span>
+              <p className="text-sm font-semibold text-dm-text">All caught up</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-dm-muted">
+                Tap <strong className="font-semibold text-dm-text">+ Add</strong> to restock ideas.
+              </p>
+            </div>
+          ) : (
+            <ul className="mt-4 max-lg:mt-3 max-lg:space-y-2.5">
+              {open.map((item) => (
+                <li
+                  key={item.id}
+                  className="dm-grocery-row max-lg:rounded-2xl max-lg:border-0 max-lg:bg-[linear-gradient(180deg,#fffefb_0%,#f8f9fc_100%)] max-lg:px-4 max-lg:py-3.5 max-lg:shadow-[0_8px_20px_rgba(28,39,56,0.06)] rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-4 py-3"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex min-w-0 flex-1 gap-3">
+                      <span
+                        className="dm-checkbox-faux mt-0.5 inline-flex h-9 min-h-[36px] min-w-[36px] shrink-0 items-center justify-center rounded-xl border-2 border-dashed border-[var(--dm-border-strong)] bg-white/70 text-[12px] text-dm-muted"
+                        aria-hidden
+                      >
+                        ◻
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-[15px] font-semibold leading-snug text-dm-text">{item.name}</p>
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                          <span className="inline-flex rounded-md border border-[var(--dm-border)] bg-white/75 px-2 py-0.5 text-[11px] font-semibold text-dm-muted">
+                            {item.quantity}
+                          </span>
+                          {item.category ?
+                            <span className="inline-flex max-w-full truncate rounded-md border border-[var(--dm-border-strong)] bg-white/65 px-2 py-0.5 text-[11px] font-medium text-dm-text">
+                              {item.category}
+                            </span>
+                          : null}
+                          <span
+                            className={[
+                              "inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+                              item.priority === "high" ?
+                                "border border-[color-mix(in_srgb,var(--dm-danger)_32%,transparent)] bg-[color-mix(in_srgb,var(--dm-danger)_10%,white)] text-dm-danger"
+                              : item.priority === "low" ?
+                                "border border-[var(--dm-border)] bg-dm-surface-mid text-dm-muted"
+                              : "border border-[color-mix(in_srgb,var(--dm-accent)_38%,transparent)] bg-[color-mix(in_srgb,var(--dm-accent)_10%,white)] text-[var(--dm-accent-warn-text)]",
+                            ].join(" ")}
+                          >
+                            {item.priority}
+                          </span>
+                          {item.assignedTo ?
+                            <span className="text-[11px] font-medium text-dm-muted">
+                              {labels.get(item.assignedTo) ?? "Assigned"}
+                            </span>
+                          : null}
+                        </div>
+                        {item.notes ?
+                          <p className="mt-2 text-[12px] leading-snug text-dm-muted">{item.notes}</p>
+                        : null}
+                      </div>
+                    </div>
+                    <form action={toggleGroceryBought} className="shrink-0 self-center">
+                      <input type="hidden" name="household_id" value={householdId} />
+                      <input type="hidden" name="grocery_id" value={item.id} />
+                      <input type="hidden" name="next_bought" value="1" />
+                      <button
+                        type="submit"
+                        className="dm-focus-ring dm-btn-grocery-done touch-manipulation min-h-[44px] rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_40%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_12%,white)] px-4 text-[12px] font-bold text-[color-mix(in_srgb,var(--dm-success)_95%,var(--dm-text)_5%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-transform duration-150 active:scale-[0.98] motion-reduce:transition-none max-lg:min-w-[44px]"
+                      >
+                        Got it
+                      </button>
+                    </form>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {bought.length > 0 ? (
+          <section className="dm-module-muted dm-module dm-hover-lift mt-5 p-4 sm:p-5 max-lg:mt-4 max-lg:rounded-[20px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-white/88 max-lg:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="dm-section-heading text-[1rem] max-lg:text-[15px]">Bought</h3>
+              <span className="dm-chip">{bought.length}</span>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {bought.map((item) => (
+                <li
+                  key={item.id}
+                  className="dm-hover-lift rounded-xl border border-dashed border-[color-mix(in_srgb,var(--dm-success)_35%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_9%,white)] px-3 py-2.5 transition-[opacity,transform] motion-reduce:transition-none max-lg:flex max-lg:items-center max-lg:justify-between max-lg:gap-2"
+                >
+                  <div className="min-w-0">
+                    <p className="break-words text-sm text-dm-text line-through">{item.name}</p>
+                    <p className="text-[11px] text-dm-muted">
+                      {item.quantity}
+                      {item.category ? ` · ${item.category}` : ""}
+                    </p>
+                  </div>
+                  <form action={toggleGroceryBought} className="shrink-0">
+                    <input type="hidden" name="household_id" value={householdId} />
+                    <input type="hidden" name="grocery_id" value={item.id} />
+                    <input type="hidden" name="next_bought" value="0" />
+                    <button
+                      type="submit"
+                      className="dm-focus-ring dm-press-soft touch-manipulation min-h-[40px] min-w-[40px] rounded-lg px-2 text-xs font-semibold text-dm-muted hover:text-dm-text"
+                    >
+                      Undo
+                    </button>
+                  </form>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+
+      <div
+        id="mobile-add-grocery"
+        className="order-1 max-lg:order-2 scroll-mt-[calc(7rem+env(safe-area-inset-top))] lg:scroll-mt-0"
+      >
+        <div className="dm-module dm-module-muted dm-hover-lift p-4 max-lg:rounded-[22px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-[linear-gradient(200deg,color-mix(in_srgb,var(--dm-social)_7%,white)_0%,#fffefb_55%)] max-lg:p-4 max-lg:shadow-[0_16px_36px_rgba(28,39,56,0.09)] sm:p-5">
+          <h2 className="dm-section-heading max-lg:text-[15px]">Add grocery</h2>
+          <p className="mt-1 text-[13px] text-dm-muted">
+            Shared list for {householdName}. Mark items bought as you go.
+          </p>
+          <form action={action} className="mt-5 space-y-4">
           <input type="hidden" name="household_id" value={householdId} />
           {state?.error ? (
             <p role="alert" className="rounded-md border border-dm-danger/40 px-3 py-2 text-sm text-dm-danger">
@@ -116,99 +249,13 @@ export function HouseholdGroceryBoard({
           <button
             type="submit"
             disabled={pending}
-            className="dm-focus-ring dm-press-soft rounded-lg bg-dm-electric px-5 py-2.5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(200,104,69,0.25)] hover:brightness-105 disabled:opacity-60"
+            className="dm-focus-ring dm-press-soft min-h-[44px] rounded-xl bg-dm-electric px-5 text-sm font-semibold text-white shadow-[0_8px_18px_rgba(200,104,69,0.25)] transition-transform duration-150 hover:brightness-105 active:scale-[0.99] motion-reduce:transition-none disabled:opacity-60"
           >
             {pending ? "Adding..." : "Add grocery item"}
           </button>
         </form>
-      </div>
-
-      <section className="dm-module dm-hover-lift p-4 sm:p-5">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="dm-section-heading">Current list</h3>
-          <span className="dm-chip">{open.length} pending</span>
         </div>
-        {open.length === 0 ? (
-          <div className="dm-empty-well mt-4" role="status">
-            <span className="dm-empty-well__glyph" aria-hidden>
-              🛒
-            </span>
-            <p className="text-sm font-semibold text-dm-text">List&apos;s quiet</p>
-            <p className="mt-2 text-[13px] leading-relaxed text-dm-muted">
-              Add whatever you&apos;re out of—it&apos;s nicer than a frantic text chain at midnight.
-            </p>
-          </div>
-        ) : (
-          <ul className="mt-4 space-y-3">
-            {open.map((item) => (
-              <li key={item.id} className="dm-grocery-row rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-4 py-3">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex min-w-0 flex-1 gap-3">
-                    <span className="dm-checkbox-faux mt-0.5 inline-flex h-8 w-8 shrink-0 rounded-lg border-2 border-dashed border-[var(--dm-border-strong)] bg-white/65 text-[12px] text-dm-muted" aria-hidden>
-                      ◻
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-dm-text">{item.name}</p>
-                      <p className="mt-1 text-[13px] text-dm-muted">
-                        {item.quantity} · {item.category}
-                        <span className="mx-1">·</span>
-                        <span className="dm-chip">{item.priority}</span>
-                        {item.assignedTo ? ` · ${labels.get(item.assignedTo) ?? "Assigned"}` : ""}
-                      </p>
-                      {item.notes ? <p className="mt-1 text-[12px] text-dm-muted">{item.notes}</p> : null}
-                    </div>
-                  </div>
-                  <form action={toggleGroceryBought}>
-                    <input type="hidden" name="household_id" value={householdId} />
-                    <input type="hidden" name="grocery_id" value={item.id} />
-                    <input type="hidden" name="next_bought" value="1" />
-                    <button
-                      type="submit"
-                      className="dm-focus-ring dm-btn-grocery-done rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2 text-xs font-semibold text-dm-text"
-                    >
-                      Mark bought
-                    </button>
-                  </form>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {bought.length > 0 ? (
-        <section className="dm-module-muted dm-module dm-hover-lift p-4 sm:p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="dm-section-heading">Bought</h3>
-            <span className="dm-chip">{bought.length} items</span>
-          </div>
-          <ul className="mt-3 space-y-2">
-            {bought.map((item) => (
-              <li
-                key={item.id}
-                className="dm-hover-lift rounded-xl border border-dashed border-[color-mix(in_srgb,var(--dm-success)_35%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_7%,white)] px-3 py-2.5 transition-[opacity,transform]"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <p className="text-sm text-dm-text line-through">{item.name}</p>
-                    <p className="text-[11px] text-dm-muted">
-                      {item.quantity} · {item.category}
-                    </p>
-                  </div>
-                  <form action={toggleGroceryBought}>
-                    <input type="hidden" name="household_id" value={householdId} />
-                    <input type="hidden" name="grocery_id" value={item.id} />
-                    <input type="hidden" name="next_bought" value="0" />
-                    <button type="submit" className="dm-focus-ring dm-press-soft rounded-md px-1.5 py-1 text-xs font-semibold text-dm-muted hover:text-dm-text">
-                      Undo
-                    </button>
-                  </form>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      </div>
     </section>
   );
 }

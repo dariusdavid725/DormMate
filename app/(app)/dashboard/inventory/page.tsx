@@ -77,11 +77,16 @@ export default async function InventoryPage({ searchParams }: Props) {
         ) : null}
       </header>
 
-      <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="text-[1.8rem] font-semibold leading-tight tracking-tight text-dm-text">Groceries</h1>
-        <p className="mt-2 text-[14px] leading-snug text-dm-muted">
-          Add items, assign them, and mark bought.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-2 border-b border-[var(--dm-border-strong)] pb-3 lg:hidden">
+        <div className="min-w-0">
+          <h1 className="text-[1.35rem] font-bold leading-tight tracking-tight text-dm-text">Groceries</h1>
+          <p className="mt-1 text-[13px] leading-snug text-dm-muted">Check things off like a notes app.</p>
+        </div>
+        {selected ?
+          <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--dm-accent)_26%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-accent)_10%,white)] px-3 py-1 text-[11px] font-bold text-dm-text">
+            {openCount} open
+          </span>
+        : null}
       </header>
 
       {hhError ? (
@@ -91,7 +96,7 @@ export default async function InventoryPage({ searchParams }: Props) {
       ) : null}
 
       {households.length > 1 ? (
-        <form className="dm-module-muted dm-module dm-module-depth rounded-[16px] border border-[color-mix(in_srgb,var(--dm-accent)_14%,var(--dm-border-strong))] p-4 shadow-[0_10px_24px_rgba(28,39,56,0.06)]">
+        <form className="dm-module-muted dm-module dm-module-depth rounded-2xl border border-[color-mix(in_srgb,var(--dm-accent)_14%,var(--dm-border-strong))] p-3 shadow-[0_10px_24px_rgba(28,39,56,0.06)] max-lg:border-[var(--dm-border-strong)] max-lg:bg-[color-mix(in_srgb,var(--dm-surface-mid)_50%,white)] sm:p-4">
           <label className="text-xs font-semibold uppercase tracking-wide text-dm-muted" htmlFor="inv-household">
             Household
           </label>
@@ -99,7 +104,7 @@ export default async function InventoryPage({ searchParams }: Props) {
             id="inv-household"
             name="household"
             defaultValue={selected?.id ?? ""}
-            className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 text-sm"
+            className="mt-2 w-full min-h-[44px] rounded-xl border border-[var(--dm-border-strong)] bg-dm-bg/80 px-3 py-2.5 text-sm"
           >
             {households.map((h) => (
               <option key={h.id} value={h.id}>
@@ -109,7 +114,7 @@ export default async function InventoryPage({ searchParams }: Props) {
           </select>
           <button
             type="submit"
-            className="mt-3 rounded-md border border-[var(--dm-border-strong)] px-3 py-2 text-xs font-semibold text-dm-text"
+            className="mt-3 min-h-[44px] w-full rounded-xl border border-[var(--dm-border-strong)] px-3 text-xs font-bold text-dm-text active:scale-[0.99] motion-reduce:active:scale-100"
           >
             Switch household
           </button>
@@ -140,7 +145,7 @@ export default async function InventoryPage({ searchParams }: Props) {
               members={memberRows}
             />
           </div>
-          <aside className="space-y-4 lg:col-span-4">
+          <aside className="hidden space-y-4 lg:col-span-4 lg:block">
             <section className="dm-pantry-side-note relative overflow-hidden p-5">
               <span
                 className="pointer-events-none absolute -right-6 top-4 text-[4.5rem] font-light leading-none text-[color-mix(in_srgb,var(--dm-accent)_12%,transparent)]"

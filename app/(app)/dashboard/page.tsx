@@ -102,12 +102,23 @@ export default async function DashboardOverviewPage() {
       <MobileDashboardHome
         firstName={firstName}
         householdLine={householdLine}
+        spotlightHomeName={spotlightHome?.name ?? null}
+        spotlightHouseholdId={spotlightHome?.id ?? null}
         primaryHouseholdId={primaryHouseholdId}
         hasHouseholds={hasHouseholds}
         choresDue={openTasks.length}
+        choresOpenSpotlight={spotlightOpenTasks.length}
         owedLabel={owedPreview}
         receiptsRecent={receiptsLast7d}
+        openGroceriesCount={openGroceries.length}
         openTasks={openTasks}
+        roommates={roommateMembers.map((m) => ({
+          userId: m.userId,
+          displayName: m.displayName,
+          avatarUrl: m.avatarUrl,
+          email: m.email,
+          role: m.role,
+        }))}
         activityPreview={houseActivity}
         activityError={!!activityErr}
         householdsError={error ?? null}

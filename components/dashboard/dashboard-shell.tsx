@@ -108,7 +108,7 @@ export function DashboardShell({
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex-1 px-3 pb-[calc(7.65rem+env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:px-7 lg:pb-10 lg:pt-5">
+          <main className="relative flex-1 px-3 pb-[calc(6.25rem+env(safe-area-inset-bottom))] pt-2 sm:px-4 lg:px-7 lg:pb-10 lg:pt-5">
             <div className="mx-auto w-full max-w-[1260px]">
               <MobileAppShell>{children}</MobileAppShell>
             </div>
