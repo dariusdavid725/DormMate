@@ -41,7 +41,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+      className="relative z-40 shrink-0 lg:hidden"
     >
       <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[-1px] bg-gradient-to-t from-black/[0.04] to-transparent" aria-hidden />
       <div className="border-t border-[color-mix(in_srgb,var(--dm-border-strong)_90%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_94%,transparent)] px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-12px_32px_rgba(28,39,56,0.12)] backdrop-blur-xl supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--dm-surface)_88%,transparent)]">
@@ -55,7 +55,7 @@ export function MobileBottomNav() {
                   prefetch
                   aria-current={active ? "page" : undefined}
                   className={[
-                    "dm-mobile-nav-item touch-manipulation flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.06em] transition-[transform,box-shadow,background-color,color] duration-200 active:scale-[0.96]",
+                    "dm-mobile-nav-item touch-manipulation flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-center text-[10px] font-bold uppercase tracking-[0.06em] motion-reduce:transition-none transition-[transform,box-shadow,background-color,color] duration-200 motion-reduce:active:scale-100 active:scale-[0.96]",
                     active
                       ? "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--dm-electric)_18%,#fff)_0%,color-mix(in_srgb,var(--dm-social)_10%,#fff)_100%)] text-[var(--dm-electric-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_8px_18px_rgba(126,106,209,0.12)]"
                       : "text-dm-muted active:bg-dm-elevated/80",

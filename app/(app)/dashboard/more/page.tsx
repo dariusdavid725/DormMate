@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
 import { MobileListItem } from "@/components/mobile/mobile-list-item";
 import { MobileSection } from "@/components/mobile/mobile-section";
 import { loadHouseholdSummaries } from "@/lib/households/queries";
@@ -29,7 +30,8 @@ export default async function DashboardMorePage() {
   const firstHousehold = households[0] ?? null;
 
   return (
-    <div className="mx-auto w-full max-w-lg space-y-5 pb-6 lg:max-w-2xl lg:pb-10">
+    <div className="mx-auto flex min-h-0 w-full max-w-lg flex-1 flex-col overflow-hidden lg:block lg:flex-none lg:max-w-2xl lg:overflow-visible lg:space-y-5 lg:pb-10">
+      <MobileScrollViewport className="flex flex-col gap-5 px-px pb-3 pt-1 lg:flex-none lg:contents lg:p-0">
       <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-4 lg:pb-6">
         <h1 className="font-cozy-display text-[1.65rem] leading-tight text-dm-text max-lg:font-bold lg:text-[2.35rem]">
           More
@@ -193,6 +195,7 @@ export default async function DashboardMorePage() {
           </Link>
         </div>
       </MobileSection>
+      </MobileScrollViewport>
     </div>
   );
 }

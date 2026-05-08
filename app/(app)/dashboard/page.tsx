@@ -99,6 +99,7 @@ export default async function DashboardOverviewPage() {
 
   return (
     <>
+      <div className="max-lg:flex max-lg:h-full max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-hidden lg:contents lg:min-h-0 lg:overflow-visible">
       <MobileDashboardHome
         firstName={firstName}
         householdLine={householdLine}
@@ -123,6 +124,7 @@ export default async function DashboardOverviewPage() {
         activityError={!!activityErr}
         householdsError={error ?? null}
       />
+      </div>
 
       <div className="hidden lg:block">
         {error ?

@@ -64,9 +64,9 @@ export function MoneyMobileTabs({
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
 
   return (
-    <div className="space-y-4 pb-2 lg:hidden">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:hidden">
       <div
-        className="flex gap-1 rounded-[14px] border border-[var(--dm-border-strong)] bg-[color-mix(in_srgb,var(--dm-surface-mid)_85%,white)] p-1 shadow-inner"
+        className="mb-2 flex shrink-0 gap-1 rounded-[14px] border border-[var(--dm-border-strong)] bg-[color-mix(in_srgb,var(--dm-surface-mid)_85%,white)] p-1 shadow-inner"
         role="tablist"
         aria-label="Money sections"
       >
@@ -89,6 +89,7 @@ export function MoneyMobileTabs({
         ))}
       </div>
 
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overflow-x-hidden pb-2 [-webkit-overflow-scrolling:touch]">
       {tab === "overview" ?
         <section className="overflow-hidden rounded-[18px] border border-[color-mix(in_srgb,var(--dm-info)_22%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-info)_8%,#fff)_0%,#fffefb_55%)] p-4 shadow-[0_14px_32px_rgba(28,39,56,0.08)]">
           {!hasHouseholds ?
@@ -218,6 +219,7 @@ export function MoneyMobileTabs({
           )}
         </section>
       : null}
+      </div>
     </div>
   );
 }

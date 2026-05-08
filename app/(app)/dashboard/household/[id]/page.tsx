@@ -206,7 +206,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const tabBase = `/dashboard/household/${id}`;
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden pb-28 lg:pb-16">
+    <div className="mx-auto flex min-h-0 w-full min-w-0 max-w-6xl flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain [-webkit-overflow-scrolling:touch] pb-2 lg:block lg:h-auto lg:max-h-none lg:flex-none lg:overflow-x-hidden lg:overflow-y-visible lg:pb-16">
       <nav aria-label="Breadcrumb" className="mb-4 text-[13px] font-medium text-dm-muted max-lg:mb-4 lg:mb-5">
         <ol className="flex flex-wrap items-center gap-2">
           <li>

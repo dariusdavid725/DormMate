@@ -30,7 +30,7 @@ export function DashboardShell({
   const stripItems = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col lg:min-h-screen">
       <div className="hidden lg:block">
         <WorkspaceHeader
           email={email}
@@ -40,14 +40,21 @@ export function DashboardShell({
           households={households.map((h) => ({ id: h.id, name: h.name, role: h.role }))}
         />
       </div>
-      <MobileTopBar
-        email={email}
-        displayName={displayName}
-        avatarUrl={avatarUrl}
-        showAdmin={showAdmin}
-        households={stripItems}
-      />
-      <div className="flex min-h-0 flex-1">
+      <div
+        className={[
+          "flex min-h-0 flex-1 flex-col overflow-hidden",
+          "max-lg:fixed max-lg:inset-0 max-lg:z-20 max-lg:h-[100dvh] max-lg:max-h-[100dvh] max-lg:bg-dm-bg",
+          "lg:relative lg:inset-auto lg:z-auto lg:h-auto lg:max-h-none lg:overflow-visible",
+        ].join(" ")}
+      >
+        <MobileTopBar
+          email={email}
+          displayName={displayName}
+          avatarUrl={avatarUrl}
+          showAdmin={showAdmin}
+          households={stripItems}
+        />
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row lg:overflow-visible">
         <aside className="hidden shrink-0 lg:flex lg:w-[252px]" aria-label="Workspace navigation">
           <div className="dm-shell-panel dm-shell-panel-rail sticky top-[calc(env(safe-area-inset-top)+3.5rem+0.75rem)] m-3 flex max-h-[calc(100vh-env(safe-area-inset-top)-3.5rem-1.5rem)] w-[236px] flex-col gap-2 overflow-hidden py-3 pl-3 pr-2">
             <nav aria-label="Workspace" className="dm-nav-scroll min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-y-contain pr-1">
@@ -99,17 +106,17 @@ export function DashboardShell({
             </footer>
           </div>
         </aside>
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden lg:overflow-visible">
           {listError ? (
             <div
               role="status"
-              className="mx-4 mt-3 rounded-md border border-[var(--dm-border-strong)] px-4 py-2.5 text-sm text-dm-muted lg:mx-7"
+              className="mx-4 mt-3 shrink-0 rounded-md border border-[var(--dm-border-strong)] px-4 py-2.5 text-sm text-dm-muted lg:mx-7"
             >
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex-1 px-3 pb-[calc(6.25rem+env(safe-area-inset-bottom))] pt-2 sm:px-4 lg:px-7 lg:pb-10 lg:pt-5">
-            <div className="mx-auto w-full max-w-[1260px]">
+          <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden px-3 pb-0 pt-1.5 sm:px-4 lg:block lg:flex-none lg:flex-1 lg:overflow-visible lg:px-7 lg:pb-10 lg:pt-5">
+            <div className="mx-auto flex h-full min-h-0 w-full max-w-[1260px] flex-1 flex-col overflow-hidden lg:block lg:h-auto lg:min-h-0 lg:flex-none lg:overflow-visible">
               <MobileAppShell>{children}</MobileAppShell>
             </div>
           </main>
@@ -117,8 +124,9 @@ export function DashboardShell({
             Koti
           </footer>
         </div>
+        </div>
+        <DashboardBottomNav />
       </div>
-      <DashboardBottomNav />
     </div>
   );
 }

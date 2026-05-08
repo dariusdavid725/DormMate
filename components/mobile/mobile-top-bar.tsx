@@ -40,7 +40,7 @@ export function MobileTopBar({
     }) ?? households[0];
 
   return (
-    <header className="sticky top-0 z-40 lg:hidden">
+    <header className="z-40 shrink-0 lg:hidden">
       <div className="border-b border-[color-mix(in_srgb,var(--dm-border-strong)_85%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_92%,transparent)] pt-[env(safe-area-inset-top)] shadow-[0_10px_24px_rgba(28,39,56,0.06)] backdrop-blur-lg supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--dm-surface)_86%,transparent)]">
         <div className="mx-auto flex h-[56px] max-w-lg items-center gap-2 px-3 sm:h-[60px] sm:gap-3 sm:px-4">
           <Link

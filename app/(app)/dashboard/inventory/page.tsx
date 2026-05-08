@@ -42,7 +42,7 @@ export default async function InventoryPage({ searchParams }: Props) {
   const boughtCount = groceries.items.length - openCount;
 
   return (
-    <div className="dm-page-enter mx-auto max-w-2xl space-y-7 lg:max-w-6xl lg:space-y-7">
+    <div className="dm-page-enter mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col overflow-hidden lg:max-w-6xl lg:block lg:flex-none lg:overflow-visible lg:space-y-7">
       <header className="dm-pantry-page-hero dm-module-depth relative hidden overflow-hidden px-6 pb-8 pt-7 lg:block lg:px-10 lg:pb-9 lg:pt-8">
         <span
           className="dm-ambient-drift pointer-events-none absolute right-[12%] top-6 h-28 w-28 rounded-full bg-[radial-gradient(circle_at_35%_35%,rgba(239,201,125,0.34),transparent_72%)] blur-[1px]"
@@ -77,10 +77,10 @@ export default async function InventoryPage({ searchParams }: Props) {
         ) : null}
       </header>
 
-      <header className="flex flex-wrap items-end justify-between gap-2 border-b border-[var(--dm-border-strong)] pb-3 lg:hidden">
+      <header className="flex shrink-0 flex-wrap items-end justify-between gap-2 border-b border-[var(--dm-border-strong)] pb-2 pt-0.5 lg:hidden">
         <div className="min-w-0">
-          <h1 className="text-[1.35rem] font-bold leading-tight tracking-tight text-dm-text">Groceries</h1>
-          <p className="mt-1 text-[13px] leading-snug text-dm-muted">Check things off like a notes app.</p>
+          <h1 className="text-[1.15rem] font-bold leading-tight tracking-tight text-dm-text">Groceries</h1>
+          <p className="mt-0.5 line-clamp-1 text-[11px] leading-snug text-dm-muted">Check off as you shop.</p>
         </div>
         {selected ?
           <span className="shrink-0 rounded-full border border-[color-mix(in_srgb,var(--dm-accent)_26%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-accent)_10%,white)] px-3 py-1 text-[11px] font-bold text-dm-text">
@@ -90,13 +90,13 @@ export default async function InventoryPage({ searchParams }: Props) {
       </header>
 
       {hhError ? (
-        <p className="rounded-md border border-dm-danger/35 px-3 py-2 text-sm text-dm-danger">
+        <p className="shrink-0 rounded-md border border-dm-danger/35 px-3 py-2 text-sm text-dm-danger">
           Could not load households.
         </p>
       ) : null}
 
       {households.length > 1 ? (
-        <form className="dm-module-muted dm-module dm-module-depth rounded-2xl border border-[color-mix(in_srgb,var(--dm-accent)_14%,var(--dm-border-strong))] p-3 shadow-[0_10px_24px_rgba(28,39,56,0.06)] max-lg:border-[var(--dm-border-strong)] max-lg:bg-[color-mix(in_srgb,var(--dm-surface-mid)_50%,white)] sm:p-4">
+        <form className="dm-module-muted dm-module dm-module-depth shrink-0 rounded-2xl border border-[color-mix(in_srgb,var(--dm-accent)_14%,var(--dm-border-strong))] p-3 shadow-[0_10px_24px_rgba(28,39,56,0.06)] max-lg:border-[var(--dm-border-strong)] max-lg:bg-[color-mix(in_srgb,var(--dm-surface-mid)_50%,white)] sm:p-4">
           <label className="text-xs font-semibold uppercase tracking-wide text-dm-muted" htmlFor="inv-household">
             Household
           </label>
@@ -122,7 +122,7 @@ export default async function InventoryPage({ searchParams }: Props) {
       ) : null}
 
       {!selected ? (
-        <div className="dm-module p-5">
+        <div className="dm-module min-h-0 flex-1 overflow-y-auto p-5 lg:flex-none lg:overflow-visible">
           <p className="text-sm text-dm-muted">
             Join or create a household first from{" "}
             <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
@@ -132,12 +132,12 @@ export default async function InventoryPage({ searchParams }: Props) {
           </p>
         </div>
       ) : groceries.error ? (
-        <p className="rounded-md border border-dm-danger/35 px-3 py-2 text-sm text-dm-danger">
+        <p className="shrink-0 rounded-md border border-dm-danger/35 px-3 py-2 text-sm text-dm-danger">
           Could not load groceries.
         </p>
       ) : (
-        <div className="dm-scroll-reveal dm-scroll-reveal-slow grid gap-5 lg:grid-cols-12">
-          <div className="lg:col-span-8">
+        <div className="dm-scroll-reveal dm-scroll-reveal-slow flex min-h-0 flex-1 flex-col gap-5 overflow-hidden lg:grid lg:h-auto lg:grid-cols-12 lg:flex-none lg:overflow-visible lg:gap-5">
+          <div className="flex min-h-0 flex-1 flex-col lg:col-span-8 lg:flex-none lg:h-auto">
             <HouseholdGroceryBoard
               householdId={selected.id}
               householdName={selected.name}

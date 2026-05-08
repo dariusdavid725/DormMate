@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import type { HouseholdMemberRow } from "@/lib/households/queries";
 import {
@@ -28,22 +28,39 @@ export function HouseholdGroceryBoard({
   members: HouseholdMemberRow[];
 }) {
   const [state, action, pending] = useActionState(createGroceryItem, CREATE_INITIAL);
+  const [addOpen, setAddOpen] = useState(false);
+  const addAnchorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (state?.ok) setAddOpen(false);
+  }, [state?.ok]);
 
   const labels = new Map<string, string>(members.map((m) => [m.userId, memberLabel(m)]));
   const open = items.filter((x) => !x.bought);
   const bought = items.filter((x) => x.bought);
 
+  const openFab = () => {
+    setAddOpen(true);
+    requestAnimationFrame(() => {
+      addAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  };
+
   return (
-    <section className="relative flex flex-col space-y-5 lg:space-y-6">
-      <a
-        href="#mobile-add-grocery"
-        className="dm-focus-ring fixed bottom-[calc(5.35rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 min-w-[56px] items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--dm-electric)_35%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-electric)_22%,#fff)_0%,white_100%)] px-5 text-[13px] font-bold text-[var(--dm-electric-deep)] shadow-[0_12px_28px_rgba(126,106,209,0.22)] backdrop-blur-sm transition-[transform,box-shadow] duration-200 active:scale-95 motion-reduce:transition-none lg:hidden"
+    <section className="relative flex min-h-0 flex-1 flex-col space-y-3 lg:flex-none lg:space-y-6">
+      <button
+        type="button"
+        onClick={openFab}
+        className="dm-focus-ring fixed bottom-[calc(4.85rem+env(safe-area-inset-bottom))] right-4 z-[35] flex h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--dm-electric)_35%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-electric)_22%,#fff)_0%,white_100%)] px-5 text-[13px] font-bold text-[var(--dm-electric-deep)] shadow-[0_12px_28px_rgba(126,106,209,0.22)] backdrop-blur-sm transition-[transform,box-shadow] duration-200 active:scale-95 motion-reduce:transition-none lg:hidden"
+        aria-expanded={addOpen}
+        aria-controls="mobile-grocery-add-panel"
       >
         + Add
-      </a>
+      </button>
 
-      <div className="order-2 max-lg:order-1">
-        <section className="dm-module dm-hover-lift p-4 sm:p-5 max-lg:border-0 max-lg:bg-transparent max-lg:p-0 max-lg:shadow-none">
+      <div className="order-2 flex min-h-0 flex-1 flex-col max-lg:order-1 lg:flex-none lg:space-y-6">
+        <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto [-webkit-overflow-scrolling:touch] max-lg:flex-1 lg:flex-none lg:gap-6 lg:overflow-visible">
+          <section className="dm-module dm-hover-lift shrink-0 p-4 sm:p-5 max-lg:border-0 max-lg:bg-transparent max-lg:p-0 max-lg:shadow-none">
           <div className="flex items-center justify-between gap-2 max-lg:px-0.5">
             <h3 className="dm-section-heading text-[1rem] max-lg:text-[15px]">Your list</h3>
             <span className="dm-chip shrink-0 text-[11px] max-lg:border-[color-mix(in_srgb,var(--dm-info)_25%,var(--dm-border-strong))] max-lg:bg-[color-mix(in_srgb,var(--dm-info)_8%,white)]">
@@ -128,7 +145,7 @@ export function HouseholdGroceryBoard({
         </section>
 
         {bought.length > 0 ? (
-          <section className="dm-module-muted dm-module dm-hover-lift mt-5 p-4 sm:p-5 max-lg:mt-4 max-lg:rounded-[20px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-white/88 max-lg:p-4">
+          <section className="dm-module-muted dm-module dm-hover-lift shrink-0 p-4 sm:p-5 max-lg:rounded-[20px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-white/88 max-lg:p-4 lg:mt-5">
             <div className="flex items-center justify-between gap-2">
               <h3 className="dm-section-heading text-[1rem] max-lg:text-[15px]">Bought</h3>
               <span className="dm-chip">{bought.length}</span>
@@ -162,18 +179,34 @@ export function HouseholdGroceryBoard({
             </ul>
           </section>
         ) : null}
+        </div>
       </div>
 
       <div
         id="mobile-add-grocery"
-        className="order-1 max-lg:order-2 scroll-mt-[calc(7rem+env(safe-area-inset-top))] lg:scroll-mt-0"
+        ref={addAnchorRef}
+        className={`order-1 max-lg:order-2 scroll-mt-[calc(5rem+env(safe-area-inset-top))] lg:block lg:scroll-mt-0 ${addOpen ? "max-lg:block" : "max-lg:hidden"} lg:!block`}
       >
-        <div className="dm-module dm-module-muted dm-hover-lift p-4 max-lg:rounded-[22px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-[linear-gradient(200deg,color-mix(in_srgb,var(--dm-social)_7%,white)_0%,#fffefb_55%)] max-lg:p-4 max-lg:shadow-[0_16px_36px_rgba(28,39,56,0.09)] sm:p-5">
-          <h2 className="dm-section-heading max-lg:text-[15px]">Add grocery</h2>
-          <p className="mt-1 text-[13px] text-dm-muted">
-            Shared list for {householdName}. Mark items bought as you go.
-          </p>
-          <form action={action} className="mt-5 space-y-4">
+        <div
+          id="mobile-grocery-add-panel"
+          className="dm-module dm-module-muted dm-hover-lift p-4 max-lg:rounded-[20px] max-lg:border max-lg:border-[var(--dm-border-strong)] max-lg:bg-[linear-gradient(200deg,color-mix(in_srgb,var(--dm-social)_7%,white)_0%,#fffefb_55%)] max-lg:p-3 max-lg:shadow-[0_12px_28px_rgba(28,39,56,0.08)] sm:p-5"
+        >
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h2 className="dm-section-heading max-lg:text-[14px]">Add grocery</h2>
+              <p className="mt-0.5 text-[12px] text-dm-muted max-lg:line-clamp-2">
+                Shared list for {householdName}.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAddOpen(false)}
+              className="dm-focus-ring shrink-0 rounded-full border border-[var(--dm-border-strong)] px-2.5 py-1 text-[11px] font-bold text-dm-muted lg:hidden"
+            >
+              Done
+            </button>
+          </div>
+          <form action={action} className="mt-4 max-lg:mt-3 max-lg:space-y-3 space-y-4">
           <input type="hidden" name="household_id" value={householdId} />
           {state?.error ? (
             <p role="alert" className="rounded-md border border-dm-danger/40 px-3 py-2 text-sm text-dm-danger">

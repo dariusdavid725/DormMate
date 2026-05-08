@@ -136,7 +136,7 @@ export default async function FinancesPage() {
     : null;
 
   return (
-    <div className="dm-page-enter mx-auto w-full max-w-[1240px] space-y-7">
+    <div className="dm-page-enter mx-auto flex min-h-0 w-full max-w-[1240px] flex-1 flex-col overflow-hidden lg:block lg:flex-none lg:space-y-7 lg:overflow-visible">
       <header className="dm-money-page-hero dm-module-depth relative hidden overflow-hidden px-6 pb-7 pt-6 lg:block lg:px-10 lg:pb-8 lg:pt-7">
         <span
           className="dm-ambient-drift pointer-events-none absolute -right-16 top-6 h-44 w-44 rounded-full border border-[color-mix(in_srgb,var(--dm-info)_28%,transparent)] bg-[radial-gradient(circle_at_40%_35%,rgba(78,120,168,0.14),transparent_68%)] opacity-80"
@@ -187,15 +187,15 @@ export default async function FinancesPage() {
       </header>
 
       {error ?
-        <div className="rounded-lg border border-dm-danger/35 px-4 py-3 text-sm text-dm-danger">
+        <div className="shrink-0 rounded-lg border border-dm-danger/35 px-4 py-3 text-sm text-dm-danger">
           {error}
         </div>
       : null}
 
-      <div className="space-y-3 px-0.5 lg:hidden">
-        <header>
-          <h1 className="text-[1.4rem] font-bold leading-tight tracking-tight text-dm-text">Money</h1>
-          <p className="mt-0.5 text-[13px] text-dm-muted">Balances, receipts, settle-up</p>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-0.5 pt-0.5 lg:hidden">
+        <header className="shrink-0 border-b border-[color-mix(in_srgb,var(--dm-border-strong)_75%,transparent)] pb-1.5">
+          <h1 className="text-[1.2rem] font-bold leading-tight tracking-tight text-dm-text">Money</h1>
+          <p className="line-clamp-1 text-[11px] text-dm-muted">Balances · receipts · settle</p>
         </header>
         <MoneyMobileTabs
           houses={mobileHouses}
