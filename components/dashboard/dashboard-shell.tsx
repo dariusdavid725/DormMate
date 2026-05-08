@@ -42,8 +42,9 @@ export function DashboardShell({
       </div>
       <div
         className={[
-          "flex min-h-0 flex-1 flex-col overflow-hidden",
-          "max-lg:fixed max-lg:inset-0 max-lg:z-20 max-lg:h-[100dvh] max-lg:max-h-[100dvh] max-lg:bg-dm-bg",
+          /* Pin to viewport with top+bottom instead of height:100dvh — avoids Safari address-bar / refresh drift */
+          "flex min-h-0 flex-1 flex-col max-lg:flex-col max-lg:bg-dm-bg max-lg:overflow-visible",
+          "max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:top-0 max-lg:z-20",
           "lg:relative lg:inset-auto lg:z-auto lg:h-auto lg:max-h-none lg:overflow-visible",
         ].join(" ")}
       >
@@ -115,7 +116,7 @@ export function DashboardShell({
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden px-3 pb-0 pt-1.5 sm:px-4 lg:block lg:flex-none lg:flex-1 lg:overflow-visible lg:px-7 lg:pb-10 lg:pt-5">
+          <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden px-3 pt-1.5 pb-0 max-lg:pb-[calc(5.25rem+env(safe-area-inset-bottom))] sm:px-4 lg:block lg:flex-none lg:flex-1 lg:overflow-visible lg:px-7 lg:pb-10 lg:pt-5">
             <div className="mx-auto flex h-full min-h-0 w-full max-w-[1260px] flex-1 flex-col overflow-hidden lg:block lg:h-auto lg:min-h-0 lg:flex-none lg:overflow-visible">
               <MobileAppShell>{children}</MobileAppShell>
             </div>

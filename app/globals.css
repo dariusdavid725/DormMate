@@ -1359,6 +1359,64 @@ body {
   }
 }
 
+/* Landing mobile — subtle entrance + floating preview (respect prefers-reduced-motion via rules below) */
+@keyframes dm-koti-entry-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dm-koti-card-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+.dm-koti-entry-animate {
+  opacity: 0;
+  animation: dm-koti-entry-rise 0.58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dm-koti-card-a,
+.dm-koti-card-b,
+.dm-koti-card-c,
+.dm-koti-card-d {
+  animation: dm-koti-card-float 4s ease-in-out infinite alternate;
+  animation-delay: 0ms;
+}
+
+.dm-koti-card-b {
+  animation-delay: 420ms;
+}
+
+.dm-koti-card-c {
+  animation-delay: -900ms;
+}
+
+.dm-koti-card-d {
+  animation-delay: -400ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dm-koti-entry-animate,
+  .dm-koti-card-a,
+  .dm-koti-card-b,
+  .dm-koti-card-c,
+  .dm-koti-card-d {
+    animation: none !important;
+    opacity: 1;
+    transform: none !important;
+  }
+}
+
 ::selection {
   background-color: color-mix(in srgb, var(--dm-accent) 32%, transparent);
   color: var(--dm-text);

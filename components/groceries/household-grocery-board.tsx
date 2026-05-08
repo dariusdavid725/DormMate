@@ -51,7 +51,7 @@ export function HouseholdGroceryBoard({
       <button
         type="button"
         onClick={openFab}
-        className="dm-focus-ring fixed bottom-[calc(4.85rem+env(safe-area-inset-bottom))] right-4 z-[35] flex h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--dm-electric)_35%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-electric)_22%,#fff)_0%,white_100%)] px-5 text-[13px] font-bold text-[var(--dm-electric-deep)] shadow-[0_12px_28px_rgba(126,106,209,0.22)] backdrop-blur-sm transition-[transform,box-shadow] duration-200 active:scale-95 motion-reduce:transition-none lg:hidden"
+        className="dm-focus-ring fixed bottom-[calc(5.65rem+env(safe-area-inset-bottom))] right-4 z-[55] flex h-[52px] min-w-[52px] items-center justify-center gap-2 rounded-full border border-[color-mix(in_srgb,var(--dm-electric)_35%,var(--dm-border-strong))] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--dm-electric)_22%,#fff)_0%,white_100%)] px-5 text-[13px] font-bold text-[var(--dm-electric-deep)] shadow-[0_12px_28px_rgba(126,106,209,0.22)] backdrop-blur-sm transition-[transform,box-shadow] duration-200 active:scale-95 motion-reduce:transition-none lg:hidden"
         aria-expanded={addOpen}
         aria-controls="mobile-grocery-add-panel"
       >

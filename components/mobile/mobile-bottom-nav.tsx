@@ -41,7 +41,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="relative z-40 shrink-0 lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-[60] lg:hidden"
     >
       <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[-1px] bg-gradient-to-t from-black/[0.04] to-transparent" aria-hidden />
       <div className="border-t border-[color-mix(in_srgb,var(--dm-border-strong)_90%,transparent)] bg-[color-mix(in_srgb,var(--dm-surface)_94%,transparent)] px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 shadow-[0_-12px_32px_rgba(28,39,56,0.12)] backdrop-blur-xl supports-[backdrop-filter]:bg-[color-mix(in_srgb,var(--dm-surface)_88%,transparent)]">
