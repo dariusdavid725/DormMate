@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
 import { JoinHouseholdForm } from "@/components/household/join-household-form";
 import { joinHouseholdByInviteCodeCore } from "@/lib/households/actions";
 import { createClient } from "@/lib/supabase/server";
@@ -40,40 +41,42 @@ export default async function JoinHouseholdPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-7 pb-24 max-lg:px-0 lg:space-y-8 lg:pb-12">
-      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5 lg:pb-6">
-        <h1 className="font-cozy-display text-[2.2rem] leading-[1.05] text-dm-text max-lg:tracking-tight lg:text-[2.85rem] lg:leading-none">
+    <div className="mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col overflow-hidden lg:block lg:flex-none lg:space-y-8 lg:overflow-visible lg:pb-12">
+      <header className="shrink-0 border-b border-dashed border-[var(--dm-border-strong)] pb-3 pt-0.5 lg:pb-6 lg:pt-0">
+        <h1 className="font-cozy-display text-[1.42rem] leading-[1.08] tracking-tight text-dm-text lg:text-[2.85rem] lg:leading-none lg:tracking-normal">
           Join this Koti home
         </h1>
+        <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-dm-muted lg:hidden">
+          Paste the invite code from your roommate.
+        </p>
         <p className="mt-3 hidden text-[14px] leading-snug text-dm-muted lg:block lg:text-[13px] lg:leading-relaxed">
           You&apos;ve been invited to join a home on Koti. Paste your code and we&apos;ll get
           you into the right board.
         </p>
-        <p className="mt-3 text-[14px] leading-snug text-dm-muted lg:hidden">
-          You&apos;ve been invited to join on Koti. Paste the invite code.
-        </p>
       </header>
 
-      <div className="cozy-poster cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-paper)] max-lg:rounded-2xl lg:p-6">
-        {autoError ? (
-          <p
-            role="alert"
-            className="mb-4 rounded-md border border-dm-danger/40 bg-dm-surface px-3 py-2 text-sm text-dm-danger"
-          >
-            {autoError}
+      <MobileScrollViewport className="flex flex-col px-0 pb-4 pt-3 lg:flex-none lg:contents lg:p-0">
+        <div className="cozy-poster cozy-tilt-xs min-w-0 p-4 shadow-[var(--cozy-shadow-paper)] max-lg:rounded-2xl lg:p-6">
+          {autoError ? (
+            <p
+              role="alert"
+              className="mb-4 min-w-0 rounded-md border border-dm-danger/40 bg-dm-surface px-3 py-2 text-[13px] leading-snug text-dm-danger"
+            >
+              {autoError}
+            </p>
+          ) : null}
+          <JoinHouseholdForm initialCode={code} />
+          <p className="mt-6 text-center text-[12px] text-dm-muted">
+            Need keys first?{" "}
+            <Link
+              className="touch-manipulation px-2 py-2 font-semibold text-dm-electric underline underline-offset-[0.22em] hover:opacity-90"
+              href={`/signup?next=${encodeURIComponent(`/dashboard/join?code=${encodeURIComponent(code ?? "")}`)}`}
+            >
+              Sign up
+            </Link>
           </p>
-        ) : null}
-        <JoinHouseholdForm initialCode={code} />
-        <p className="mt-6 text-center text-[12px] text-dm-muted">
-          Need keys first?{" "}
-          <Link
-            className="font-semibold text-dm-electric hover:underline"
-            href={`/signup?next=${encodeURIComponent(`/dashboard/join?code=${encodeURIComponent(code ?? "")}`)}`}
-          >
-            Sign up
-          </Link>
-        </p>
-      </div>
+        </div>
+      </MobileScrollViewport>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
 import {
   addPlatformAdminEmail,
   removePlatformAdminEmail,
@@ -69,8 +70,11 @@ export default async function AdminDashboardPage() {
     }>;
 
   return (
-    <div className="mx-auto w-full max-w-6xl pb-[7rem] lg:pb-10">
-      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-dm-muted">
+    <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col overflow-hidden lg:block lg:flex-none lg:space-y-8 lg:overflow-visible lg:pb-10">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 shrink-0 text-[13px] text-dm-muted max-lg:text-[12px] lg:mb-6"
+      >
         <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
           Home
         </Link>
@@ -78,16 +82,17 @@ export default async function AdminDashboardPage() {
         <span className="text-dm-text">Site admin</span>
       </nav>
 
-      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
-        <h1 className="text-3xl font-semibold tracking-tight text-dm-text">
-          Site admin panel
+      <header className="shrink-0 border-b border-dashed border-[var(--dm-border-strong)] pb-3 lg:pb-6">
+        <h1 className="text-[1.35rem] font-bold leading-tight tracking-tight text-dm-text lg:text-3xl lg:font-semibold">
+          Site admin
         </h1>
-        <p className="mt-2 text-[13px] text-dm-muted">
-          Manage platform admins, review users, and inspect households.
+        <p className="mt-1 line-clamp-2 text-[11px] text-dm-muted lg:mt-2 lg:block lg:text-[13px] lg:leading-snug lg:line-clamp-none">
+          Manage platform admins, users, and households.
         </p>
       </header>
 
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+      <MobileScrollViewport className="mt-5 flex flex-col gap-7 pb-3 pt-1 lg:flex-none lg:contents lg:gap-0 lg:p-0">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-3">
         {[
           { label: "Households", value: householdCount ?? 0, tilt: "cozy-tilt-xs" },
           {
@@ -115,21 +120,24 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      <section className="mt-10 grid gap-5 lg:grid-cols-2">
-        <div className="dm-card-surface p-5">
+      <section className="grid min-w-0 gap-5 lg:grid-cols-2">
+        <div className="dm-card-surface min-w-0 p-4 lg:p-5">
           <h2 className="text-lg font-semibold text-dm-text">Platform admins</h2>
           <p className="mt-1 text-[12px] text-dm-muted">
             Anyone listed here gets access to this panel.
           </p>
-          <form action={addPlatformAdminEmail} className="mt-4 flex gap-2">
+          <form action={addPlatformAdminEmail} className="mt-4 flex flex-col gap-2 sm:flex-row">
             <input
               type="email"
               name="email"
               required
               placeholder="admin@email.com"
-              className="min-w-0 flex-1 rounded-md border border-[var(--dm-border-strong)] bg-dm-bg px-3 py-2 text-sm"
+              className="min-h-[44px] min-w-0 flex-1 rounded-md border border-[var(--dm-border-strong)] bg-dm-bg px-3 py-2 text-sm lg:min-h-0"
             />
-            <button className="rounded-md bg-dm-electric px-3 py-2 text-sm font-semibold text-white">
+            <button
+              type="submit"
+              className="touch-manipulation min-h-[44px] shrink-0 rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white lg:min-h-0"
+            >
               Add
             </button>
           </form>
@@ -143,7 +151,10 @@ export default async function AdminDashboardPage() {
                 {a.email.toLowerCase() !== "dariusdavid725@gmail.com" ? (
                   <form action={removePlatformAdminEmail}>
                     <input type="hidden" name="email" value={a.email} />
-                    <button className="text-xs font-semibold text-dm-danger hover:underline">
+                    <button
+                      type="submit"
+                      className="touch-manipulation min-h-[40px] min-w-[44px] px-1 text-xs font-semibold text-dm-danger hover:underline lg:min-h-0 lg:min-w-0"
+                    >
                       Remove
                     </button>
                   </form>
@@ -153,13 +164,13 @@ export default async function AdminDashboardPage() {
           </ul>
         </div>
 
-        <div className="dm-card-surface p-5">
+        <div className="dm-card-surface min-w-0 p-4 lg:p-5">
           <h2 className="text-lg font-semibold text-dm-text">Users</h2>
           <p className="mt-1 text-[12px] text-dm-muted">
             Latest 300 accounts, with household membership count.
           </p>
-          <div className="mt-4 max-h-80 overflow-auto rounded-md border border-[var(--dm-border)]">
-            <table className="min-w-full text-left text-sm">
+          <div className="mt-4 max-h-80 min-w-0 overflow-x-auto overflow-y-auto rounded-md border border-[var(--dm-border)] [-webkit-overflow-scrolling:touch]">
+            <table className="min-w-[20rem] w-full max-w-none text-left text-sm">
               <thead className="border-b border-[var(--dm-border)] bg-dm-bg/60 text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
                 <tr>
                   <th className="px-3 py-2">User</th>
@@ -186,12 +197,12 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section className="min-w-0">
         <h2 className="text-lg font-semibold text-dm-text">
           Recent households
         </h2>
-        <div className="cozy-receipt cozy-tilt-xs mt-6 overflow-hidden rounded-[2px]">
-          <table className="min-w-full text-left text-sm">
+        <div className="cozy-receipt cozy-tilt-xs mt-4 min-w-0 overflow-x-auto overflow-y-hidden rounded-[2px] [-webkit-overflow-scrolling:touch] lg:mt-6">
+          <table className="min-w-[18rem] w-full max-w-none text-left text-sm">
             <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg/60 text-xs font-semibold uppercase tracking-wide text-dm-muted">
               <tr>
                 <th className="px-5 py-3">Name</th>
@@ -209,9 +220,9 @@ export default async function AdminDashboardPage() {
               ) : (
                 rows.map((r) => (
                   <tr key={r.id} className="border-b border-[var(--dm-border)] last:border-b-0">
-                    <td className="px-5 py-4">
+                    <td className="max-w-[min(100vw-3rem,24rem)] px-4 py-3 lg:max-w-none lg:px-5 lg:py-4">
                       <Link
-                        className="font-semibold text-dm-electric hover:underline"
+                        className="line-clamp-2 min-w-0 break-words font-semibold text-dm-electric hover:underline"
                         href={`/dashboard/household/${r.id}`}
                       >
                         {r.name}
@@ -230,6 +241,7 @@ export default async function AdminDashboardPage() {
           </table>
         </div>
       </section>
+      </MobileScrollViewport>
     </div>
   );
 }
