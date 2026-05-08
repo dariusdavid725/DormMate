@@ -1,61 +1,55 @@
 @import "tailwindcss";
 
 /*
-  Koti — cozy retro productivity · bulletin board · warm paper & notes.
-  Maps legacy --dm-* tokens to warm palette so existing Tailwind keeps working.
+  Koti — modern roommate utility app with subtle retro accents.
+  Keep legacy --dm-* token names so existing components remain functional.
 */
 
 :root {
   color-scheme: light;
 
-  /* Warm foundation */
-  --dm-bg: #e8dfd2;
-  --dm-bg-elev: #dfd4c5;
-  --dm-surface: #faf7f0;
-  --dm-surface-mid: #f3ebe0;
-  --dm-elevated: #ebe2d6;
-  --dm-text: #362f28;
-  --dm-muted: #6b6054;
-  --dm-muted-soft: #958a7c;
+  /* Foundation: warm off-white, higher contrast text */
+  --dm-bg: #f6f4ef;
+  --dm-bg-elev: #f1eee7;
+  --dm-surface: #fffdf8;
+  --dm-surface-mid: #f7f3ec;
+  --dm-elevated: #f2eee6;
+  --dm-text: #2d2925;
+  --dm-muted: #625b53;
+  --dm-muted-soft: #8d857b;
 
-  /* Muted sage = primary actions / links */
-  --dm-electric: #5a7a5f;
-  --dm-electric-deep: #46624a;
+  /* Primary action: terracotta / clay orange */
+  --dm-electric: #c86845;
+  --dm-electric-deep: #9f4f33;
   --dm-electric-glow: transparent;
-  --dm-electric-border: rgba(90, 122, 95, 0.45);
+  --dm-electric-border: rgba(200, 104, 69, 0.45);
 
-  --dm-accent: #6b8f71;
-  --dm-accent-soft: rgba(107, 143, 113, 0.18);
-  --dm-accent-ink: #1e2a21;
+  /* Secondary accent: muted olive / sage */
+  --dm-accent: #6f7f5e;
+  --dm-accent-soft: rgba(111, 127, 94, 0.18);
+  --dm-accent-ink: #253022;
 
   --dm-danger: #b85245;
   --dm-border: rgba(54, 47, 40, 0.12);
   --dm-border-strong: rgba(54, 47, 40, 0.2);
-  --dm-accent-warn-bg: #f7edc9;
-  --dm-accent-warn-text: #6b5634;
-  --dm-fun: #e9d279;
+  --dm-accent-warn-bg: #f5e8bf;
+  --dm-accent-warn-text: #66522f;
+  --dm-fun: #e0c66e;
 
   --dm-card-shade: rgba(54, 47, 40, 0.08);
 
   --dm-body-fill:
     radial-gradient(
-        ellipse 80% 50% at 15% -10%,
-        rgba(247, 230, 200, 0.55),
-        transparent 52%
-      ),
-    radial-gradient(
-        ellipse 60% 40% at 90% 0%,
-        rgba(200, 220, 200, 0.2),
-        transparent 45%
-      ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 24px,
-      rgba(107, 96, 84, 0.03) 24px,
-      rgba(107, 96, 84, 0.03) 25px
+      ellipse 60% 34% at 10% -10%,
+      rgba(198, 104, 69, 0.11),
+      transparent 58%
     ),
-    linear-gradient(180deg, #ebe4d8 0%, #e3d9ca 100%);
+    radial-gradient(
+      ellipse 52% 34% at 100% 0%,
+      rgba(111, 127, 94, 0.11),
+      transparent 58%
+    ),
+    linear-gradient(180deg, #f8f6f1 0%, #f2efe8 100%);
 
   --background: var(--dm-bg);
   --foreground: var(--dm-text);
@@ -114,11 +108,11 @@ body {
   overflow-x: hidden;
 }
 
-/* Playful headings — Caveat (--font-cozy-display from Next font on html) */
+/* Accent handwritten font — use sparingly for labels, not large headings */
 .font-cozy-display {
   font-family: var(--font-cozy-display), cursive;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .cozy-board {
@@ -148,28 +142,35 @@ body {
 
 /* Sticky note */
 .cozy-note {
+  background: var(--dm-surface);
+  border: 1px solid var(--dm-border-strong);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(45, 41, 37, 0.06), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+.cozy-note::before {
+  content: "";
+  display: block;
+  height: 3px;
+  margin: -1px -1px 10px -1px;
+  border-radius: 12px 12px 0 0;
   background: linear-gradient(
-    145deg,
-    #f7ecb8 0%,
-    #f2e4a8 45%,
-    #efe2a5 100%
+    90deg,
+    color-mix(in srgb, var(--dm-electric) 70%, #fff 30%) 0%,
+    color-mix(in srgb, var(--dm-fun) 65%, #fff 35%) 100%
   );
-  border: 1px solid rgba(91, 78, 50, 0.18);
-  border-radius: 2px;
-  box-shadow: var(--cozy-shadow-note);
 }
 
 /* Receipt / thermal strip */
 .cozy-receipt {
   background: linear-gradient(
     180deg,
-    #fffef9 0%,
-    #faf8f2 42%,
-    #f7f5ed 100%
+    #fffefb 0%,
+    #fcfaf6 45%,
+    #f9f6f0 100%
   );
-  border: 1px solid rgba(54, 47, 40, 0.14);
-  border-radius: 3px;
-  box-shadow: var(--cozy-shadow-paper);
+  border: 1px solid var(--dm-border-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(45, 41, 37, 0.06);
 }
 .cozy-receipt::before {
   content: "";
@@ -181,15 +182,15 @@ body {
     transparent 0 6px,
     rgba(54, 47, 40, 0.12) 6px 7px
   );
-  border-radius: 3px 3px 0 0;
+  border-radius: 12px 12px 0 0;
 }
 
 /* Poster / pinned card */
 .cozy-poster {
   background: var(--dm-surface);
   border: 1px solid var(--dm-border-strong);
-  border-radius: 6px;
-  box-shadow: var(--cozy-shadow-paper);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(45, 41, 37, 0.06);
 }
 
 .cozy-pin {
@@ -281,10 +282,10 @@ body {
 }
 
 .dm-card-surface {
-  border-radius: 6px;
+  border-radius: 12px;
   border: 1px solid var(--dm-border-strong);
   background: var(--dm-surface);
-  box-shadow: var(--cozy-shadow-paper);
+  box-shadow: 0 10px 24px rgba(45, 41, 37, 0.06);
 }
 
 .dm-card-interactive {
@@ -399,8 +400,10 @@ body {
 }
 
 .dm-sidebar-glass {
-  background: linear-gradient(180deg, #ded3c5 0%, #d8cdc0 100%);
-  box-shadow: inset -1px 0 0 rgba(54, 47, 40, 0.12);
+  background: linear-gradient(180deg, #f5f2eb 0%, #efebe3 100%);
+  box-shadow:
+    inset -1px 0 0 rgba(45, 41, 37, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.45);
 }
 
 /* Legacy animation hooks (reuse where needed) */

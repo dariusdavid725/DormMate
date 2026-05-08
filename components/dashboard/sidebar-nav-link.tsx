@@ -20,10 +20,10 @@ export function SidebarNavLink({ href, title, hint, exact }: Props) {
     <Link
       href={href}
       className={[
-        "rounded-md px-2.5 py-2 text-[14px] transition-all duration-200",
+        "rounded-xl px-3 py-2.5 text-[14px] transition-all duration-200",
         active
-          ? "border border-[rgba(90,122,95,0.35)] bg-dm-surface font-semibold text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
-          : "border border-transparent text-dm-muted hover:border-dashed hover:border-[var(--dm-border-strong)] hover:bg-dm-surface/80 hover:text-dm-text",
+          ? "border border-[color-mix(in_srgb,var(--dm-electric)_45%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-electric)_10%,#fff)] font-semibold text-dm-text shadow-[0_6px_16px_rgba(45,41,37,0.08)]"
+          : "border border-transparent text-dm-muted hover:border-[var(--dm-border-strong)] hover:bg-dm-surface hover:text-dm-text",
       ].join(" ")}
     >
       <div className="min-w-0">

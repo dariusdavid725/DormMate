@@ -40,10 +40,12 @@ export function MobileTopBar({
     }) ?? households[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/94 pt-[env(safe-area-inset-top)] shadow-[var(--cozy-shadow-paper)] backdrop-blur-md lg:hidden">
+    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/95 pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(45,41,37,0.08)] backdrop-blur-md lg:hidden">
       <div className="flex min-h-[52px] items-center gap-2 px-3 pb-2 pt-1">
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-dm-muted">
+          <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-dm-muted">
+            {/* eslint-disable-next-line @next/next/no-img-element -- static brand logo in public */}
+            <img src="/logo.png" alt="" className="h-4 w-4 rounded object-cover" aria-hidden />
             Home
           </p>
           {households.length === 0 ? (
@@ -63,7 +65,7 @@ export function MobileTopBar({
                   if (!id) return;
                   router.push(`/dashboard/household/${id}`);
                 }}
-              className="mt-0.5 max-w-full min-h-[48px] w-full touch-manipulation rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 font-cozy-display text-[1.15rem] leading-snug text-dm-text max-[380px]:text-[1.05rem] sm:text-[1.35rem]"
+              className="mt-0.5 max-w-full min-h-[48px] w-full touch-manipulation rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-[1.02rem] font-semibold leading-snug text-dm-text sm:text-[1.08rem]"
               >
                 {households.map((h) => (
                   <option key={h.id} value={h.id}>

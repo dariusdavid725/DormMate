@@ -148,7 +148,7 @@ export function MobileDashboardHome({
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-5 pb-2 lg:hidden">
       <div className="min-w-0 pt-1">
-        <p className="break-words font-cozy-display text-[1.75rem] leading-[1.15] text-dm-text">
+        <p className="break-words text-[1.7rem] font-semibold leading-[1.12] tracking-tight text-dm-text">
           {greet}
           {firstName ?
             <>
@@ -171,22 +171,28 @@ export function MobileDashboardHome({
 
       <MobileSection title="Today" hideDescriptionMobile>
         <ul className="flex flex-col gap-3">
-          <li className="flex min-h-[52px] items-center justify-between gap-4 rounded-xl bg-dm-surface-mid/85 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
             <span className="text-[14px] font-semibold text-dm-muted">Chores</span>
             <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
               {hasHouseholds ? choresDue : "—"}
             </span>
           </li>
-          <li className="flex min-h-[52px] flex-row items-start justify-between gap-3 rounded-xl bg-dm-surface-mid/85 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+          <li className="dm-card-surface flex min-h-[52px] flex-row items-start justify-between gap-3 px-4 py-3.5">
             <span className="shrink-0 pt-0.5 text-[14px] font-semibold text-dm-muted">Balance</span>
             <span className="max-w-[65%] break-words text-right text-[15px] font-semibold leading-snug text-dm-text">
               {hasHouseholds ? owedLabel : "—"}
             </span>
           </li>
-          <li className="flex min-h-[52px] items-center justify-between gap-4 rounded-xl bg-dm-surface-mid/85 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
             <span className="text-[14px] font-semibold text-dm-muted">Receipts · 7 days</span>
             <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
               {hasHouseholds ? receiptsRecent : "—"}
+            </span>
+          </li>
+          <li className="dm-card-surface flex min-h-[52px] items-center justify-between gap-4 px-4 py-3.5">
+            <span className="text-[14px] font-semibold text-dm-muted">Groceries</span>
+            <span className="text-[16px] font-semibold text-dm-text">
+              {hasHouseholds ? "Open" : "—"}
             </span>
           </li>
         </ul>

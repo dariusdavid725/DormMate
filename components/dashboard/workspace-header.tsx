@@ -21,15 +21,15 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
   const profileLabel = displayName?.trim() || email;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/92 pt-[env(safe-area-inset-top)] shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
-      <div className="flex h-14 items-center justify-between gap-4 px-4 lg:h-14 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/96 pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(45,41,37,0.08)] backdrop-blur-sm">
+      <div className="flex h-14 items-center justify-between gap-4 px-4 lg:h-16 lg:px-8">
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-xl font-semibold text-dm-text md:text-[1.35rem]"
+            className="inline-flex items-center gap-2.5 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-2.5 py-1.5 text-lg font-semibold text-dm-text md:text-[1.2rem]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
-            <img src="/logo.png" alt="" className="h-7 w-7 rounded-md object-cover" aria-hidden />
+            <img src="/logo.png" alt="" className="h-8 w-8 rounded-lg object-cover" aria-hidden />
             Koti
           </Link>
           <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-text sm:inline-flex">

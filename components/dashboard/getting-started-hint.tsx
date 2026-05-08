@@ -6,27 +6,15 @@ export function GettingStartedHint({
   if (!hasHouseholds) return null;
 
   return (
-    <section
-      aria-labelledby="quick-start-heading"
-      className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-bg/45 px-4 py-3.5 text-[13px] leading-relaxed text-dm-muted"
-    >
-      <h2 id="quick-start-heading" className="mb-2 text-sm font-semibold text-dm-text">
-        Quick guide
-      </h2>
-      <ol className="list-decimal space-y-1.5 pl-5">
-        <li>
-          Pick your home from the bar at the top (phone) or the Homes list in the sidebar
-          (computer).
-        </li>
-        <li>
-          Use <strong className="text-dm-text">Receipts</strong> to photograph a receipt (tap &quot;Split by items&quot; so each person only pays lines they used).
-          Use <strong className="text-dm-text">Money</strong> to split a bill — after Revolut/cash, tap{" "}
-          <strong className="text-dm-text">We settled up</strong> so it stops counting.
-        </li>
-        <li>
-          Tap <strong className="text-dm-text">Join home</strong> in the menu when someone sends you an invite code.
-        </li>
+    <details className="rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-[13px] text-dm-muted">
+      <summary className="cursor-pointer list-none text-sm font-semibold text-dm-text">
+        Need a quick walkthrough?
+      </summary>
+      <ol className="mt-3 list-decimal space-y-1.5 pl-5 leading-relaxed">
+        <li>Pick your home from the top bar (phone) or the sidebar (desktop).</li>
+        <li>Use Receipts for scans, then Money to split and settle bills.</li>
+        <li>Use Join home when a roommate sends an invite code.</li>
       </ol>
-    </section>
+    </details>
   );
 }

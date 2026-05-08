@@ -60,6 +60,7 @@ export default async function DashboardOverviewPage() {
     : `${households.length} homes · switch from the top bar`;
   const primaryHouseholdId = households[0]?.id ?? null;
   const hasHouseholds = households.length > 0;
+  const groceriesLabel = hasHouseholds ? "Open" : "—";
 
   return (
     <>
@@ -78,18 +79,19 @@ export default async function DashboardOverviewPage() {
       />
 
       <div className="hidden lg:block">
-        <div className="cozy-board mx-auto w-full max-w-lg pb-12 lg:max-w-3xl">
-          <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5">
-        <h1 className="font-cozy-display text-[2.65rem] leading-none text-dm-text sm:text-5xl">
-          The Koti board
+        <div className="mx-auto w-full max-w-4xl pb-12">
+          <header className="border-b border-[var(--dm-border-strong)] pb-5">
+        <h1 className="text-[2.2rem] font-semibold leading-tight tracking-tight text-dm-text sm:text-[2.6rem]">
+          Koti board
         </h1>
+        <p className="mt-1 font-cozy-display text-[0.95rem] text-dm-muted">today at home</p>
         {!hasHouseholds ? (
           <p className="mt-2 text-[13px] text-dm-muted">
-            Tape up a household first — then tasks and slips can stick here.
+            Create your first home to unlock chores, money, groceries, and receipts.
           </p>
         ) : (
           <p className="mt-2 text-[13px] text-dm-muted">
-            Your shared wall for today, chores, and what just happened.
+            Today&apos;s chores, money, groceries, and house updates.
           </p>
         )}
           </header>
@@ -103,11 +105,12 @@ export default async function DashboardOverviewPage() {
         </div>
           ) : null}
 
-          <div className="mt-8 space-y-10 rounded-xl border border-[rgba(107,96,84,0.15)] bg-dm-surface-mid/40 p-5 shadow-inner sm:p-6">
+          <div className="mt-6 space-y-7">
             <TodayStrip
           choresDue={openTasks.length}
           owedLabel={owedPreview}
           receiptsRecent={receiptsLast7d}
+          groceriesLabel={groceriesLabel}
           hasHouseholds={hasHouseholds}
             />
 
@@ -115,9 +118,9 @@ export default async function DashboardOverviewPage() {
 
             <DashboardQuickActions />
 
-            <section aria-labelledby="activity-heading">
+            <section aria-labelledby="activity-heading" className="dm-card-surface p-5">
               <div className="mb-3 flex flex-wrap items-end gap-x-3 gap-y-2">
-                <h2 id="activity-heading" className="font-cozy-display text-2xl text-dm-text">
+                <h2 id="activity-heading" className="text-[1.2rem] font-semibold tracking-tight text-dm-text">
                   House activity
                 </h2>
                 <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
@@ -139,11 +142,11 @@ export default async function DashboardOverviewPage() {
           {!hasHouseholds ? (
             <section
               id="create-household"
-              className="cozy-poster cozy-tilt-xs mt-10 scroll-mt-24 border-dashed border-dm-muted/35 p-5 sm:p-6"
+              className="dm-card-surface mt-10 scroll-mt-24 p-5 sm:p-6"
               aria-labelledby="hh-new"
             >
               <div className="mb-3 flex items-center gap-2">
-                <span className="font-cozy-display text-3xl text-dm-text">Create household</span>
+                <span className="text-2xl font-semibold tracking-tight text-dm-text">Create home</span>
                 <span className="cozy-pin shrink-0" aria-hidden />
               </div>
               <p className="text-[13px] text-dm-muted">

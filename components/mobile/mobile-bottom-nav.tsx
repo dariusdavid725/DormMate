@@ -40,7 +40,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Mobile primary"
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--dm-border-strong)] bg-dm-surface/[0.97] px-1 pb-[max(0.55rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_28px_rgba(54,47,40,0.1)] backdrop-blur-md lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--dm-border-strong)] bg-dm-surface/[0.98] px-1 pb-[max(0.55rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_24px_rgba(45,41,37,0.08)] backdrop-blur-md lg:hidden"
     >
       <ul className="mx-auto grid max-w-lg grid-cols-5 gap-x-0.5 gap-y-1 px-1">
         {NAV.map((item) => {
@@ -54,7 +54,7 @@ export function MobileBottomNav() {
                 className={[
                   "touch-manipulation flex min-h-[54px] flex-col items-center justify-center rounded-xl px-0.5 py-1.5 text-center text-[12px] font-semibold leading-[1.15] tracking-tight transition-[transform,colors] active:scale-[0.97]",
                   active
-                    ? "bg-[color-mix(in_srgb,var(--dm-fun)_38%,transparent)] text-[var(--dm-electric-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]"
+                    ? "bg-[color-mix(in_srgb,var(--dm-electric)_15%,#fff)] text-[var(--dm-electric-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]"
                     : "text-dm-muted hover:bg-dm-elevated/85 hover:text-dm-text",
                 ].join(" ")}
               >

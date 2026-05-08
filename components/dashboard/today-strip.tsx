@@ -2,6 +2,7 @@ type Props = {
   choresDue: number;
   owedLabel: string;
   receiptsRecent: number;
+  groceriesLabel: string;
   hasHouseholds: boolean;
 };
 
@@ -9,6 +10,7 @@ export function TodayStrip({
   choresDue,
   owedLabel,
   receiptsRecent,
+  groceriesLabel,
   hasHouseholds,
 }: Props) {
   const cells = [
@@ -27,23 +29,28 @@ export function TodayStrip({
       value: hasHouseholds ? String(receiptsRecent) : "—",
       tilt: "cozy-tilt-xs" as const,
     },
+    {
+      label: "Groceries",
+      value: hasHouseholds ? groceriesLabel : "—",
+      tilt: "cozy-tilt-xs-alt" as const,
+    },
   ];
 
   return (
     <section aria-label="Today summary" className="w-full">
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-cozy-display text-2xl text-dm-text">Today</span>
+        <span className="text-[1.25rem] font-semibold tracking-tight text-dm-text">Today</span>
         <span
           className="h-px flex-1 max-w-[4rem] bg-dm-border-strong"
           aria-hidden
         />
       </div>
-      <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
         {cells.map((c, i) => (
           <div
             key={c.label}
             className={[
-              "cozy-note relative px-3 py-2.5 cozy-drop-in cozy-hover-wiggle pt-5",
+              "dm-card-surface relative px-3 py-2.5 cozy-drop-in pt-5",
               c.tilt,
             ].join(" ")}
             style={{ animationDelay: `${i * 70}ms` }}

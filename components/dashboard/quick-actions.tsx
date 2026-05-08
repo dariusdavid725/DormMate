@@ -4,7 +4,7 @@ export function DashboardQuickActions() {
   return (
     <section aria-label="Quick actions">
       <div className="mb-2 flex items-center gap-2">
-        <span className="font-cozy-display text-2xl text-dm-text">
+        <span className="text-[1.2rem] font-semibold tracking-tight text-dm-text">
           Shortcuts
         </span>
         <span
@@ -12,15 +12,11 @@ export function DashboardQuickActions() {
           aria-hidden
         />
       </div>
-      <p className="mb-3 text-[12px] text-dm-muted">
-        Chores: daily tasks. Money: shared bills. Events live on each home page.
-      </p>
       <div className="flex flex-wrap gap-3">
         <Link
           href="/dashboard/tasks"
           className={[
-            "cozy-note cozy-hover-wiggle cozy-drop-in px-5 py-3 text-sm font-semibold text-dm-text shadow-none",
-            "cozy-tilt-xs inline-block hover:brightness-[1.03]",
+            "dm-card-surface dm-card-interactive cozy-drop-in inline-block px-5 py-3 text-sm font-semibold text-dm-text",
           ].join(" ")}
           style={{ animationDelay: "90ms" }}
         >
@@ -29,20 +25,20 @@ export function DashboardQuickActions() {
         <Link
           href="/dashboard/finances"
           className={[
-            "cozy-receipt cozy-hover-wiggle cozy-drop-in relative inline-flex items-center px-5 py-3 text-sm font-medium text-dm-text",
-            "cozy-tilt-xs-alt hover:brightness-[1.02]",
+            "dm-card-surface dm-card-interactive cozy-drop-in relative inline-flex items-center px-5 py-3 text-sm font-medium text-dm-text",
           ].join(" ")}
           style={{ animationDelay: "140ms" }}
         >
           <span className="relative z-[1]">Money overview</span>
         </Link>
-        <span
-          className="cozy-poster cozy-drop-in cozy-tilt-xs inline-flex px-5 py-3 text-sm font-semibold text-dm-muted cozy-hover-wiggle"
+        <Link
+          href="/dashboard/more"
+          className="dm-card-surface dm-card-interactive cozy-drop-in inline-flex px-5 py-3 text-sm font-semibold text-dm-muted"
           style={{ animationDelay: "190ms" }}
-          title="Choose your household, then open the Events tab"
+          title="Open a home to see events"
         >
-          Events · open your household first
-        </span>
+          Open a home to see events
+        </Link>
         <Link
           href="/dashboard/join"
           className={[

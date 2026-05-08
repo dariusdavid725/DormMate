@@ -24,7 +24,7 @@ export function MobileSection({
     >
       <div className="mb-3 flex flex-wrap items-start justify-between gap-x-2 gap-y-3 max-lg:mb-3.5">
         <div className="min-w-0 flex-1">
-          <h2 className="font-cozy-display text-[1.35rem] leading-[1.2] tracking-tight text-dm-text max-lg:text-[1.45rem] lg:text-2xl">
+          <h2 className="text-[1.2rem] font-semibold leading-[1.2] tracking-tight text-dm-text max-lg:text-[1.28rem] lg:text-[1.45rem]">
             {title}
           </h2>
           {description ?
