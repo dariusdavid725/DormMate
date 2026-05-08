@@ -120,24 +120,24 @@ export default async function FinancesPage() {
               Open balances, who owes whom, receipts, and settlement progress in one place.
             </p>
           </div>
-          <div className="grid min-w-[230px] grid-cols-2 gap-2">
-            <div className="rounded-xl border border-[var(--dm-border)] bg-white/65 px-3 py-2">
+          <div className="grid min-w-0 w-full max-w-[min(100%,22rem)] shrink-0 grid-cols-2 gap-2">
+            <div className="dm-interactive rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Pending bills</p>
-              <p className="text-lg font-semibold text-dm-text">{globalPending}</p>
+              <p className="text-lg font-semibold tabular-nums text-dm-text">{globalPending}</p>
             </div>
-            <div className="rounded-xl border border-[var(--dm-border)] bg-white/65 px-3 py-2">
+            <div className="dm-interactive rounded-xl border border-[var(--dm-border)] bg-white/70 px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Settled</p>
-              <p className="text-lg font-semibold text-dm-text">{globalSettled}</p>
+              <p className="text-lg font-semibold tabular-nums text-dm-text">{globalSettled}</p>
             </div>
-            <div className="rounded-xl border border-[var(--dm-border)] bg-white/65 px-3 py-2">
+            <div className="dm-interactive rounded-xl border border-[color-mix(in_srgb,var(--dm-success)_28%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-success)_7%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.85)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Month spending</p>
-              <p className="text-sm font-semibold text-emerald-700">
+              <p className="break-words text-sm font-semibold leading-snug text-[color-mix(in_srgb,var(--dm-success)_92%,var(--dm-text)_8%)]">
                 {formatMoneySafe(globalMonthSpend, dominantCurrency)}
               </p>
             </div>
-            <div className="rounded-xl border border-[var(--dm-border)] bg-white/65 px-3 py-2">
+            <div className="col-span-2 min-w-0 rounded-xl border border-[color-mix(in_srgb,var(--dm-social)_36%,var(--dm-border-strong))] bg-[color-mix(in_srgb,var(--dm-social)_8%,white)] px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.88)_inset]">
               <p className="text-[11px] uppercase tracking-wide text-dm-muted">Open balance</p>
-              <p className="text-sm font-semibold text-dm-text">
+              <p className="mt-0.5 min-w-0 break-words text-xs font-semibold leading-relaxed text-dm-text">
                 {focusRows.map((r) => r.balanceLabel).join(" · ") || "Even"}
               </p>
             </div>

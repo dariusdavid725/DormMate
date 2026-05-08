@@ -14,26 +14,10 @@ export function TodayStrip({
   hasHouseholds,
 }: Props) {
   const cells = [
-    {
-      label: "Chores",
-      value: hasHouseholds ? String(choresDue) : "—",
-      tilt: "cozy-tilt-xs" as const,
-    },
-    {
-      label: "Balance (open bills)",
-      value: hasHouseholds ? owedLabel : "—",
-      tilt: "cozy-tilt-xs-alt" as const,
-    },
-    {
-      label: "Receipts · 7d",
-      value: hasHouseholds ? String(receiptsRecent) : "—",
-      tilt: "cozy-tilt-xs" as const,
-    },
-    {
-      label: "Groceries",
-      value: hasHouseholds ? groceriesLabel : "—",
-      tilt: "cozy-tilt-xs-alt" as const,
-    },
+    { label: "Chores", value: hasHouseholds ? String(choresDue) : "—" },
+    { label: "Balance (open bills)", value: hasHouseholds ? owedLabel : "—" },
+    { label: "Receipts · 7d", value: hasHouseholds ? String(receiptsRecent) : "—" },
+    { label: "Groceries", value: hasHouseholds ? groceriesLabel : "—" },
   ];
 
   return (
@@ -42,13 +26,23 @@ export function TodayStrip({
         {cells.map((c, i) => (
           <div
             key={c.label}
-            className="dm-hover-lift rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-3 py-2.5 dm-card-enter"
-            style={{ animationDelay: `${i * 40}ms` }}
+            className={[
+              "dm-hover-lift min-w-0 rounded-xl border border-[var(--dm-border)] bg-dm-surface-mid/40 px-3 py-2.5 dm-card-enter",
+              c.label.includes("Balance") ? "border-[color-mix(in_srgb,var(--dm-info)_30%,var(--dm-border))] bg-[color-mix(in_srgb,var(--dm-info)_5%,var(--dm-surface-mid))]" : "",
+            ].join(" ")}
+            style={{ animationDelay: `${i * 45}ms` }}
           >
             <p className="text-[10px] font-semibold uppercase tracking-wide text-dm-muted">
               {c.label}
             </p>
-            <p className="mt-1 font-mono text-lg font-bold tabular-nums text-dm-text">
+            <p
+              className={[
+                "mt-1 min-w-0 font-semibold leading-snug text-dm-text",
+                c.label.includes("Balance") || c.label.includes("Groceries")
+                  ? "break-words text-[0.8125rem] sm:text-sm"
+                  : "font-mono text-base tabular-nums sm:text-lg",
+              ].join(" ")}
+            >
               {c.value}
             </p>
           </div>
