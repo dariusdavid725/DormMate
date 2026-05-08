@@ -168,6 +168,20 @@ export async function loadHouseActivityItems(
       continue;
     }
 
+    if (row.kind === "member_joined_via_invite") {
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Invite accepted",
+        body: `${actorLabel(row.actor_user_id)} joined using an invite link`,
+        href: `/dashboard/household/${row.household_id}?view=members`,
+      });
+      continue;
+    }
+
     if (row.kind === "task_created") {
       items.push({
         kind: "generic_note",
@@ -197,6 +211,68 @@ export async function loadHouseActivityItems(
         label: "Expense logged",
         body: `${title} · ${formatMoney(pl.amount, pl.currency)}`,
         href: `/dashboard/household/${row.household_id}?view=expenses`,
+      });
+      continue;
+    }
+
+    if (row.kind === "grocery_added") {
+      const title =
+        typeof pl.name === "string" ? pl.name : "Grocery item";
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Grocery added",
+        body: `${title} added to the list`,
+        href: `/dashboard/inventory?household=${row.household_id}`,
+      });
+      continue;
+    }
+
+    if (row.kind === "grocery_bought") {
+      const title =
+        typeof pl.name === "string" ? pl.name : "Grocery item";
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Grocery bought",
+        body: `${title} marked bought`,
+        href: `/dashboard/inventory?household=${row.household_id}`,
+      });
+      continue;
+    }
+
+    if (row.kind === "profile_updated") {
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Profile updated",
+        body: `${actorLabel(row.actor_user_id)} updated their profile`,
+        href: "/dashboard/settings",
+      });
+      continue;
+    }
+
+    if (row.kind === "currency_changed") {
+      const cur =
+        typeof pl.currency === "string" ? pl.currency.toUpperCase() : "RON";
+      items.push({
+        kind: "generic_note",
+        id: row.id,
+        at,
+        householdId: row.household_id,
+        householdName,
+        label: "Currency changed",
+        body: `Household currency is now ${cur}`,
+        href: `/dashboard/household/${row.household_id}`,
       });
       continue;
     }

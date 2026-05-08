@@ -4,16 +4,21 @@ import { signOut } from "@/lib/auth/actions";
 
 type Props = {
   email: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
   showAdmin?: boolean;
 };
 
-export function WorkspaceHeader({ email, showAdmin }: Props) {
-  const initials = email
-    ? email
-        .split("@")[0]
-        .slice(0, 2)
-        .toUpperCase()
-    : "?";
+function initialsFromIdentity(email: string, displayName?: string | null) {
+  const base = displayName?.trim() || email.split("@")[0] || "?";
+  return base
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Props) {
+  const initials = initialsFromIdentity(email, displayName);
+  const profileLabel = displayName?.trim() || email;
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/92 pt-[env(safe-area-inset-top)] shadow-[var(--cozy-shadow-paper)] backdrop-blur-sm">
@@ -57,12 +62,21 @@ export function WorkspaceHeader({ email, showAdmin }: Props) {
           >
             {email}
           </span>
-          <div
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[10px] font-bold uppercase text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
-            aria-hidden
-          >
-            {initials}
-          </div>
+          {avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- user avatars from Supabase storage
+            <img
+              src={avatarUrl}
+              alt={profileLabel}
+              className="h-8 w-8 shrink-0 rounded-lg border border-[var(--dm-border-strong)] object-cover shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
+            />
+          ) : (
+            <div
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[10px] font-bold uppercase text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
+              aria-hidden
+            >
+              {initials}
+            </div>
+          )}
           <form action={signOut}>
             <button
               type="submit"

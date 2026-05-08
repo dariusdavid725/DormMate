@@ -10,6 +10,8 @@ import { WorkspaceHeader } from "@/components/dashboard/workspace-header";
 
 type Props = {
   email: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
   showAdmin?: boolean;
   households: HouseholdSummary[];
   listError?: string | null;
@@ -18,6 +20,8 @@ type Props = {
 
 export function DashboardShell({
   email,
+  displayName,
+  avatarUrl,
   showAdmin,
   households,
   listError,
@@ -28,10 +32,17 @@ export function DashboardShell({
   return (
     <div className="flex min-h-screen flex-col">
       <div className="hidden lg:block">
-        <WorkspaceHeader email={email} showAdmin={showAdmin} />
+        <WorkspaceHeader
+          email={email}
+          displayName={displayName}
+          avatarUrl={avatarUrl}
+          showAdmin={showAdmin}
+        />
       </div>
       <MobileTopBar
         email={email}
+        displayName={displayName}
+        avatarUrl={avatarUrl}
         showAdmin={showAdmin}
         households={stripItems}
       />
@@ -47,6 +58,7 @@ export function DashboardShell({
                 <SidebarNavLink href="/dashboard/tasks" title="Tasks" exact />
                 <SidebarNavLink href="/dashboard/finances" title="Expenses" exact />
                 <SidebarNavLink href="/dashboard/inventory" title="Groceries" exact />
+                <SidebarNavLink href="/dashboard/more" title="More" exact />
                 <SidebarNavLink href="/dashboard/join" title="Join household" exact />
                 <SidebarNavLink href="/dashboard/settings" title="Account" exact />
                 {showAdmin ? (

@@ -1729,3 +1729,343 @@ alter table public.household_expense_splits
 
 alter table public.household_expense_splits
   alter column weight set not null;
+
+-------------------------------------------------------------------------------
+-- v3 additions: household currency + groceries + invite/profile/currency activity
+-------------------------------------------------------------------------------
+
+alter table public.households
+  add column if not exists currency text not null default 'RON';
+
+update public.households
+set currency = upper(coalesce(nullif(trim(currency), ''), 'RON'));
+
+alter table public.households
+  drop constraint if exists households_currency_check;
+
+alter table public.households
+  add constraint households_currency_check check (
+    currency in ('RON', 'EUR', 'USD', 'GBP', 'HUF', 'PLN')
+  );
+
+create table if not exists public.household_groceries (
+  id uuid primary key default gen_random_uuid (),
+  household_id uuid not null references public.households (id) on delete cascade,
+  name text not null check (length(trim(name)) between 1 and 140),
+  quantity text not null default '1' check (length(trim(quantity)) between 1 and 40),
+  category text not null default 'General' check (length(trim(category)) between 1 and 40),
+  priority text not null default 'medium' check (priority in ('low', 'medium', 'high')),
+  assigned_to uuid references auth.users (id) on delete set null,
+  notes text,
+  bought boolean not null default false,
+  bought_at timestamptz,
+  bought_by uuid references auth.users (id) on delete set null,
+  created_by uuid not null references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now ()
+);
+
+create index if not exists household_groceries_household_idx
+  on public.household_groceries (household_id, bought, created_at desc);
+
+alter table public.household_groceries enable row level security;
+
+drop policy if exists groceries_select_visible on public.household_groceries;
+create policy groceries_select_visible on public.household_groceries
+for select to authenticated using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
+);
+
+drop policy if exists groceries_insert_member on public.household_groceries;
+create policy groceries_insert_member on public.household_groceries
+for insert to authenticated
+with check (
+  created_by = (select auth.uid ())
+  and public.user_can_see_household (household_id, (select auth.uid ()))
+);
+
+drop policy if exists groceries_update_member on public.household_groceries;
+create policy groceries_update_member on public.household_groceries
+for update to authenticated using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+)
+with check (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+);
+
+grant select, insert, update on public.household_groceries to authenticated;
+
+create or replace function public.set_household_currency (
+  p_household_id uuid,
+  p_currency text
+)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  uid uuid := auth.uid ();
+  cleaned text := upper(trim(coalesce(p_currency, 'RON')));
+begin
+  if uid is null then
+    raise exception 'not authenticated' using errcode = '42501';
+  end if;
+
+  if cleaned not in ('RON', 'EUR', 'USD', 'GBP', 'HUF', 'PLN') then
+    raise exception 'invalid currency' using errcode = '22023';
+  end if;
+
+  if not public.household_member_can_manage (p_household_id, uid) then
+    raise exception 'not allowed' using errcode = '42501';
+  end if;
+
+  update public.households
+    set currency = cleaned
+  where id = p_household_id;
+end;
+$$;
+
+revoke all on function public.set_household_currency (uuid, text) from public;
+grant execute on function public.set_household_currency (uuid, text) to authenticated;
+
+drop function if exists public.join_household_by_invite_code (text);
+create or replace function public.join_household_by_invite_code (p_code text)
+returns table (
+  household_id uuid,
+  household_name text,
+  joined boolean
+)
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  hid uuid;
+  uid uuid;
+  cleaned text;
+  inserted int := 0;
+begin
+  uid := auth.uid ();
+  cleaned := upper(trim (both from coalesce (p_code, '')));
+
+  if uid is null then
+    raise exception 'not authenticated' using errcode = '42501';
+  end if;
+
+  if length (cleaned) < 4 then
+    raise exception 'invalid invite code' using errcode = '22023';
+  end if;
+
+  select h.id
+    into hid
+    from public.households h
+   where h.invite_code = cleaned;
+
+  if hid is null then
+    raise exception 'invalid invite code' using errcode = '42501';
+  end if;
+
+  insert into public.household_members (household_id, user_id, role)
+  values (hid, uid, 'member')
+  on conflict (household_id, user_id) do nothing;
+
+  get diagnostics inserted = row_count;
+  joined := inserted > 0;
+
+  if joined then
+    insert into public.household_activities (
+      household_id,
+      kind,
+      actor_user_id,
+      subject_id,
+      payload
+    )
+    values (
+      hid,
+      'member_joined_via_invite',
+      uid,
+      uid,
+      jsonb_build_object('method', 'invite_code')
+    );
+  end if;
+
+  select h.name
+    into household_name
+    from public.households h
+   where h.id = hid;
+
+  household_id := hid;
+  return next;
+end;
+$$;
+
+revoke all on function public.join_household_by_invite_code (text) from public;
+grant execute on function public.join_household_by_invite_code (text) to authenticated;
+
+create or replace function public.log_profile_updated_activity (
+  p_user_id uuid,
+  p_payload jsonb default '{}'::jsonb
+)
+returns void
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+begin
+  if p_user_id is null then
+    return;
+  end if;
+
+  insert into public.household_activities (
+    household_id,
+    kind,
+    actor_user_id,
+    subject_id,
+    payload
+  )
+  select
+    hm.household_id,
+    'profile_updated',
+    p_user_id,
+    p_user_id,
+    coalesce(p_payload, '{}'::jsonb)
+  from public.household_members hm
+  where hm.user_id = p_user_id;
+end;
+$$;
+
+revoke all on function public.log_profile_updated_activity (uuid, jsonb) from public;
+grant execute on function public.log_profile_updated_activity (uuid, jsonb) to authenticated;
+
+create or replace function public.log_activity_grocery_added ()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.household_activities (
+    household_id,
+    kind,
+    actor_user_id,
+    subject_id,
+    payload
+  )
+  values (
+    new.household_id,
+    'grocery_added',
+    new.created_by,
+    new.id,
+    jsonb_build_object(
+      'name', new.name,
+      'quantity', new.quantity,
+      'category', new.category,
+      'priority', new.priority
+    )
+  );
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_grocery_added_activity on public.household_groceries;
+create trigger trg_grocery_added_activity
+  after insert on public.household_groceries
+  for each row
+execute procedure public.log_activity_grocery_added ();
+
+create or replace function public.log_activity_grocery_bought ()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.bought = true and old.bought is distinct from true then
+    insert into public.household_activities (
+      household_id,
+      kind,
+      actor_user_id,
+      subject_id,
+      payload
+    )
+    values (
+      new.household_id,
+      'grocery_bought',
+      coalesce(new.bought_by, auth.uid ()),
+      new.id,
+      jsonb_build_object(
+        'name', new.name,
+        'quantity', new.quantity,
+        'category', new.category
+      )
+    );
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_grocery_bought_activity on public.household_groceries;
+create trigger trg_grocery_bought_activity
+  after update on public.household_groceries
+  for each row
+execute procedure public.log_activity_grocery_bought ();
+
+create or replace function public.log_activity_currency_changed ()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if old.currency is distinct from new.currency then
+    insert into public.household_activities (
+      household_id,
+      kind,
+      actor_user_id,
+      subject_id,
+      payload
+    )
+    values (
+      new.id,
+      'currency_changed',
+      auth.uid (),
+      new.id,
+      jsonb_build_object('currency', new.currency)
+    );
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_currency_changed_activity on public.households;
+create trigger trg_currency_changed_activity
+  after update on public.households
+  for each row
+execute procedure public.log_activity_currency_changed ();
+
+-- Backward-safe receipts access/shape hardening for older databases
+alter table public.receipts
+  add column if not exists source_filename text;
+
+alter table public.receipts
+  add column if not exists extraction jsonb not null default '{}'::jsonb;
+
+alter table public.receipts enable row level security;
+drop policy if exists receipts_select_visible on public.receipts;
+create policy receipts_select_visible on public.receipts
+for select to authenticated using (
+  public.user_can_see_household (household_id, (select auth.uid ()))
+  or public.is_platform_super_admin ()
+);
+drop policy if exists receipts_insert_member on public.receipts;
+create policy receipts_insert_member on public.receipts
+for insert to authenticated
+with check (
+  created_by = (select auth.uid ())
+  and public.user_can_see_household (household_id, (select auth.uid ()))
+);
+grant select, insert on public.receipts to authenticated;

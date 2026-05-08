@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export type HouseholdSummary = {
   id: string;
   name: string;
+  currency: string;
   role: string;
   joinedAt: string;
 };
@@ -12,6 +13,7 @@ export type HouseholdSummary = {
 export type HouseholdDetail = {
   id: string;
   name: string;
+  currency: string;
   createdBy: string;
   createdAt: string;
   /** Present for owner/admin only (invite link). */
@@ -53,7 +55,7 @@ export const loadHouseholdSummaries = cache(async (userId: string) => {
   const ids = [...new Set(membershipRows.map((m) => m.household_id))];
   const { data: hhRaw, error: hhErr } = await supabase
     .from("households")
-    .select("id, name, created_at")
+    .select("id, name, currency, created_at")
     .in("id", ids);
 
   if (hhErr || !hhRaw) {
@@ -72,6 +74,7 @@ export const loadHouseholdSummaries = cache(async (userId: string) => {
           {
             id: h.id,
             name: h.name,
+            currency: (h.currency ?? "RON").toUpperCase().slice(0, 8),
             role: m.role,
             joinedAt: m.joined_at,
           } satisfies HouseholdSummary,
@@ -90,7 +93,7 @@ export async function loadHouseholdDetail(
 
   const { data: hh, error: hhErr } = await supabase
     .from("households")
-    .select("id, name, created_by, created_at, invite_code")
+    .select("id, name, currency, created_by, created_at, invite_code")
     .eq("id", householdId)
     .maybeSingle();
 
@@ -105,6 +108,7 @@ export async function loadHouseholdDetail(
     id: string;
     name: string;
     created_by: string;
+    currency: string | null;
     created_at: string;
     invite_code: string | null;
   };
@@ -126,6 +130,7 @@ export async function loadHouseholdDetail(
   const typed: HouseholdDetail = {
     id: row.id,
     name: row.name,
+    currency: (row.currency ?? "RON").toUpperCase().slice(0, 8),
     createdBy: row.created_by,
     createdAt: row.created_at,
     inviteCode: canManage ? row.invite_code : null,

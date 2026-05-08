@@ -14,6 +14,20 @@ function shortNameFromEmail(email: string | undefined | null) {
   return local || "Member";
 }
 
+async function logProfileUpdatedActivity(
+  userId: string,
+  payload: Record<string, unknown>,
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("log_profile_updated_activity", {
+    p_user_id: userId,
+    p_payload: payload,
+  });
+  if (error?.message) {
+    console.error("[profiles] activity log", error.message);
+  }
+}
+
 export async function updateProfileDisplayName(
   formData: FormData,
 ): Promise<void> {
@@ -50,6 +64,10 @@ export async function updateProfileDisplayName(
     revalidatePath(`/dashboard/household/${householdId}`);
   }
   revalidatePath("/dashboard");
+  await logProfileUpdatedActivity(user.id, {
+    source: "household_members",
+    display_name: displayName,
+  });
 }
 
 export async function uploadProfileAvatar(formData: FormData): Promise<void> {
@@ -146,6 +164,10 @@ export async function uploadProfileAvatar(formData: FormData): Promise<void> {
   }
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/settings");
+  await logProfileUpdatedActivity(user.id, {
+    source: "avatar_upload",
+    avatar_changed: true,
+  });
 }
 
 export type ProfileDetailsState = {
@@ -225,5 +247,11 @@ export async function updateProfileDetails(
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/settings");
+  await logProfileUpdatedActivity(user.id, {
+    source: "settings",
+    display_name: displayName || shortNameFromEmail(user.email),
+    pronouns: pronouns || null,
+    gender_identity: genderIdentity || null,
+  });
   return { ok: true };
 }

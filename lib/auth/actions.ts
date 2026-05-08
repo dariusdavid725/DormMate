@@ -54,6 +54,7 @@ export async function signUp(
     .toLowerCase();
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
+  const next = safeNextPath(formData.get("next"));
 
   if (!email || !password) {
     return { error: "Enter your email and password." };
@@ -74,7 +75,7 @@ export async function signUp(
     email,
     password,
     options: {
-      emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
+      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 
@@ -92,7 +93,7 @@ export async function signUp(
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect(next);
 }
 
 export async function signOut(): Promise<void> {

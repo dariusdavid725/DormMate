@@ -9,7 +9,16 @@ export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default function SignupPage() {
+type Props = {
+  searchParams: Promise<{ next?: string }>;
+};
+
+export default async function SignupPage({ searchParams }: Props) {
+  const q = await searchParams;
+  const nextHref =
+    typeof q.next === "string" && q.next.startsWith("/") && !q.next.startsWith("//")
+      ? q.next
+      : "/dashboard";
   return (
     <>
       <div className="mb-7 text-center">
@@ -24,11 +33,11 @@ export default function SignupPage() {
         </p>
       </div>
       <div className="cozy-note cozy-drop-in dm-fade-in-up p-8 shadow-[var(--cozy-shadow-note)] lg:p-10">
-        <SignupForm />
+        <SignupForm nextHref={nextHref} />
       </div>
       <p className="mt-7 text-center text-sm text-dm-muted">
         <Link
-          href="/login"
+          href={`/login?next=${encodeURIComponent(nextHref)}`}
           className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
         >
           Already rolling with us? Log in

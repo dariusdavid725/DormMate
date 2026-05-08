@@ -9,20 +9,29 @@ type HouseholdOption = { id: string; name: string };
 
 type Props = {
   email: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
   showAdmin?: boolean;
   households: HouseholdOption[];
 };
 
-export function MobileTopBar({ email, showAdmin, households }: Props) {
+function initialsFromIdentity(email: string, displayName?: string | null) {
+  const base = displayName?.trim() || email.split("@")[0] || "?";
+  return base.slice(0, 2).toUpperCase();
+}
+
+export function MobileTopBar({
+  email,
+  displayName,
+  avatarUrl,
+  showAdmin,
+  households,
+}: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const initials = email
-    ? email
-        .split("@")[0]
-        .slice(0, 2)
-        .toUpperCase()
-    : "?";
+  const initials = initialsFromIdentity(email, displayName);
+  const profileLabel = displayName?.trim() || email;
 
   const current =
     households.find((h) => {
@@ -68,9 +77,18 @@ export function MobileTopBar({ email, showAdmin, households }: Props) {
 
         <details className="relative shrink-0">
           <summary className="touch-manipulation list-none [&::-webkit-details-marker]:hidden">
-            <span className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[11px] font-bold uppercase tracking-wide text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]">
-              {initials}
-            </span>
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- user avatars from Supabase storage
+              <img
+                src={avatarUrl}
+                alt={profileLabel}
+                className="h-11 w-11 rounded-xl border border-[var(--dm-border-strong)] object-cover shadow-[1px_2px_0_rgba(54,47,40,0.06)]"
+              />
+            ) : (
+              <span className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface-mid text-[11px] font-bold uppercase tracking-wide text-dm-text shadow-[1px_2px_0_rgba(54,47,40,0.06)]">
+                {initials}
+              </span>
+            )}
             <span className="sr-only">Account menu</span>
           </summary>
           <div

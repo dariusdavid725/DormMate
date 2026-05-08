@@ -8,7 +8,7 @@ import { signUp } from "@/lib/auth/actions";
 
 const initialState: AuthFormState = {};
 
-export function SignupForm() {
+export function SignupForm({ nextHref }: { nextHref: string }) {
   const [state, formAction, pending] = useActionState(signUp, initialState);
 
   if (state?.ok === true && state.message) {
@@ -21,7 +21,7 @@ export function SignupForm() {
         <p className="mt-2 leading-relaxed text-dm-muted">{state.message}</p>
         <p className="mt-5">
           <Link
-            href="/login"
+            href={`/login?next=${encodeURIComponent(nextHref)}`}
             className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
           >
             Continue to login →
@@ -33,6 +33,7 @@ export function SignupForm() {
 
   return (
     <form action={formAction} className="flex flex-col gap-5">
+      <input type="hidden" name="next" value={nextHref} readOnly />
       {state?.error && (
         <div
           role="alert"
@@ -95,7 +96,7 @@ export function SignupForm() {
       <p className="text-center text-sm text-dm-muted">
         Already initiated?{" "}
         <Link
-          href="/login"
+          href={`/login?next=${encodeURIComponent(nextHref)}`}
           className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
         >
           Log in

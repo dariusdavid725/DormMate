@@ -70,6 +70,16 @@ async function createExpenseFromReceiptCore(
     return;
   }
 
+  const { data: householdRow } = await supabase
+    .from("households")
+    .select("currency")
+    .eq("id", householdId)
+    .maybeSingle();
+  const householdCurrency =
+    ((householdRow as { currency?: string | null } | null)?.currency ?? "RON")
+      .toUpperCase()
+      .slice(0, 8);
+
   const { data: members, error: memErr } = await supabase
     .from("household_members")
     .select("user_id")
@@ -127,7 +137,7 @@ async function createExpenseFromReceiptCore(
         shopping_category: receiptRow.shopping_category,
       }),
       p_amount: total,
-      p_currency: (receiptRow.currency || "EUR").slice(0, 8),
+      p_currency: householdCurrency,
       p_expense_date: expenseDate,
       p_paid_by_user_id: paidBy,
       p_split_user_ids: selectedIds,
@@ -194,13 +204,23 @@ export async function createManualExpense(
   const date =
     expenseDate.match(/^\d{4}-\d{2}-\d{2}$/) ? expenseDate : undefined;
 
+  const { data: householdRow } = await supabase
+    .from("households")
+    .select("currency")
+    .eq("id", householdId)
+    .maybeSingle();
+  const householdCurrency =
+    ((householdRow as { currency?: string | null } | null)?.currency ?? "RON")
+      .toUpperCase()
+      .slice(0, 8);
+
   const { data: expenseId, error: rpcErr } = await supabase.rpc(
     "create_household_expense_with_splits",
     {
       p_household_id: householdId,
       p_title: title,
       p_amount: amount,
-      p_currency: currency.slice(0, 8),
+      p_currency: (currency || householdCurrency).toUpperCase().slice(0, 8),
       p_expense_date: date ?? null,
       p_paid_by_user_id: paidBy,
       p_split_user_ids: splitClean,
@@ -348,6 +368,16 @@ export async function createExpenseFromReceiptLineSplits(
   const total = Number(row.total_amount);
   if (!Number.isFinite(total) || total <= 0) return;
 
+  const { data: householdRow } = await supabase
+    .from("households")
+    .select("currency")
+    .eq("id", householdId)
+    .maybeSingle();
+  const householdCurrency =
+    ((householdRow as { currency?: string | null } | null)?.currency ?? "RON")
+      .toUpperCase()
+      .slice(0, 8);
+
   const { data: members, error: memErr } = await supabase
     .from("household_members")
     .select("user_id")
@@ -399,7 +429,7 @@ export async function createExpenseFromReceiptLineSplits(
       p_household_id: householdId,
       p_title: receiptExpenseTitle(row),
       p_amount: total,
-      p_currency: (row.currency || "EUR").slice(0, 8),
+      p_currency: householdCurrency,
       p_expense_date: expenseDate,
       p_paid_by_user_id: paidBy,
       p_split_user_ids: userIds,

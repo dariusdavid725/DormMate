@@ -131,33 +131,116 @@ export async function updateHouseholdName(
 }
 
 export type InviteActionState = { error?: string; ok?: boolean; code?: string };
+export type JoinInviteResult = {
+  householdId: string;
+  householdName: string;
+  joined: boolean;
+};
+
+type JoinRpcRow = {
+  household_id: string;
+  household_name: string;
+  joined: boolean;
+};
+
+export async function joinHouseholdByInviteCodeCore(
+  rawCode: string,
+): Promise<{ ok: true; result: JoinInviteResult } | { ok: false; error: string }> {
+  const code = rawCode.trim();
+  if (code.length < 4) {
+    return { ok: false, error: "Paste a valid invite code." };
+  }
+
+  const supabase = await createClient();
+  const { data: rows, error: rpcErr } = await supabase.rpc(
+    "join_household_by_invite_code",
+    { p_code: code },
+  );
+
+  if (rpcErr?.message || !Array.isArray(rows) || rows.length < 1) {
+    const msg = (rpcErr?.message ?? "").toLowerCase();
+    if (msg.includes("invalid invite")) {
+      return { ok: false, error: "Invalid or expired invite code." };
+    }
+    if (!shouldExposeSupabaseError()) {
+      return { ok: false, error: PUBLIC_TRY_AGAIN };
+    }
+    return { ok: false, error: rpcErr?.message ?? "Could not join." };
+  }
+
+  const row = rows[0] as JoinRpcRow;
+  return {
+    ok: true,
+    result: {
+      householdId: row.household_id,
+      householdName: row.household_name,
+      joined: row.joined === true,
+    },
+  };
+}
 
 export async function joinHouseholdByInviteCode(
   _prev: InviteActionState | void,
   formData: FormData,
 ): Promise<InviteActionState | void> {
-  const code = String(formData.get("code") ?? "").trim();
-  if (code.length < 4) {
-    return { error: "Paste a valid invite code." };
+  const code = String(formData.get("code") ?? "");
+  const joined = await joinHouseholdByInviteCodeCore(code);
+  if (!joined.ok) {
+    return { error: joined.error };
+  }
+  const { householdId, householdName, joined: isNewMember } = joined.result;
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/household/${householdId}`);
+  const welcome = encodeURIComponent(`Welcome to ${householdName}!`);
+  redirect(
+    `/dashboard/household/${householdId}?welcome=${welcome}&joined=${isNewMember ? "1" : "0"}`,
+  );
+}
+
+export type HouseholdCurrencyState = { error?: string; ok?: boolean };
+
+const ALLOWED_HOUSEHOLD_CURRENCY = new Set([
+  "RON",
+  "EUR",
+  "USD",
+  "GBP",
+  "HUF",
+  "PLN",
+]);
+
+export async function updateHouseholdCurrency(
+  _prev: HouseholdCurrencyState | void,
+  formData: FormData,
+): Promise<HouseholdCurrencyState | void> {
+  const householdId = String(formData.get("household_id") ?? "").trim();
+  const currency = String(formData.get("currency") ?? "RON")
+    .trim()
+    .toUpperCase();
+
+  if (!householdId) {
+    return { error: "Missing household." };
+  }
+  if (!ALLOWED_HOUSEHOLD_CURRENCY.has(currency)) {
+    return { error: "Choose a supported currency." };
   }
 
   const supabase = await createClient();
-  const { data: hid, error: rpcErr } = await supabase.rpc(
-    "join_household_by_invite_code",
-    { p_code: code },
-  );
+  const { error } = await supabase.rpc("set_household_currency", {
+    p_household_id: householdId,
+    p_currency: currency,
+  });
 
-  if (rpcErr?.message || !hid) {
+  if (error?.message) {
     if (!shouldExposeSupabaseError()) {
       return { error: PUBLIC_TRY_AGAIN };
     }
-    return { error: rpcErr?.message ?? "Could not join." };
+    return { error: error.message };
   }
 
-  const hh = String(hid);
   revalidatePath("/dashboard");
-  revalidatePath(`/dashboard/household/${hh}`);
-  redirect(`/dashboard/household/${hh}`);
+  revalidatePath("/dashboard/finances");
+  revalidatePath(`/dashboard/household/${householdId}`);
+  return { ok: true };
 }
 
 export async function regenerateInviteFormAction(

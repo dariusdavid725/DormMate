@@ -67,7 +67,7 @@ export function LoginForm({ nextHref, urlError }: Props) {
       <p className="text-center text-sm text-dm-muted">
         Fresh on campus?{" "}
         <Link
-          href="/signup"
+          href={`/signup?next=${encodeURIComponent(nextHref)}`}
           className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
         >
           Spawn an account

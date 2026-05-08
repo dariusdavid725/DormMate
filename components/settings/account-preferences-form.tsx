@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useRef } from "react";
 
@@ -43,10 +43,38 @@ export function AccountPreferencesForm({
   const galleryRef = useRef<HTMLInputElement>(null);
   const mobileGalleryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [hasPendingAvatar, setHasPendingAvatar] = useState(false);
   const [state, formAction] = useActionState<ProfileDetailsState, FormData>(
     updateProfileDetails,
     {},
   );
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  function onAvatarChange(file: File | null | undefined) {
+    if (!file) return;
+    setHasPendingAvatar(true);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  }
+
+  function clearAvatarSelection() {
+    setHasPendingAvatar(false);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    if (galleryRef.current) galleryRef.current.value = "";
+    if (mobileGalleryRef.current) mobileGalleryRef.current.value = "";
+    if (cameraRef.current) cameraRef.current.value = "";
+  }
 
   return (
     <div className="space-y-8">
@@ -149,6 +177,18 @@ export function AccountPreferencesForm({
         <p className="block text-xs font-semibold uppercase tracking-wide text-dm-muted">
           Avatar photo
         </p>
+        {previewUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- local object URL preview
+          <img
+            src={previewUrl}
+            alt="Avatar preview"
+            className="h-20 w-20 rounded-2xl border border-[var(--dm-border-strong)] object-cover"
+          />
+        ) : (
+          <p className="text-xs text-dm-muted">
+            Select a photo to preview. It will upload only after you confirm Save avatar.
+          </p>
+        )}
         <div className="sm:hidden flex flex-wrap gap-2">
           <button
             type="button"
@@ -171,6 +211,7 @@ export function AccountPreferencesForm({
           name="avatar"
           accept="image/*"
           className="sr-only sm:hidden"
+          onChange={(e) => onAvatarChange(e.target.files?.[0])}
         />
         <label className="hidden sm:block text-xs font-semibold uppercase tracking-wide text-dm-muted">
           Upload from computer
@@ -180,6 +221,7 @@ export function AccountPreferencesForm({
             name="avatar"
             accept="image/*"
             className="mt-2 block w-full max-w-xs text-xs text-dm-muted file:mr-3 file:rounded-lg file:border file:border-[var(--dm-border-strong)] file:bg-dm-bg file:px-3 file:py-2 file:text-sm file:font-medium file:text-dm-text"
+            onChange={(e) => onAvatarChange(e.target.files?.[0])}
           />
         </label>
         <input
@@ -189,13 +231,24 @@ export function AccountPreferencesForm({
           accept="image/*"
           capture="environment"
           className="sr-only"
+          onChange={(e) => onAvatarChange(e.target.files?.[0])}
         />
-        <button
-          type="submit"
-          className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-semibold text-dm-text"
-        >
-          <Submit idle="Save avatar" />
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="submit"
+            disabled={!hasPendingAvatar}
+            className="rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-semibold text-dm-text disabled:opacity-50"
+          >
+            <Submit idle="Save avatar" />
+          </button>
+          <button
+            type="button"
+            onClick={clearAvatarSelection}
+            className="rounded-md px-3 py-2 text-xs font-semibold text-dm-muted hover:text-dm-text"
+          >
+            Clear
+          </button>
+        </div>
       </form>
     </div>
   );

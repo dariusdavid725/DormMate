@@ -37,7 +37,7 @@ export async function loadUserCrossHouseholdNetLabel(
     for (const sec of sections) {
       const mine = sec.balances.find((b) => b.userId === userId);
       if (!mine) continue;
-      const cur = sec.currency.toUpperCase();
+      const cur = (h.currency || sec.currency || "RON").toUpperCase();
       netsByCurrency.set(cur, (netsByCurrency.get(cur) ?? 0) + mine.netAmount);
     }
   }

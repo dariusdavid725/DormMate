@@ -42,10 +42,8 @@ export default async function FinancesPage() {
       for (const sec of sections) {
         const mine = sec.balances.find((b) => b.userId === user.id);
         if (!mine) continue;
-        nets.set(
-          sec.currency.toUpperCase(),
-          (nets.get(sec.currency.toUpperCase()) ?? 0) + mine.netAmount,
-        );
+        const cur = (h.currency || sec.currency || "RON").toUpperCase();
+        nets.set(cur, (nets.get(cur) ?? 0) + mine.netAmount);
       }
       const parts = [...nets.entries()]
         .filter(([, n]) => Math.abs(n) >= 0.005)
@@ -72,8 +70,8 @@ export default async function FinancesPage() {
           Expenses overview
         </h1>
         <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
-          Your share of open bills only (same math as each household’s Money tab). Use the real
-          currency saved on each expense — Ron receipts stay in RON.
+          Your share of open bills only (same math as each household&apos;s Money tab), using each
+          household&apos;s selected currency.
         </p>
       </header>
 

@@ -43,6 +43,16 @@ export async function saveReceiptFromScan(
     return { error: "Not signed in." };
   }
 
+  const { data: householdRow } = await supabase
+    .from("households")
+    .select("currency")
+    .eq("id", householdId)
+    .maybeSingle();
+  const householdCurrency =
+    ((householdRow as { currency?: string | null } | null)?.currency ?? "RON")
+      .toUpperCase()
+      .slice(0, 8);
+
   let purchasedAt: string | null = null;
   if (extraction.purchased_at) {
     const d = new Date(extraction.purchased_at);
@@ -58,7 +68,7 @@ export async function saveReceiptFromScan(
     created_by: user.id,
     merchant: extraction.merchant,
     total_amount: extraction.total,
-    currency: extraction.currency || "EUR",
+    currency: householdCurrency,
     purchased_at: purchasedAt,
     source_filename: filename,
     shopping_category: cat,

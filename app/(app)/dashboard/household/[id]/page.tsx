@@ -10,6 +10,7 @@ import { ManualExpenseForm } from "@/components/expenses/manual-expense-form";
 import { HouseholdExpenseList } from "@/components/expenses/household-expense-list";
 import { HouseholdNetBalances } from "@/components/expenses/household-net-balances";
 import { HouseholdMembersPanel } from "@/components/household/household-members-panel";
+import { HouseholdCurrencyForm } from "@/components/household/household-currency-form";
 import { ReceiptList } from "@/components/receipts/receipt-list";
 import { ReceiptScannerPanel } from "@/components/receipts/receipt-scanner-panel";
 import { CreateHouseholdTaskForm } from "@/components/tasks/create-household-task-form";
@@ -58,7 +59,7 @@ function labelMember(m: HouseholdMemberRow): string {
 
 type PageProps = {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{ view?: string }>;
+  searchParams?: Promise<{ view?: string; welcome?: string; joined?: string }>;
 };
 
 export async function generateMetadata({
@@ -94,6 +95,10 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const resolvedSearch =
     props.searchParams != null ? await props.searchParams : {};
   const rawView = resolvedSearch.view;
+  const welcomeMessage =
+    typeof resolvedSearch.welcome === "string" ? resolvedSearch.welcome : null;
+  const joinedFlag =
+    typeof resolvedSearch.joined === "string" ? resolvedSearch.joined : null;
   const view: View =
     rawView === "members"
       ? "members"
@@ -256,6 +261,16 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </div>
       </div>
 
+      {welcomeMessage ? (
+        <div
+          role="status"
+          className="mt-5 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm text-dm-text"
+        >
+          {welcomeMessage}
+          {joinedFlag === "0" ? " You were already a member." : null}
+        </div>
+      ) : null}
+
       {view === "overview" ? (
         <>
           <div className="mt-8 grid gap-3 max-lg:gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -292,6 +307,12 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 initialName={household.name}
               />
             : null}
+            {memberRole === "owner" || memberRole === "admin" ? (
+              <HouseholdCurrencyForm
+                householdId={household.id}
+                currentCurrency={household.currency}
+              />
+            ) : null}
           </section>
         </>
       ) : view === "tasks" ? (
@@ -407,7 +428,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </p>
             {receiptsPayload?.error ?
               <p className="mt-4 text-sm font-medium text-dm-danger">
-                Couldn&apos;t load receipts · check the receipts table migration.
+                Couldn&apos;t load receipts. Run latest `supabase/schema.sql` and refresh.
               </p>
             : (
               <div className="mt-6">
@@ -435,7 +456,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 <h2 className="font-cozy-display text-3xl text-dm-text">Split costs</h2>
                 <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
                   Add a shared bill here, or turn a scanned receipt into a split from the Receipts tab.
-                  Currency comes from each bill (check Romanian receipts show RON before saving).
+                  Currency follows this household&apos;s setting.
                 </p>
                 {membersList.length === 0 ?
                   <p className="mt-4 text-[13px] text-dm-danger">
@@ -445,6 +466,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
                   <ManualExpenseForm
                     householdId={id}
                     currentUserId={user.id}
+                    defaultCurrency={household.currency}
                     members={membersList.map((m) => ({
                       userId: m.userId,
                       label: labelMember(m),

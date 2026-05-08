@@ -22,10 +22,12 @@ export function ManualExpenseForm({
   householdId,
   members,
   currentUserId,
+  defaultCurrency,
 }: {
   householdId: string;
   members: MemberChip[];
   currentUserId: string;
+  defaultCurrency: string;
 }) {
   const sorted = [...members].sort((a, b) => a.label.localeCompare(b.label));
 
@@ -83,7 +85,7 @@ export function ManualExpenseForm({
           <input
             type="text"
             name="currency"
-            defaultValue="EUR"
+            defaultValue={defaultCurrency}
             maxLength={8}
             className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 text-sm uppercase outline-none focus:border-dm-electric"
           />

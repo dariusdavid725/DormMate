@@ -41,7 +41,7 @@ export default async function LoginPage({ searchParams }: Props) {
       <p className="mt-7 text-center text-sm text-dm-muted">
         New roommate energy?{" "}
         <Link
-          href="/signup"
+          href={`/signup?next=${encodeURIComponent(nextHref)}`}
           className="font-bold text-dm-electric underline decoration-dm-electric/35 underline-offset-2 hover:text-dm-text hover:decoration-dm-text/40"
         >
           Spawn an account
