@@ -1,6 +1,7 @@
-/** Shared avatar MIME detection (browser + server). JPEG / PNG / WebP only. */
+/** Server-side avatar MIME sniff (JPEG / PNG / WebP only — client normalizes uploads). */
 
-export const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+/** Max size accepted by the upload API (after client-side compression). */
+export const AVATAR_UPLOAD_MAX_BYTES = 6 * 1024 * 1024;
 
 export type AvatarMime = "image/jpeg" | "image/png" | "image/webp";
 
@@ -55,7 +56,7 @@ export function normalizeDeclaredMime(declared: string | undefined): AvatarMime 
   return null;
 }
 
-/** Prefer magic-byte sniff when possible; fallback to declared type (fixes empty mobile MIME). */
+/** Prefer magic-byte sniff when possible; fallback to declared type. */
 export async function resolveAvatarMime(file: File | Blob): Promise<AvatarMime | null> {
   const sniffed = await sniffAvatarMime(file);
   if (sniffed) return sniffed;

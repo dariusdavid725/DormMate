@@ -7,7 +7,7 @@ import {
   PUBLIC_TRY_AGAIN,
 } from "@/lib/errors/public";
 import {
-  AVATAR_MAX_BYTES,
+  AVATAR_UPLOAD_MAX_BYTES,
   contentTypeForUpload,
   extForMime,
   resolveAvatarMime,
@@ -95,7 +95,7 @@ function friendlyAvatarStorageError(raw: string | undefined): string {
     return "Couldn't upload avatar. Please try a smaller image.";
   }
   if (/mime|invalid|unsupported|not an allowed|wrong type/i.test(low)) {
-    return "This file type is not supported.";
+    return "This file type is not supported. Please choose a photo.";
   }
   return "Couldn't upload avatar. Please try again.";
 }
@@ -116,16 +116,18 @@ export async function uploadProfileAvatar(
       return { error: "No image selected." };
     }
 
-    if (file.size > AVATAR_MAX_BYTES) {
+    if (file.size > AVATAR_UPLOAD_MAX_BYTES) {
       return {
-        error: "This image is too large. Maximum size is 5MB.",
+        error: "Please choose a smaller image.",
       };
     }
 
     const mime = await resolveAvatarMime(file);
     if (!mime) {
       console.error("[profiles] avatar: rejected mime after sniff", file.type);
-      return { error: "This file type is not supported." };
+      return {
+        error: "This file type is not supported. Please choose a photo.",
+      };
     }
 
     const supabase = await createClient();
@@ -156,8 +158,12 @@ export async function uploadProfileAvatar(
     }
 
     const {
-      data: { publicUrl },
+      data: { publicUrl: rawPublicUrl },
     } = supabase.storage.from("avatars").getPublicUrl(path);
+    const bust = Date.now();
+    const publicUrl = /\?/.test(rawPublicUrl) ?
+      `${rawPublicUrl}&cb=${bust}`
+    : `${rawPublicUrl}?cb=${bust}`;
 
     const { data: existing } = await supabase
       .from("profiles")
