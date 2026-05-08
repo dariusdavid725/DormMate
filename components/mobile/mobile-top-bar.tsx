@@ -44,7 +44,7 @@ export function MobileTopBar({
       <div className="flex min-h-[52px] items-center gap-2 px-3 pb-2 pt-1">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-dm-muted">
-            Household
+            Home
           </p>
           {households.length === 0 ? (
             <p className="truncate font-cozy-display text-[1.35rem] leading-tight text-dm-text">
@@ -112,7 +112,7 @@ export function MobileTopBar({
               className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-medium text-dm-text hover:bg-dm-elevated/90"
               role="menuitem"
             >
-              Join household
+              Join home
             </Link>
             {showAdmin ? (
               <Link
@@ -130,7 +130,7 @@ export function MobileTopBar({
               className="touch-manipulation flex min-h-[44px] items-center rounded-lg px-2 text-[14px] font-medium text-dm-muted hover:bg-dm-elevated/90"
               role="menuitem"
             >
-              More & households
+              More & homes
             </Link>
             <form action={signOut} className="mt-1 border-t border-[var(--dm-border)] pt-1">
               <button

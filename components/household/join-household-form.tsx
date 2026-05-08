@@ -51,7 +51,7 @@ export function JoinHouseholdForm({
         type="submit"
         className="w-full rounded-md bg-dm-electric py-3 text-sm font-semibold text-white hover:brightness-105"
       >
-        <Submit idle="Join flat" />
+        <Submit idle="Join home" />
       </button>
     </form>
   );

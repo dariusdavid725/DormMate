@@ -34,23 +34,23 @@ export default async function DashboardMorePage() {
           More
         </h1>
         <p className="mt-2 text-[14px] leading-snug text-dm-muted lg:hidden">
-          Households, settings & invites.
+          Homes, settings, and invites.
         </p>
         <p className="mt-2 hidden text-[13px] leading-snug text-dm-muted lg:block">
-          Households, invites, account — everything beyond the daily tabs.
+          Homes, invites, and account — everything beyond the daily tabs.
         </p>
       </header>
 
       {error ?
         <p className="rounded-xl border border-dm-danger/35 px-4 py-3 text-[13px] text-dm-danger">
-          Could not load households.
+          Could not load homes.
         </p>
       : null}
 
       <MobileSection
-        title="Your households"
+        title="Your homes"
         hideDescriptionMobile
-        description="Members, events, receipts, and rules live on each household page."
+        description="Roommates, events, receipts, and rules live on each home page."
         className="lg:border-[var(--dm-border-strong)] lg:shadow-[var(--cozy-shadow-note)]"
       >
         {households.length === 0 ?
@@ -90,7 +90,7 @@ export default async function DashboardMorePage() {
           <li>
             <MobileListItem
               title="Join with code"
-              subtitle="Enter an invite and land in the household."
+              subtitle="Enter an invite and land in the home."
               href="/dashboard/join"
               trailing={<span className="text-dm-muted">→</span>}
             />

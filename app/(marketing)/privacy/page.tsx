@@ -12,7 +12,7 @@ export default function PrivacyPage() {
         Privacy notes
       </h1>
       <p className="mt-6 text-sm leading-relaxed text-dm-muted">
-        DormMate is under active development. We use Supabase for authentication and
+        Koti is under active development. We use Supabase for authentication and
         data hosting. When you sign up, account data is processed according to the
         Supabase and hosting providers&apos; policies. Contact the operator of this
         deployment for deletion requests once a formal policy is published.

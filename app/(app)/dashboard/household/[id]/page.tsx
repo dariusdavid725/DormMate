@@ -224,7 +224,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-dashed border-[var(--dm-border-strong)] pb-6 max-lg:flex-col max-lg:gap-4 lg:gap-5 lg:pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
-            Shared household
+            Shared home
           </p>
           <h1 className="font-cozy-display mt-2 max-lg:break-words max-lg:text-[2.05rem] max-lg:leading-[1.08] text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
             {household.name}
@@ -253,11 +253,11 @@ export default async function HouseholdDetailPage(props: PageProps) {
       <div className="mt-6 pb-2 max-lg:mt-5 lg:mt-7">
         <div className="flex flex-wrap gap-2 rounded-xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[var(--cozy-shadow-paper)] max-lg:justify-between lg:flex lg:flex-wrap lg:gap-1 lg:rounded-[3px] lg:p-1">
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
-          <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Tasks" />
+          <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Chores" />
           <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="Money" />
           <TabLink active={view === "receipts"} href={`${tabBase}?view=receipts`} label="Receipts" />
           <TabLink active={view === "events"} href={`${tabBase}?view=events`} label="Events" />
-          <TabLink active={view === "members"} href={`${tabBase}?view=members`} label="Members" />
+          <TabLink active={view === "members"} href={`${tabBase}?view=members`} label="Roommates" />
         </div>
       </div>
 
@@ -267,7 +267,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           className="mt-5 rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-4 py-3 text-sm text-dm-text"
         >
           {welcomeMessage}
-          {joinedFlag === "0" ? " You were already a member." : null}
+          {joinedFlag === "0" ? " You're already part of this home." : null}
         </div>
       ) : null}
 
@@ -275,7 +275,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <>
           <div className="mt-8 grid gap-3 max-lg:gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <OverviewVariant href={`${tabBase}?view=tasks`} variant="note">
-              Tasks · chores
+              Chores board
             </OverviewVariant>
             <OverviewCard href={`${tabBase}?view=expenses`}>
               Money · split costs
@@ -287,15 +287,15 @@ export default async function HouseholdDetailPage(props: PageProps) {
               Events · RSVPs
             </OverviewVariant>
             <OverviewCard href={`${tabBase}?view=members`}>
-              Members · invites
+              Roommates · invites
             </OverviewCard>
             <OverviewCard href="/dashboard/join">
-              Join another household
+              Join another home
             </OverviewCard>
           </div>
 
           <section className="dm-card-surface cozy-tilt-xs-alt mt-8 p-5">
-            <h2 className="font-cozy-display text-2xl text-dm-text">Flat settings</h2>
+            <h2 className="font-cozy-display text-2xl text-dm-text">Home settings</h2>
             <p className="mt-2 text-sm text-dm-muted">
               {canRename
                 ? "Rename is available to whoever created this household."
@@ -320,7 +320,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           {!memberBundle ||
           ("error" in memberBundle && memberBundle.error) ?
             <div role="alert" className="text-sm text-dm-danger">
-              Couldn&apos;t load member directory for labels.
+              Couldn&apos;t load roommate directory for labels.
               {memberBundle &&
               "error" in memberBundle &&
               shouldExposeSupabaseError()
@@ -424,7 +424,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           <div>
             <h2 className="font-cozy-display text-2xl text-dm-text">Saved receipts</h2>
             <p className="mt-1 text-[13px] text-dm-muted">
-              Everyone in this household can see these. Tap a receipt to expand lines from the scan.
+              Everyone in this home can see these. Tap a receipt to expand lines from the scan.
             </p>
             {receiptsPayload?.error ?
               <p className="mt-4 text-sm font-medium text-dm-danger">
@@ -434,7 +434,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
               <div className="mt-6">
                 <ReceiptList
                   receipts={receiptsPayload?.receipts ?? []}
-                  emptyHint="No receipts yet — take a photo above, then save. After that you can split it with housemates on this same screen."
+                  emptyHint="No receipts saved yet. Scan one when someone does the next shop run."
                   enableSplitAllAction
                   linkedReceiptIds={linkedReceiptIds}
                   memberOptions={membersList.map((m) => ({
@@ -456,11 +456,11 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 <h2 className="font-cozy-display text-3xl text-dm-text">Split costs</h2>
                 <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
                   Add a shared bill here, or turn a scanned receipt into a split from the Receipts tab.
-                  Currency follows this household&apos;s setting.
+                  Currency follows this home&apos;s setting.
                 </p>
                 {membersList.length === 0 ?
                   <p className="mt-4 text-[13px] text-dm-danger">
-                    Add housemates before logging splits so everyone stays addressable.
+                    Add roommates before logging splits so everyone stays addressable.
                   </p>
                 : (
                   <ManualExpenseForm
@@ -508,7 +508,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
         <section className="mt-10">
           {!memberBundle ||
           ("error" in memberBundle && memberBundle.error) ?
-            <div className="text-sm text-dm-danger">Members needed for RSVPs failed to load.</div>
+            <div className="text-sm text-dm-danger">Roommates needed for RSVPs failed to load.</div>
           : null}
           <div className="cozy-poster cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-paper)]">
             <h2 className="font-cozy-display text-3xl text-dm-text">Poster a gathering</h2>

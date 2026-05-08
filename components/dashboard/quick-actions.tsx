@@ -13,7 +13,7 @@ export function DashboardQuickActions() {
         />
       </div>
       <p className="mb-3 text-[12px] text-dm-muted">
-        Tasks: chores. Expenses: shared bills. Events live on each household page.
+        Chores: daily tasks. Money: shared bills. Events live on each home page.
       </p>
       <div className="flex flex-wrap gap-3">
         <Link
@@ -24,7 +24,7 @@ export function DashboardQuickActions() {
           ].join(" ")}
           style={{ animationDelay: "90ms" }}
         >
-          + Add task
+          + Add chore
         </Link>
         <Link
           href="/dashboard/finances"
@@ -34,7 +34,7 @@ export function DashboardQuickActions() {
           ].join(" ")}
           style={{ animationDelay: "140ms" }}
         >
-          <span className="relative z-[1]">Expenses overview</span>
+          <span className="relative z-[1]">Money overview</span>
         </Link>
         <span
           className="cozy-poster cozy-drop-in cozy-tilt-xs inline-flex px-5 py-3 text-sm font-semibold text-dm-muted cozy-hover-wiggle"
@@ -51,7 +51,7 @@ export function DashboardQuickActions() {
           ].join(" ")}
           style={{ animationDelay: "240ms" }}
         >
-          Join household with code
+          Join home with code
         </Link>
       </div>
     </section>

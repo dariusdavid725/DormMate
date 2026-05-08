@@ -25,7 +25,7 @@ export async function SiteHeader() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
           <img src="/logo.png" alt="" className="h-8 w-8 rounded-md object-cover" aria-hidden />
-          DormMate
+          Koti
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
           {userEmail ? (
@@ -60,7 +60,7 @@ export async function SiteHeader() {
                 href="/signup"
                 className="touch-manipulation inline-flex min-h-[44px] items-center justify-center rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105 sm:min-h-0"
               >
-                Start
+                Create your home
               </Link>
             </>
           )}

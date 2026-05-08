@@ -1,4 +1,4 @@
-/* DormMate — minimal SW: cache same-origin `/_next/static/` GET only.
+/* Koti — minimal SW: cache same-origin `/_next/static/` GET only.
  * Does NOT cache navigations, /api/*, /auth/*, or dashboard HTML.
  */
 const STATIC_CACHE = "dormmate-next-static-v1";

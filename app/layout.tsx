@@ -25,7 +25,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#5a7a5f",
+  themeColor: "#6b7450",
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
@@ -34,13 +34,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: tryGetMetadataBase(),
-  applicationName: "DormMate",
+  applicationName: "Koti",
   title: {
-    default: "DormMate — Shared homes, fair splits",
-    template: "%s · DormMate",
+    default: "Koti — The shared home board for roommates.",
+    template: "%s · Koti",
   },
   description:
-    "Chores with tiny rewards, receipts, and groceries — built for dorms and flats.",
+    "Koti is the shared home board for roommates — groceries, chores, receipts, expenses, and house updates in one place.",
   icons: {
     icon: [
       { url: "/favicon.png", sizes: "any", type: "image/png" },
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: "DormMate",
+    title: "Koti",
     statusBarStyle: "default",
   },
   formatDetection: {
@@ -65,9 +65,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     url: process.env.NEXT_PUBLIC_SITE_URL ? getSiteUrl() : undefined,
-    title: "DormMate",
+    title: "Koti",
     description:
-      "Chores with tiny rewards, receipts, and groceries — built for dorms and flats.",
+      "Koti is the shared home board for roommates — groceries, chores, receipts, expenses, and house updates in one place.",
     type: "website",
   },
 };

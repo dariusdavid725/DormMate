@@ -55,11 +55,11 @@ export function DashboardShell({
               </p>
               <div className="flex flex-col gap-0.5">
                 <SidebarNavLink href="/dashboard" title="Home" exact />
-                <SidebarNavLink href="/dashboard/tasks" title="Tasks" exact />
-                <SidebarNavLink href="/dashboard/finances" title="Expenses" exact />
+                <SidebarNavLink href="/dashboard/tasks" title="Chores" exact />
+                <SidebarNavLink href="/dashboard/finances" title="Money" exact />
                 <SidebarNavLink href="/dashboard/inventory" title="Groceries" exact />
                 <SidebarNavLink href="/dashboard/more" title="More" exact />
-                <SidebarNavLink href="/dashboard/join" title="Join household" exact />
+                <SidebarNavLink href="/dashboard/join" title="Join home" exact />
                 <SidebarNavLink href="/dashboard/settings" title="Account" exact />
                 {showAdmin ? (
                   <SidebarNavLink
@@ -72,7 +72,7 @@ export function DashboardShell({
             </div>
             <div className="min-h-0 flex-1">
               <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Households
+                Homes
               </p>
               <div className="flex flex-col gap-0.5">
                 {households.map((h) => (
@@ -85,7 +85,7 @@ export function DashboardShell({
                 ))}
                 {households.length === 0 ? (
                   <p className="rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-2 text-[12px] text-dm-muted">
-                    None yet. Create from Home.
+                    No homes yet. Create one from Home.
                   </p>
                 ) : null}
               </div>
@@ -118,7 +118,7 @@ export function DashboardShell({
             <MobileAppShell>{children}</MobileAppShell>
           </main>
           <footer className="hidden border-t border-[var(--dm-border-strong)] px-4 py-3 text-center text-[11px] text-dm-muted lg:block lg:px-10">
-            DormMate
+            Koti
           </footer>
         </div>
       </div>

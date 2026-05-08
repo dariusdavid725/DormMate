@@ -22,7 +22,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Tasks",
+  title: "Chores",
 };
 
 export default async function DashboardTasksPage() {
@@ -92,7 +92,7 @@ export default async function DashboardTasksPage() {
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 lg:max-w-[56rem]">
       <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="font-cozy-display text-4xl text-dm-text">Task stack</h1>
+        <h1 className="font-cozy-display text-4xl text-dm-text">Chores board</h1>
         <p className="mt-1 text-[13px] text-dm-muted">
           Sticky notes for the flat.&nbsp;
           <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
@@ -102,7 +102,7 @@ export default async function DashboardTasksPage() {
       </header>
 
       <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
-        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Tasks</h1>
+        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Chores</h1>
         <p className="mt-2 text-[14px] leading-snug text-dm-muted">
           Open stickies for your households — tap to claim what&apos;s yours.
         </p>
@@ -137,7 +137,7 @@ export default async function DashboardTasksPage() {
       />
 
       <div className="space-y-4 lg:hidden">
-        <h2 className="font-cozy-display text-xl text-dm-text">New task</h2>
+        <h2 className="font-cozy-display text-xl text-dm-text">New chore</h2>
         {householdOptions.length === 0 ? (
           <p className="rounded-xl border border-dashed border-[var(--dm-border-strong)] px-4 py-4 text-[14px] text-dm-muted">
             Create a household on{" "}
@@ -157,7 +157,7 @@ export default async function DashboardTasksPage() {
 
       <section className="hidden gap-8 lg:grid lg:grid-cols-[1fr,minmax(280px,380px)]">
         <div className="space-y-2">
-          <h2 className="font-cozy-display text-xl text-dm-muted">Open stickies</h2>
+          <h2 className="font-cozy-display text-xl text-dm-muted">Open chores</h2>
           <HouseholdTaskList
             tasks={tasks}
             currentUserId={user.id}

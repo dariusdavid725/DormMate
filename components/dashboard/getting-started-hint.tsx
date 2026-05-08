@@ -15,7 +15,7 @@ export function GettingStartedHint({
       </h2>
       <ol className="list-decimal space-y-1.5 pl-5">
         <li>
-          Pick your flat from the bar at the top (phone) or the Households list in the sidebar
+          Pick your home from the bar at the top (phone) or the Homes list in the sidebar
           (computer).
         </li>
         <li>
@@ -24,7 +24,7 @@ export function GettingStartedHint({
           <strong className="text-dm-text">We settled up</strong> so it stops counting.
         </li>
         <li>
-          Tap <strong className="text-dm-text">Join household</strong> in the menu when someone sends you an invite code.
+          Tap <strong className="text-dm-text">Join home</strong> in the menu when someone sends you an invite code.
         </li>
       </ol>
     </section>

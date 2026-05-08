@@ -126,7 +126,9 @@ export function HouseholdGroceryBoard({
       <section>
         <h3 className="font-cozy-display text-2xl text-dm-text">Current list</h3>
         {open.length === 0 ? (
-          <p className="mt-2 text-[13px] text-dm-muted">No pending groceries.</p>
+          <p className="mt-2 text-[13px] text-dm-muted">
+            Your grocery board is empty. Add the first thing before someone forgets the toilet paper.
+          </p>
         ) : (
           <ul className="mt-4 space-y-3">
             {open.map((item) => (

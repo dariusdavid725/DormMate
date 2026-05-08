@@ -10,7 +10,7 @@ type Item = {
 
 const NAV: readonly Item[] = [
   { href: "/dashboard", label: "Home" },
-  { href: "/dashboard/tasks", label: "Tasks" },
+  { href: "/dashboard/tasks", label: "Chores" },
   { href: "/dashboard/finances", label: "Money" },
   { href: "/dashboard/inventory", label: "Groceries" },
   { href: "/dashboard/more", label: "More" },

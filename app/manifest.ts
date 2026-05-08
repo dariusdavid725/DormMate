@@ -3,17 +3,17 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "DormMate — Shared homes, fair splits",
-    short_name: "DormMate",
+    name: "Koti",
+    short_name: "Koti",
     description:
-      "Chores, receipts, and shared expenses for dorms and flats — fair splits with housemates.",
+      "Koti is the shared home board for roommates — groceries, chores, receipts, expenses, and house updates in one place.",
     start_url: "/",
     scope: "/",
     display: "standalone",
     display_override: ["standalone", "browser"],
     orientation: "portrait-primary",
     background_color: "#e8dfd2",
-    theme_color: "#5a7a5f",
+    theme_color: "#6b7450",
     categories: ["finance", "productivity", "lifestyle"],
     icons: [
       {

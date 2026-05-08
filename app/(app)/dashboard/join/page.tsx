@@ -7,7 +7,7 @@ import { joinHouseholdByInviteCodeCore } from "@/lib/households/actions";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Join household",
+  title: "Join home",
 };
 
 type Props = {
@@ -43,14 +43,14 @@ export default async function JoinHouseholdPage({ searchParams }: Props) {
     <div className="mx-auto max-w-md space-y-7 pb-24 max-lg:px-0 lg:space-y-8 lg:pb-12">
       <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5 lg:pb-6">
         <h1 className="font-cozy-display text-[2.2rem] leading-[1.05] text-dm-text max-lg:tracking-tight lg:text-[2.85rem] lg:leading-none">
-          Pin your key
+          Join this Koti home
         </h1>
         <p className="mt-3 hidden text-[14px] leading-snug text-dm-muted lg:block lg:text-[13px] lg:leading-relaxed">
-          Drop in the invite your roommate pasted. If you landed here logged out,
-          you&apos;ll bounce through sign-in once, then circle back via the hallway.
+          You&apos;ve been invited to join a home on Koti. Paste your code and we&apos;ll get
+          you into the right board.
         </p>
         <p className="mt-3 text-[14px] leading-snug text-dm-muted lg:hidden">
-          Paste the invite code from your roommate.
+          You&apos;ve been invited to join on Koti. Paste the invite code.
         </p>
       </header>
 

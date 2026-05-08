@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: {
-    default: "DormMate — chores, receipts & roommate money",
-    template: "%s · DormMate",
+    default: "Koti — The shared home board for roommates.",
+    template: "%s · Koti",
   },
   description:
-    "Keep chores fun, receipts clear, and who-owes-who quieter — built for flats and dorm rooms.",
+    "Koti is the shared home board for roommates — groceries, chores, receipts, expenses, and house updates in one place.",
 };
 
 export default async function Home() {
@@ -30,14 +30,14 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:grid lg:grid-cols-[1.05fr,0.92fr] lg:items-start lg:gap-16 lg:py-24">
           <div className="border-l-4 border-dm-electric pl-6 sm:pl-7">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
-              Shared flats & dorms
+              The shared home board for roommates
             </p>
             <h1 className="font-cozy-display mt-4 max-w-[18ch] text-balance text-[3.1rem] leading-[1.05] text-dm-text sm:text-[3.6rem]">
-              The household corkboard.
+              Koti keeps shared living simple.
             </h1>
             <p className="mt-6 max-w-md text-[16px] leading-relaxed text-dm-muted">
-              Stick chores with points, clip receipts in one strip, and keep money talk
-              off the endless group chat.
+              Groceries, chores, receipts, expenses, and house updates — all in one
+              cozy board for roommates.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-3">
               {userLoggedIn ? (
@@ -52,7 +52,7 @@ export default async function Home() {
                     href="/dashboard/tasks"
                     className="cozy-note cozy-hover-wiggle inline-flex rounded-[2px] px-6 py-3 text-sm font-semibold text-dm-text shadow-[var(--cozy-shadow-note)]"
                   >
-                    Task stickies
+                    Chores board
                   </Link>
                 </>
               ) : (
@@ -61,7 +61,7 @@ export default async function Home() {
                     href="/signup"
                     className="inline-flex rounded-md bg-dm-electric px-8 py-3 text-sm font-semibold text-white shadow-[var(--cozy-shadow-paper)] hover:brightness-105"
                   >
-                    Get started
+                    Create your home
                   </Link>
                   <Link
                     href="/login"
@@ -80,8 +80,8 @@ export default async function Home() {
                 Chores
               </figcaption>
               <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
-                Yellow notes for what needs doing — claim one, earn the points your flat
-                dreams up.
+                Keep everyone aligned on what needs to be done, what is already done,
+                and what is next around the home.
               </p>
             </figure>
             <figure className="cozy-receipt cozy-tilt-xs-alt p-6 sm:p-7">
@@ -89,8 +89,8 @@ export default async function Home() {
                 Receipts
               </figcaption>
               <p className="mt-3 text-[15px] leading-relaxed text-dm-muted">
-                Snap the crumpled till tape. We read the total so nobody retypes with
-                cold thumbs.
+                Scan receipts, track shared money, and keep split costs clear without
+                extra chat noise.
               </p>
             </figure>
           </div>

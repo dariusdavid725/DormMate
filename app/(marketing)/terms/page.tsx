@@ -12,7 +12,7 @@ export default function TermsPage() {
         House rules (terms)
       </h1>
       <p className="mt-6 text-sm leading-relaxed text-dm-muted">
-        DormMate is provided “as is” during early access. Availability and features may
+        Koti is provided “as is” during early access. Availability and features may
         change. Do not use the preview for regulated financial obligations without
         independent verification; expense splits are informational tools, not legal
         or tax advice. A full agreement will supersede this page before general release.

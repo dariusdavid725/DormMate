@@ -16,7 +16,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Finances",
+  title: "Money",
 };
 
 export default async function FinancesPage() {
@@ -67,11 +67,11 @@ export default async function FinancesPage() {
     <div className="mx-auto w-full max-w-4xl space-y-8">
       <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
         <h1 className="font-cozy-display text-[2.35rem] leading-[1.1] text-dm-text">
-          Expenses overview
+          Money overview
         </h1>
         <p className="mt-2 max-w-xl text-[13px] text-dm-muted">
-          Your share of open bills only (same math as each household&apos;s Money tab), using each
-          household&apos;s selected currency.
+          Your share of open bills only (same math as each home&apos;s Money tab), using each
+          home&apos;s selected currency.
         </p>
       </header>
 
@@ -90,14 +90,14 @@ export default async function FinancesPage() {
 
       <div className="lg:hidden">
         <MobileSection
-          title="Balance summary"
+          title="Money summary"
           hideDescriptionMobile
-          description="Across households — open bills only."
+          description="Across homes — open bills only."
           className="border-[var(--dm-border-strong)] shadow-[var(--cozy-shadow-note)]"
         >
           {households.length === 0 ?
             <p className="text-[14px] text-dm-muted">
-              Create a household from{" "}
+              Create a home from{" "}
               <Link className="font-semibold text-dm-electric hover:underline" href="/dashboard">
                 Home
               </Link>
@@ -129,11 +129,11 @@ export default async function FinancesPage() {
         <MobileSection
           title="Tips"
           hideDescriptionMobile
-          description="Receipts and splits live under each household."
+          description="Receipts and splits live under each home."
           className="mt-4 border-[var(--dm-border-strong)] shadow-[var(--cozy-shadow-note)]"
         >
           <p className="text-[14px] leading-relaxed text-dm-muted">
-            Scan receipts in the household&apos;s Receipts tab. Close bills when you&apos;ve settled up
+            Scan receipts in the home&apos;s Receipts tab. Close bills when you&apos;ve settled up
             outside the app.
           </p>
         </MobileSection>
@@ -143,7 +143,7 @@ export default async function FinancesPage() {
         <table className="min-w-full text-left text-sm">
           <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg text-[11px] font-medium uppercase tracking-wide text-dm-muted">
             <tr>
-              <th className="px-5 py-3.5">Household</th>
+              <th className="px-5 py-3.5">Home</th>
               <th className="px-5 py-3.5">Role</th>
               <th className="px-5 py-3.5 tabular-nums text-dm-text">Your balance (open bills)</th>
               <th className="hidden px-5 py-3.5 sm:table-cell">Open ledger</th>
@@ -153,7 +153,7 @@ export default async function FinancesPage() {
             {households.length === 0 ?
               <tr>
                 <td className="px-5 py-12 text-center text-dm-muted" colSpan={4}>
-                  Create a household from{" "}
+                  Create a home from{" "}
                   <Link className="text-dm-electric hover:underline" href="/dashboard">
                     Home
                   </Link>
@@ -188,7 +188,7 @@ export default async function FinancesPage() {
       </div>
 
       <section className="cozy-note cozy-tilt-xs hidden p-5 text-[13px] leading-relaxed text-dm-muted shadow-[var(--cozy-shadow-note)] lg:block">
-        Scan receipts under each household’s Receipts tab. When you tap “Turn into split”, the split
+        Scan receipts under each home&apos;s Receipts tab. When you tap &quot;Turn into split&quot;, the split
         uses that receipt’s currency. After people pay each other outside the app, open the bill and
         tap <strong className="text-dm-text">We settled up — close bill</strong> so it stops counting.
       </section>

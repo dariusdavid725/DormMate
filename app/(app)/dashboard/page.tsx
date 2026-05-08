@@ -54,10 +54,10 @@ export default async function DashboardOverviewPage() {
     user.email?.split("@")[0]?.replace(/[._-]/g, " ").trim() ?? "";
   const householdLine =
     households.length === 0 ?
-      "Set up a household to unlock tasks and splits."
+      "Set up a home to unlock chores and splits."
     : households.length === 1 ?
       households[0]!.name
-    : `${households.length} households · switch from the top bar`;
+    : `${households.length} homes · switch from the top bar`;
   const primaryHouseholdId = households[0]?.id ?? null;
   const hasHouseholds = households.length > 0;
 
@@ -81,7 +81,7 @@ export default async function DashboardOverviewPage() {
         <div className="cozy-board mx-auto w-full max-w-lg pb-12 lg:max-w-3xl">
           <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-5">
         <h1 className="font-cozy-display text-[2.65rem] leading-none text-dm-text sm:text-5xl">
-          The dorm board
+          The Koti board
         </h1>
         {!hasHouseholds ? (
           <p className="mt-2 text-[13px] text-dm-muted">
@@ -118,14 +118,14 @@ export default async function DashboardOverviewPage() {
             <section aria-labelledby="activity-heading">
               <div className="mb-3 flex flex-wrap items-end gap-x-3 gap-y-2">
                 <h2 id="activity-heading" className="font-cozy-display text-2xl text-dm-text">
-                  Activity
+                  House activity
                 </h2>
                 <div className="flex gap-3 text-[12px] font-semibold text-dm-electric">
                   <Link href="/dashboard/tasks" className="hover:underline">
-                    Tasks
+                    Chores
                   </Link>
                   <Link href="/dashboard/finances" className="hover:underline">
-                    Expenses
+                    Money
                   </Link>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default async function DashboardOverviewPage() {
                 <span className="cozy-pin shrink-0" aria-hidden />
               </div>
               <p className="text-[13px] text-dm-muted">
-                Enter a name for your dorm or flat. You can join more households later from the menu.
+                Enter a name for your dorm or flat. You can join more homes later from the menu.
               </p>
               <CreateHouseholdForm className="mt-4 space-y-4" />
             </section>

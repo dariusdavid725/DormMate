@@ -30,10 +30,10 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
             <img src="/logo.png" alt="" className="h-7 w-7 rounded-md object-cover" aria-hidden />
-            DormMate
+            Koti
           </Link>
           <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-text sm:inline-flex">
-            Join household
+            Join home
           </Link>
         </div>
 
@@ -56,7 +56,7 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
             href="/dashboard/join"
             className="rounded-md px-2 py-1 text-xs font-semibold text-dm-muted hover:text-dm-text sm:hidden"
           >
-            Join
+            Join home
           </Link>
           <span
             title={email}

@@ -100,7 +100,7 @@ export function HouseActivityFeed({
               href={`/dashboard/household/${item.householdId}?view=tasks`}
               className="mt-1.5 inline-block text-[11px] font-semibold text-dm-electric hover:underline"
             >
-              Tasks
+              Chores
             </Link>
           </li>
         );

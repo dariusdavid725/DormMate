@@ -34,7 +34,7 @@ export function HouseholdTaskList({
   if (!tasks.length) {
     return (
       <div className="cozy-note cozy-tilt-xs px-4 py-6 text-center text-[13px] text-dm-muted shadow-[var(--cozy-shadow-note)]">
-        Corkboard&apos;s empty — jot the next chore and someone will nab it.
+        All clear. No chores waiting right now.
       </div>
     );
   }

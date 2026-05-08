@@ -13,7 +13,7 @@ export function TodayStrip({
 }: Props) {
   const cells = [
     {
-      label: "Tasks",
+      label: "Chores",
       value: hasHouseholds ? String(choresDue) : "—",
       tilt: "cozy-tilt-xs" as const,
     },

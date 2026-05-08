@@ -172,7 +172,7 @@ export function MobileDashboardHome({
       <MobileSection title="Today" hideDescriptionMobile>
         <ul className="flex flex-col gap-3">
           <li className="flex min-h-[52px] items-center justify-between gap-4 rounded-xl bg-dm-surface-mid/85 px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
-            <span className="text-[14px] font-semibold text-dm-muted">Tasks</span>
+            <span className="text-[14px] font-semibold text-dm-muted">Chores</span>
             <span className="font-mono text-2xl font-bold tabular-nums text-dm-text">
               {hasHouseholds ? choresDue : "—"}
             </span>
@@ -194,7 +194,7 @@ export function MobileDashboardHome({
 
       <MobileSection title="Quick actions" hideDescriptionMobile>
         <div className="flex flex-col gap-3">
-          <MobileActionCardLink href="/dashboard/tasks" label="Add task" icon={<TaskGlyph />} />
+          <MobileActionCardLink href="/dashboard/tasks" label="Add chore" icon={<TaskGlyph />} />
           <MobileActionCardLink href={expenseHref} label="Add expense" icon={<MoneyGlyph />} />
           <MobileActionCardLink href={receiptHref} label="Scan receipt" icon={<ReceiptGlyph />} />
         </div>
@@ -206,7 +206,7 @@ export function MobileDashboardHome({
       >
         {!hasHouseholds ?
           <p className="text-[15px] leading-relaxed text-dm-muted">
-            Create a household — then tasks show here.
+            Create a home — then chores show here.
           </p>
         : !next ?
           <p className="text-[15px] leading-relaxed text-dm-muted">You&apos;re caught up.</p>
@@ -229,7 +229,7 @@ export function MobileDashboardHome({
       </MobileSection>
 
       <MobileSection
-        title="Activity"
+        title="House activity"
         hideDescriptionMobile
         action={
           <Link
@@ -267,7 +267,7 @@ export function MobileDashboardHome({
       </MobileSection>
 
       {!hasHouseholds ?
-        <MobileSection title="Create household" hideDescriptionMobile>
+        <MobileSection title="Create home" hideDescriptionMobile>
           <CreateHouseholdForm className="space-y-5 max-lg:[&_input]:min-h-[48px] max-lg:[&_input]:text-[16px] max-lg:[&_button]:min-h-[52px]" />
         </MobileSection>
       : null}

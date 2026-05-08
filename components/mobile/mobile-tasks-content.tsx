@@ -35,7 +35,7 @@ export function MobileTasksContent({
             : "text-dm-muted hover:text-dm-text"
           }`}
         >
-          Open
+          Open chores
         </button>
         <button
           type="button"
@@ -46,7 +46,7 @@ export function MobileTasksContent({
             : "text-dm-muted hover:text-dm-text"
           }`}
         >
-          Done
+          Done chores
         </button>
       </div>
 

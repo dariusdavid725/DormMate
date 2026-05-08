@@ -101,7 +101,7 @@ export function HouseholdMembersPanel({
       <section className="rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface p-5 sm:p-6">
         <h3 className="text-sm font-medium text-dm-text">Your profile</h3>
         <p className="mt-1 text-[13px] text-dm-muted">
-          Display name and optional avatar visible to household mates.
+          Display name and optional avatar visible to roommates.
         </p>
         <form action={updateProfileDisplayName} className="mt-6 flex flex-wrap gap-3">
           <input type="hidden" name="household_id" value={householdId} />
@@ -215,9 +215,9 @@ export function HouseholdMembersPanel({
 
       {canManageInvites ? (
         <section className="cozy-note cozy-tilt-xs p-5 shadow-[var(--cozy-shadow-note)]">
-          <h3 className="text-sm font-semibold text-dm-text">Hallway invite</h3>
+          <h3 className="text-sm font-semibold text-dm-text">Koti invite</h3>
           <p className="mt-2 text-[12px] text-dm-muted">
-            Share link or dictate the shorthand code aloud while the kettle boils.
+            Share this link with roommates to join this Koti home.
           </p>
           {inviteCode?.length ?
             <>
@@ -240,8 +240,13 @@ export function HouseholdMembersPanel({
       ) : null}
 
       <div>
-        <h3 className="text-sm font-medium text-dm-text">Members</h3>
-        <p className="mt-1 text-[12px] text-dm-muted">{members.length} total.</p>
+        <h3 className="text-sm font-medium text-dm-text">Roommates</h3>
+        <p className="mt-1 text-[12px] text-dm-muted">{members.length} roommates total.</p>
+        {members.length === 0 ? (
+          <p className="mt-4 rounded-md border border-dashed border-[var(--dm-border-strong)] px-3 py-3 text-[13px] text-dm-muted">
+            It&apos;s quiet here. Invite your roommates to make this home useful.
+          </p>
+        ) : null}
         <ul className="mt-8 grid gap-4 sm:grid-cols-2">
           {sorted.map((m) => {
             const isYou = m.userId === currentUserId;
