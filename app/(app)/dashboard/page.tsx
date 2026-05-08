@@ -111,33 +111,33 @@ export default async function DashboardOverviewPage() {
       <div className="hidden lg:block">
         <div className="mx-auto w-full max-w-[1240px] pb-12">
           <div className="dm-dashboard-grid">
-            <header className="dm-hero-module dm-card-enter col-span-12 px-6 pb-6 pt-5 lg:col-span-8">
+            <header className="dm-hero-module dm-module-depth dm-card-enter col-span-12 px-6 pb-6 pt-5 lg:col-span-7">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="dm-chip dm-chip-accent">Koti board</span>
-                    <span className="dm-chip">live home</span>
+                    <span className="dm-chip">live now</span>
                   </div>
                   <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-tight text-dm-text sm:text-[2.55rem]">
                     {spotlightHome ? `${spotlightHome.name} today` : "Your shared home hub"}
                   </h1>
                   <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-dm-muted">
                     {hasHouseholds
-                      ? "A living snapshot of chores, groceries, money, and updates across your home."
+                      ? "A living snapshot of chores, groceries, money, and updates."
                       : "Create your first home to unlock chores, groceries, money, receipts, and events."}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <span className="dm-chip">{spotlightOpenTasks.length} open chores</span>
+                    <span className="dm-chip">{spotlightOpenTasks.length} chores</span>
                   <span className="dm-chip">{openGroceries.length} groceries pending</span>
                   <span className="dm-chip">{receiptsLast7d} receipts / 7d</span>
                 </div>
               </div>
             </header>
 
-            <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "40ms" }}>
+            <section className="dm-module dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-5" style={{ animationDelay: "40ms" }}>
               <div className="flex items-center justify-between">
-                <h2 className="dm-section-heading">Roommates</h2>
+                <h2 className="dm-section-heading">Roommate presence</h2>
                 <Link href={spotlightHome ? `/dashboard/household/${spotlightHome.id}?view=members` : "/dashboard/more"} className="text-[12px] font-semibold text-dm-electric hover:underline">
                   View members
                 </Link>
@@ -161,6 +161,9 @@ export default async function DashboardOverviewPage() {
                   )}
                 </div>
                 <p className="mt-2 text-sm font-semibold text-dm-text">{roommateCount} roommates active</p>
+                <p className="mt-0.5 text-[12px] text-dm-muted">
+                  {spotlightHome ? `In ${spotlightHome.name}` : "Open a home to see members"}
+                </p>
               </div>
             </section>
           </div>
@@ -195,11 +198,11 @@ export default async function DashboardOverviewPage() {
               </div>
             </section>
 
-            <section className="dm-module dm-module-muted dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "140ms" }}>
+            <section className="dm-module dm-module-muted dm-module-depth dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "140ms" }}>
               <h2 className="dm-section-heading">Next important</h2>
               {nextTask ? (
                 <div className="mt-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3.5 py-3">
-                  <p className="text-sm font-semibold text-dm-text">{nextTask.title}</p>
+                  <p className="line-clamp-2 text-sm font-semibold text-dm-text">{nextTask.title}</p>
                   <p className="mt-1 text-[12px] text-dm-muted">
                     {nextTask.dueAt ? `Due ${new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(nextTask.dueAt))}` : "No due date"}
                     {" · "}+{nextTask.rewardPoints} pts
@@ -222,7 +225,7 @@ export default async function DashboardOverviewPage() {
               <ul className="mt-2 space-y-1.5">
                 {openGroceries.slice(0, 3).map((item) => (
                   <li key={item.id} className="rounded-lg border border-[var(--dm-border)] bg-dm-surface-mid/40 px-2.5 py-1.5 text-sm text-dm-text">
-                    {item.name}
+                    <span className="block truncate">{item.name}</span>
                   </li>
                 ))}
                 {openGroceries.length === 0 ? <li className="text-[12px] text-dm-muted">Nothing pending.</li> : null}
@@ -240,7 +243,7 @@ export default async function DashboardOverviewPage() {
               </p>
               {latestExpense ? (
                 <div className="mt-2 rounded-lg border border-[var(--dm-border)] bg-dm-surface-mid/40 px-2.5 py-2">
-                  <p className="text-sm font-semibold text-dm-text">{latestExpense.title}</p>
+                  <p className="truncate text-sm font-semibold text-dm-text">{latestExpense.title}</p>
                   <p className="text-[12px] text-dm-muted">
                     {formatMoneySafe(latestExpense.amount, latestExpense.currency)}
                   </p>
@@ -262,7 +265,7 @@ export default async function DashboardOverviewPage() {
             {activityErr ? (
               <p className="col-span-12 mb-2 text-[12px] text-dm-danger">Showing partial activity.</p>
             ) : null}
-            <DashboardActivityPanel items={houseActivity} className="dm-card-enter col-span-12 lg:col-span-8" />
+            <DashboardActivityPanel items={houseActivity} className="dm-module-depth dm-card-enter col-span-12 lg:col-span-8" />
 
             <section className="dm-module dm-hover-lift dm-card-enter col-span-12 p-4 lg:col-span-4" style={{ animationDelay: "280ms" }}>
               <div className="flex items-center justify-between">

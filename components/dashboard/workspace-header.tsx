@@ -7,6 +7,7 @@ type Props = {
   displayName?: string | null;
   avatarUrl?: string | null;
   showAdmin?: boolean;
+  households?: Array<{ id: string; name: string; role: string }>;
 };
 
 function initialsFromIdentity(email: string, displayName?: string | null) {
@@ -16,7 +17,7 @@ function initialsFromIdentity(email: string, displayName?: string | null) {
     .toUpperCase();
 }
 
-export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Props) {
+export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin, households = [] }: Props) {
   const initials = initialsFromIdentity(email, displayName);
   const profileLabel = displayName?.trim() || email;
 
@@ -89,6 +90,22 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin }: Pr
           </form>
         </div>
       </div>
+      {households.length > 0 ? (
+        <div className="mx-auto hidden w-full max-w-[1240px] items-center gap-2 overflow-x-auto px-4 pb-2 lg:flex lg:px-6">
+          {households.slice(0, 6).map((h) => (
+            <Link
+              key={h.id}
+              href={`/dashboard/household/${h.id}`}
+              className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-1.5 text-[12px] text-dm-muted transition-colors hover:border-dm-electric hover:text-dm-text"
+            >
+              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-dm-surface-mid text-[10px] font-semibold text-dm-text">
+                {h.name.slice(0, 1).toUpperCase()}
+              </span>
+              <span className="max-w-[9rem] truncate">{h.name}</span>
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </header>
   );
 }

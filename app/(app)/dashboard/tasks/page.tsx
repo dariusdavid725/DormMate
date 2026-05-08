@@ -91,12 +91,14 @@ export default async function DashboardTasksPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 lg:max-w-[58rem]">
-      <header className="hidden border-b border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="text-[2rem] font-semibold tracking-tight text-dm-text">Chores board</h1>
+      <header className="dm-module dm-module-depth relative hidden overflow-hidden px-6 pb-6 pt-5 lg:block">
+        <div className="absolute right-6 top-5 h-16 w-16 rounded-full border border-[var(--dm-border)] bg-[radial-gradient(circle_at_30%_30%,rgba(200,104,69,0.26),transparent_65%)]" aria-hidden />
+        <div className="dm-chip dm-chip-accent">Chore cockpit</div>
+        <h1 className="mt-3 text-[2rem] font-semibold tracking-tight text-dm-text">Chores board</h1>
         <p className="mt-1 text-[13px] text-dm-muted">
-          Keep home chores moving without the group chat chaos.&nbsp;
+          Keep chores moving without group-chat chaos.&nbsp;
           <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
-            Board
+            Back to Home
           </Link>
         </p>
       </header>

@@ -38,6 +38,7 @@ export function DashboardShell({
           displayName={displayName}
           avatarUrl={avatarUrl}
           showAdmin={showAdmin}
+          households={households.map((h) => ({ id: h.id, name: h.name, role: h.role }))}
         />
       </div>
       <MobileTopBar
@@ -48,76 +49,35 @@ export function DashboardShell({
         households={stripItems}
       />
       <div className="flex min-h-0 flex-1">
-        <aside className="dm-sidebar-glass hidden w-64 shrink-0 overflow-y-auto py-6 pl-5 pr-3 lg:flex lg:flex-col">
+        <aside className="hidden shrink-0 lg:flex lg:w-[92px]">
+          <div className="dm-nav-rail sticky top-[5.2rem] m-3 flex h-[calc(100vh-6.2rem)] w-[76px] flex-col items-center rounded-[26px] px-2 py-3">
           <Link
             href="/dashboard"
-            className="mb-5 mr-3 flex items-center gap-3 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-3 py-2.5 shadow-[0_8px_18px_rgba(45,41,37,0.08)]"
+            className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--dm-border)] bg-dm-surface shadow-[0_8px_18px_rgba(45,41,37,0.08)]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- static brand logo in public */}
-            <img src="/logo.png" alt="" className="h-9 w-9 rounded-lg object-cover" aria-hidden />
-            <div className="min-w-0">
-              <p className="truncate text-[15px] font-semibold leading-tight text-dm-text">Koti</p>
-              <p className="truncate text-[11px] leading-tight text-dm-muted">Shared home board</p>
-            </div>
+            <img src="/logo.png" alt="" className="h-8 w-8 rounded-lg object-cover" aria-hidden />
           </Link>
-          <nav aria-label="Workspace" className="flex flex-col gap-5">
-            <div>
-              <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Main
-              </p>
-              <div className="flex flex-col gap-0.5">
-                <SidebarNavLink href="/dashboard" title="Home" icon="⌂" exact />
-                <SidebarNavLink href="/dashboard/tasks" title="Chores" icon="✓" exact />
-                <SidebarNavLink href="/dashboard/finances" title="Money" icon="$" exact />
-                <SidebarNavLink href="/dashboard/inventory" title="Groceries" icon="◧" exact />
-                <SidebarNavLink href="/dashboard/activity" title="Activity" icon="◴" exact />
-                <SidebarNavLink href="/dashboard/more" title="More" icon="…" exact />
-                <SidebarNavLink href="/dashboard/join" title="Join home" icon="+" exact />
-                <SidebarNavLink href="/dashboard/settings" title="Account" icon="⚙" exact />
-                {showAdmin ? (
-                  <SidebarNavLink
-                    href="/dashboard/admin"
-                    title="Site admin"
-                    icon="★"
-                    exact
-                  />
-                ) : null}
-              </div>
-            </div>
-            <div className="min-h-0 flex-1">
-              <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Homes
-              </p>
-              <div className="flex flex-col gap-0.5">
-                {households.map((h) => (
-                  <SidebarNavLink
-                    key={h.id}
-                    href={`/dashboard/household/${h.id}`}
-                    title={h.name}
-                    hint={h.role}
-                  />
-                ))}
-                {households.length === 0 ? (
-                  <p className="rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-2 text-[12px] text-dm-muted">
-                    No homes yet. Create one from Home.
-                  </p>
-                ) : null}
-              </div>
-            </div>
-            <div className="mt-auto border-t border-[var(--dm-border-strong)] pt-4">
-              <p className="text-[11px] font-medium uppercase tracking-wide text-dm-muted">
-                Legal
-              </p>
-              <div className="mt-2 flex flex-col gap-1 text-sm">
-                <a className="text-dm-muted hover:text-dm-electric" href="/privacy">
-                  Privacy
-                </a>
-                <a className="text-dm-muted hover:text-dm-electric" href="/terms">
-                  Terms
-                </a>
-              </div>
+          <nav aria-label="Workspace" className="flex flex-1 flex-col items-center gap-1.5">
+            <SidebarNavLink href="/dashboard" title="Home" icon="⌂" exact compact />
+            <SidebarNavLink href="/dashboard/tasks" title="Chores" icon="✓" exact compact />
+            <SidebarNavLink href="/dashboard/finances" title="Money" icon="$" exact compact />
+            <SidebarNavLink href="/dashboard/inventory" title="Groceries" icon="◧" exact compact />
+            <SidebarNavLink href="/dashboard/activity" title="Activity" icon="◴" exact compact />
+            <SidebarNavLink href="/dashboard/more" title="More" icon="…" exact compact />
+            <SidebarNavLink href="/dashboard/join" title="Join home" icon="+" exact compact />
+            <SidebarNavLink href="/dashboard/settings" title="Account" icon="⚙" exact compact />
+            {showAdmin ? <SidebarNavLink href="/dashboard/admin" title="Site admin" icon="★" exact compact /> : null}
+            <div className="mt-auto flex flex-col gap-1.5 pt-3">
+              <a className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-transparent text-dm-muted hover:border-[var(--dm-border-strong)] hover:bg-dm-surface hover:text-dm-electric" href="/privacy" title="Privacy">
+                P
+              </a>
+              <a className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-transparent text-dm-muted hover:border-[var(--dm-border-strong)] hover:bg-dm-surface hover:text-dm-electric" href="/terms" title="Terms">
+                T
+              </a>
             </div>
           </nav>
+          </div>
         </aside>
         <div className="flex min-h-0 min-w-0 flex-1 flex-col">
           {listError ? (

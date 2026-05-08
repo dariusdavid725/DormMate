@@ -40,12 +40,14 @@ export default async function InventoryPage({ searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-7 lg:max-w-4xl lg:space-y-7">
-      <header className="hidden border-b border-[var(--dm-border-strong)] pb-6 lg:block">
-        <h1 className="text-[2rem] font-semibold leading-[1.1] tracking-tight text-dm-text">
+      <header className="dm-module dm-module-depth relative hidden overflow-hidden px-6 pb-6 pt-5 lg:block">
+        <div className="absolute right-5 top-4 h-14 w-14 rounded-2xl border border-[var(--dm-border)] bg-[radial-gradient(circle_at_35%_35%,rgba(111,127,94,0.3),transparent_70%)]" aria-hidden />
+        <div className="dm-chip">Grocery board</div>
+        <h1 className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-tight text-dm-text">
           Groceries
         </h1>
         <p className="mt-2 text-[13px] text-dm-muted">
-          Shared shopping flow with priorities, assignees, and quick status.
+          Shared shopping with priority, assignment, and quick bought status.
         </p>
       </header>
 
