@@ -7,6 +7,7 @@ import {
   HouseholdCompletedTaskList,
   HouseholdTaskList,
 } from "@/components/tasks/household-task-list";
+import { MobileTasksContent } from "@/components/mobile/mobile-tasks-content";
 import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
@@ -37,8 +38,7 @@ export default async function DashboardTasksPage() {
   const { households, error: hhErr } = await loadHouseholdSummaries(user.id);
   const { tasks, error: taskErr } = await loadOpenTasksForUser(user.id);
   const hhIds = households.map((h) => h.id);
-  const { tasks: doneRecently, error: doneErr } =
-    await loadRecentCompletedTasksForUser(hhIds, 14);
+  const { tasks: doneRecently } = await loadRecentCompletedTasksForUser(hhIds, 14);
 
   const ids = [
     ...new Set(
@@ -90,14 +90,21 @@ export default async function DashboardTasksPage() {
   const householdOptions = households.map((h) => ({ id: h.id, name: h.name }));
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-8 pb-24 lg:max-w-[56rem] lg:pb-10">
-      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+    <div className="mx-auto w-full max-w-2xl space-y-8 lg:max-w-[56rem]">
+      <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
         <h1 className="font-cozy-display text-4xl text-dm-text">Task stack</h1>
         <p className="mt-1 text-[13px] text-dm-muted">
           Sticky notes for the flat.&nbsp;
           <Link href="/dashboard" className="font-semibold text-dm-electric hover:underline">
             Board
           </Link>
+        </p>
+      </header>
+
+      <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
+        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Tasks</h1>
+        <p className="mt-2 text-[14px] leading-snug text-dm-muted">
+          Open stickies for your households — tap to claim what&apos;s yours.
         </p>
       </header>
 
@@ -122,7 +129,33 @@ export default async function DashboardTasksPage() {
         </div>
       ) : null}
 
-      <section className="grid gap-8 lg:grid-cols-[1fr,minmax(280px,380px)]">
+      <MobileTasksContent
+        tasks={tasks}
+        doneRecently={doneRecently}
+        currentUserId={user.id}
+        memberLabels={memberLabels}
+      />
+
+      <div className="space-y-4 lg:hidden">
+        <h2 className="font-cozy-display text-xl text-dm-text">New task</h2>
+        {householdOptions.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-[var(--dm-border-strong)] px-4 py-4 text-[14px] text-dm-muted">
+            Create a household on{" "}
+            <Link href="/dashboard" className="text-dm-electric hover:underline">
+              Home
+            </Link>{" "}
+            first.
+          </p>
+        ) : (
+          <CreateHouseholdTaskForm
+            className="space-y-4 rounded-2xl border border-[var(--dm-border-strong)] bg-dm-surface/95 p-4 shadow-[var(--cozy-shadow-paper)]"
+            households={householdOptions}
+            memberOptions={assignOptions}
+          />
+        )}
+      </div>
+
+      <section className="hidden gap-8 lg:grid lg:grid-cols-[1fr,minmax(280px,380px)]">
         <div className="space-y-2">
           <h2 className="font-cozy-display text-xl text-dm-muted">Open stickies</h2>
           <HouseholdTaskList

@@ -95,7 +95,7 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
             Upload a photo of the receipt. We read the total and line items — then you can save it to this household.
           </p>
         </div>
-        <div className="shrink-0 flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2 max-lg:mt-4 lg:max-w-none lg:flex-row lg:flex-wrap lg:justify-end lg:gap-2">
           <button
             type="button"
             onClick={() => galleryInputRef.current?.click()}
@@ -106,19 +106,19 @@ export function ReceiptScannerPanel({ householdId }: { householdId: string }) {
           </button>
           <button
             type="button"
-            onClick={() => galleryInputRef.current?.click()}
+            onClick={() => cameraInputRef.current?.click()}
             disabled={phase === "reading"}
-            className="min-h-[44px] touch-manipulation rounded-md border border-[var(--dm-border-strong)] px-4 py-2 text-sm font-semibold text-dm-text disabled:pointer-events-none disabled:opacity-50 lg:hidden"
+            className="dm-scan-hero order-first flex min-h-[52px] w-full touch-manipulation items-center justify-center rounded-xl px-4 py-3 text-[15px] font-semibold text-[#fffaf5] shadow-[var(--cozy-shadow-note)] disabled:pointer-events-none disabled:opacity-50 lg:order-none lg:hidden lg:min-h-[44px] lg:w-auto lg:rounded-md lg:py-2 lg:text-sm"
           >
-            Gallery
+            {phase === "reading" ? "Reading…" : "Scan receipt"}
           </button>
           <button
             type="button"
-            onClick={() => cameraInputRef.current?.click()}
+            onClick={() => galleryInputRef.current?.click()}
             disabled={phase === "reading"}
-            className="min-h-[44px] touch-manipulation lg:hidden dm-scan-hero rounded-md px-4 py-2 text-sm font-semibold text-[#fffaf5] disabled:pointer-events-none disabled:opacity-50"
+            className="flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-xl border border-[var(--dm-border-strong)] px-4 py-3 text-[15px] font-semibold text-dm-text disabled:pointer-events-none disabled:opacity-50 lg:hidden lg:min-h-[44px] lg:w-auto lg:rounded-md lg:py-2 lg:text-sm"
           >
-            Camera
+            Choose from gallery
           </button>
         </div>
         <input

@@ -68,24 +68,26 @@ export function HouseholdExpenseList({
         return (
           <li
             key={e.id}
-            className="cozy-receipt cozy-tilt-xs rounded-[2px] px-4 py-3"
+            className="cozy-receipt cozy-tilt-xs rounded-[2px] px-4 py-3 max-lg:rounded-xl max-lg:px-4 max-lg:py-4"
           >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="font-semibold text-dm-text">{e.title}</p>
-                <p className="mt-1 text-[13px] text-dm-muted">
+            <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 max-lg:flex-col max-lg:gap-4">
+              <div className="min-w-0 max-w-full flex-1">
+                <p className="break-words font-semibold text-dm-text">{e.title}</p>
+                <p className="mt-2 break-words text-[13px] leading-relaxed text-dm-muted max-lg:text-[14px]">
                   {fmtDate(e.expenseDate)} · paid by{" "}
                   <span className="text-dm-text">{payer}</span>
-                  <span className="mx-2 opacity-40">·</span>
-                  shares: {splitSummary}
+                  <span className="mx-2 opacity-40 max-lg:hidden">·</span>
+                  <span className="max-lg:mt-1 max-lg:block lg:inline">
+                    shares: {splitSummary}
+                  </span>
                 </p>
-                <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-dm-muted">
+                <p className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-dm-muted max-lg:text-[12px] max-lg:normal-case max-lg:tracking-normal">
                   {settled
                     ? "Closed — no longer affects balances"
                     : "Open — counts in “who owes who” above"}
                 </p>
               </div>
-              <div className="flex shrink-0 flex-col items-end gap-2">
+              <div className="flex w-full shrink-0 flex-col items-end gap-2 max-lg:w-full max-lg:items-start">
                 <span className="font-mono text-lg font-semibold tabular-nums text-dm-text">
                   {formatMoneySafe(e.amount, e.currency)}
                 </span>

@@ -201,8 +201,8 @@ export default async function HouseholdDetailPage(props: PageProps) {
   const tabBase = `/dashboard/household/${id}`;
 
   return (
-    <div className="mx-auto w-full max-w-6xl pb-28 lg:pb-16">
-      <nav aria-label="Breadcrumb" className="mb-5 text-[13px] font-medium text-dm-muted">
+    <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden pb-28 lg:pb-16">
+      <nav aria-label="Breadcrumb" className="mb-4 text-[13px] font-medium text-dm-muted max-lg:mb-4 lg:mb-5">
         <ol className="flex flex-wrap items-center gap-2">
           <li>
             <Link href="/dashboard" className="font-semibold hover:text-dm-electric">
@@ -216,15 +216,15 @@ export default async function HouseholdDetailPage(props: PageProps) {
         </ol>
       </nav>
 
-      <div className="flex flex-wrap items-start justify-between gap-5 border-b border-dashed border-[var(--dm-border-strong)] pb-7">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-dashed border-[var(--dm-border-strong)] pb-6 max-lg:flex-col max-lg:gap-4 lg:gap-5 lg:pb-7">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-dm-muted">
             Shared household
           </p>
-          <h1 className="font-cozy-display mt-2 text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
+          <h1 className="font-cozy-display mt-2 max-lg:break-words max-lg:text-[2.05rem] max-lg:leading-[1.08] text-[2.75rem] leading-[1.05] tracking-tight text-dm-text md:text-[3.1rem]">
             {household.name}
           </h1>
-          <p className="mt-4 text-[15px] leading-relaxed text-dm-muted">
+          <p className="mt-3 text-[14px] leading-relaxed text-dm-muted max-lg:mt-2 lg:mt-4 lg:text-[15px]">
             You&apos;re{" "}
             <span className="font-semibold capitalize text-dm-text">
               {memberRole}
@@ -232,21 +232,21 @@ export default async function HouseholdDetailPage(props: PageProps) {
             · since {formatDate(household.createdAt)}.
           </p>
         </div>
-        <div className="flex shrink-0 flex-wrap gap-3">
-          <span className="inline-flex rounded-full bg-dm-elevated/80 px-3 py-1.5 text-xs font-medium text-dm-text ring-1 ring-[var(--dm-border)]">
+        <div className="flex w-full shrink-0 flex-wrap gap-2 max-lg:gap-3 lg:w-auto lg:gap-3">
+          <span className="inline-flex min-h-[44px] items-center rounded-full bg-dm-elevated/80 px-3 py-2 text-xs font-medium text-dm-text ring-1 ring-[var(--dm-border)] lg:min-h-0 lg:py-1.5">
             {households.length} space{households.length === 1 ? "" : "s"}
           </span>
           <Link
             href="/dashboard"
-            className="inline-flex rounded-full border border-[var(--dm-border-strong)] px-4 py-1.5 text-xs font-semibold text-dm-muted transition hover:border-dm-electric hover:text-dm-electric"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--dm-border-strong)] px-4 py-2 text-xs font-semibold text-dm-muted transition hover:border-dm-electric hover:text-dm-electric touch-manipulation lg:min-h-0 lg:py-1.5"
           >
             Home
           </Link>
         </div>
       </div>
 
-      <div className="mt-7 pb-2">
-        <div className="grid grid-cols-3 gap-1 rounded-[3px] border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-1 shadow-[var(--cozy-shadow-paper)] sm:flex sm:min-w-0 sm:shrink-0 sm:flex-wrap">
+      <div className="mt-6 pb-2 max-lg:mt-5 lg:mt-7">
+        <div className="flex flex-wrap gap-2 rounded-xl border border-dashed border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[var(--cozy-shadow-paper)] max-lg:justify-between lg:flex lg:flex-wrap lg:gap-1 lg:rounded-[3px] lg:p-1">
           <TabLink active={view === "overview"} href={tabBase} label="Overview" />
           <TabLink active={view === "tasks"} href={`${tabBase}?view=tasks`} label="Tasks" />
           <TabLink active={view === "expenses"} href={`${tabBase}?view=expenses`} label="Money" />
@@ -258,7 +258,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
 
       {view === "overview" ? (
         <>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-3 max-lg:gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <OverviewVariant href={`${tabBase}?view=tasks`} variant="note">
               Tasks · chores
             </OverviewVariant>
@@ -295,7 +295,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
           </section>
         </>
       ) : view === "tasks" ? (
-        <section className="mt-10 space-y-10">
+        <section className="mt-10 flex flex-col gap-10 lg:gap-10">
           {!memberBundle ||
           ("error" in memberBundle && memberBundle.error) ?
             <div role="alert" className="text-sm text-dm-danger">
@@ -322,20 +322,26 @@ export default async function HouseholdDetailPage(props: PageProps) {
             </div>
           : (
             <>
-              <div className="cozy-poster cozy-tilt-xs p-5 sm:p-6">
-                <h2 className="font-cozy-display text-2xl text-dm-text">New sticky</h2>
-                <CreateHouseholdTaskForm
-                  className="mt-6 space-y-4"
-                  households={[{ id: household.id, name: household.name }]}
-                  fixedHouseholdId={id}
-                  memberOptions={membersList.map((m) => ({
-                    userId: m.userId,
-                    label: labelMember(m),
-                  }))}
-                />
+              <div className="order-3 lg:order-none">
+                <div className="cozy-poster cozy-tilt-xs p-5 sm:p-6 max-lg:rounded-2xl max-lg:p-4">
+                  <h2 className="font-cozy-display text-2xl text-dm-text max-lg:text-[1.65rem]">
+                    New sticky
+                  </h2>
+                  <CreateHouseholdTaskForm
+                    className="mt-6 space-y-4 max-lg:mt-5 max-lg:[&_input]:min-h-[48px] max-lg:[&_input]:text-[16px] max-lg:[&_button]:min-h-[52px] max-lg:[&_textarea]:min-h-[44px]"
+                    households={[{ id: household.id, name: household.name }]}
+                    fixedHouseholdId={id}
+                    memberOptions={membersList.map((m) => ({
+                      userId: m.userId,
+                      label: labelMember(m),
+                    }))}
+                  />
+                </div>
               </div>
-              <div>
-                <h2 className="font-cozy-display text-xl text-dm-text">Still on the corkboard</h2>
+              <div className="order-1 lg:order-none">
+                <h2 className="font-cozy-display text-xl text-dm-text max-lg:mb-3 max-lg:text-[1.45rem]">
+                  Still on the corkboard
+                </h2>
                 <HouseholdTaskList
                   tasks={tasksPayload?.tasks ?? []}
                   currentUserId={user.id}
@@ -343,12 +349,16 @@ export default async function HouseholdDetailPage(props: PageProps) {
                 />
               </div>
               {doneTasksPayload?.tasks?.length ?
-                <div className="cozy-receipt cozy-tilt-xs-alt p-5">
-                  <h3 className="text-sm font-semibold text-dm-text">Freshly peeled</h3>
-                  <HouseholdCompletedTaskList
-                    tasks={doneTasksPayload.tasks}
-                    memberLabels={memberLabels}
-                  />
+                <div className="order-2 lg:order-none">
+                  <div className="cozy-receipt cozy-tilt-xs-alt p-5 max-lg:rounded-2xl max-lg:p-4">
+                    <h3 className="text-[15px] font-semibold text-dm-text lg:text-sm">
+                      Freshly peeled
+                    </h3>
+                    <HouseholdCompletedTaskList
+                      tasks={doneTasksPayload.tasks}
+                      memberLabels={memberLabels}
+                    />
+                  </div>
                 </div>
               : null}
             </>
@@ -522,7 +532,7 @@ function TabLink({
       scroll={false}
       aria-current={active ? "page" : undefined}
       className={[
-        "rounded-sm px-3 py-2.5 text-center text-sm font-semibold whitespace-nowrap transition sm:min-w-[5.85rem]",
+        "flex min-h-[46px] flex-[1_1_calc(50%-4px)] items-center justify-center rounded-lg px-2 py-2 text-center text-[13px] font-semibold leading-tight transition max-lg:max-w-[calc(50%-4px)] lg:max-w-none lg:min-h-0 lg:flex-none lg:min-w-[5.85rem] lg:rounded-sm lg:px-3 lg:py-2.5 lg:text-sm lg:whitespace-nowrap",
         active
           ? href.includes("receipts")
             ? "bg-dm-accent-warn-bg text-[var(--dm-accent-warn-text)] ring-1 ring-[var(--dm-border-strong)]"
@@ -550,7 +560,7 @@ function OverviewCard({
     <Link
       href={href}
       scroll={false}
-      className="cozy-receipt cozy-hover-wiggle rounded-[2px] px-4 py-4 text-center text-sm font-semibold text-dm-text transition hover:brightness-[1.01]"
+      className="cozy-receipt cozy-hover-wiggle rounded-[2px] px-4 py-4 text-center text-sm font-semibold text-dm-text transition hover:brightness-[1.01] max-lg:min-h-[56px] max-lg:rounded-xl max-lg:px-4 max-lg:py-5 max-lg:text-[15px] max-lg:leading-snug"
     >
       {children}
     </Link>
@@ -571,7 +581,7 @@ function OverviewVariant({
       <Link
         href={href}
         scroll={false}
-        className="cozy-note cozy-hover-wiggle cozy-tilt-xs block rounded-[2px] px-4 py-4 text-center text-sm font-semibold text-dm-text shadow-[var(--cozy-shadow-note)]"
+        className="cozy-note cozy-hover-wiggle cozy-tilt-xs block rounded-[2px] px-4 py-4 text-center text-sm font-semibold text-dm-text shadow-[var(--cozy-shadow-note)] max-lg:min-h-[56px] max-lg:rounded-xl max-lg:py-5 max-lg:text-[15px] max-lg:leading-snug"
       >
         {children}
       </Link>
@@ -580,7 +590,7 @@ function OverviewVariant({
     <Link
       href={href}
       scroll={false}
-      className="cozy-poster cozy-hover-wiggle cozy-tilt-xs-alt block px-4 py-4 text-center text-sm font-semibold text-dm-text"
+      className="cozy-poster cozy-hover-wiggle cozy-tilt-xs-alt block px-4 py-4 text-center text-sm font-semibold text-dm-text max-lg:min-h-[56px] max-lg:rounded-xl max-lg:py-5 max-lg:text-[15px] max-lg:leading-snug"
     >
       {children}
     </Link>

@@ -1,0 +1,13 @@
+import type { ReactNode } from "react";
+
+/**
+ * Wraps dashboard page content on small screens only.
+ * On lg+, acts as a transparent pass-through (`lg:contents`) so desktop layout is unchanged.
+ */
+export function MobileAppShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="dm-mobile-app-shell flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden lg:contents lg:min-w-0 lg:overflow-visible">
+      {children}
+    </div>
+  );
+}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { MobileListItem } from "@/components/mobile/mobile-list-item";
+import { MobileSection } from "@/components/mobile/mobile-section";
 import { formatMoneySafe } from "@/lib/currency/format-money";
 import { computePendingBalanceSections } from "@/lib/expenses/compute-pending-balances";
 import {
@@ -64,8 +66,8 @@ export default async function FinancesPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8 pb-24 lg:pb-9">
-      <header className="border-b border-dashed border-[var(--dm-border-strong)] pb-6">
+    <div className="mx-auto w-full max-w-4xl space-y-8">
+      <header className="hidden border-b border-dashed border-[var(--dm-border-strong)] pb-6 lg:block">
         <h1 className="font-cozy-display text-[2.35rem] leading-[1.1] text-dm-text">
           Expenses overview
         </h1>
@@ -75,13 +77,71 @@ export default async function FinancesPage() {
         </p>
       </header>
 
+      <header className="border-b border-[var(--dm-border-strong)] pb-4 lg:hidden">
+        <h1 className="font-cozy-display text-[2rem] leading-tight text-dm-text">Money</h1>
+        <p className="mt-2 text-[14px] leading-snug text-dm-muted">
+          Your balance on open bills — tap a household for the full ledger.
+        </p>
+      </header>
+
       {error ?
         <div className="rounded-lg border border-dm-danger/35 px-4 py-3 text-sm text-dm-danger">
           {error}
         </div>
       : null}
 
-      <div className="cozy-receipt cozy-tilt-xs overflow-hidden rounded-[2px]">
+      <div className="lg:hidden">
+        <MobileSection
+          title="Balance summary"
+          hideDescriptionMobile
+          description="Across households — open bills only."
+          className="border-[var(--dm-border-strong)] shadow-[var(--cozy-shadow-note)]"
+        >
+          {households.length === 0 ?
+            <p className="text-[14px] text-dm-muted">
+              Create a household from{" "}
+              <Link className="font-semibold text-dm-electric hover:underline" href="/dashboard">
+                Home
+              </Link>
+              .
+            </p>
+          : (
+            <ul className="flex flex-col gap-2">
+              {rows.map((r) => (
+                <li key={r.id}>
+                  <MobileListItem
+                    title={r.name}
+                    subtitle={`Role · ${r.role}`}
+                    meta={
+                      r.balanceError ?
+                        <span className="text-dm-muted">Could not load balance</span>
+                      : r.balanceLabel
+                    }
+                    href={`/dashboard/household/${r.id}?view=expenses`}
+                    trailing={
+                      <span className="text-[12px] font-semibold text-dm-electric">Ledger</span>
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </MobileSection>
+
+        <MobileSection
+          title="Tips"
+          hideDescriptionMobile
+          description="Receipts and splits live under each household."
+          className="mt-4 border-[var(--dm-border-strong)] shadow-[var(--cozy-shadow-note)]"
+        >
+          <p className="text-[14px] leading-relaxed text-dm-muted">
+            Scan receipts in the household&apos;s Receipts tab. Close bills when you&apos;ve settled up
+            outside the app.
+          </p>
+        </MobileSection>
+      </div>
+
+      <div className="cozy-receipt cozy-tilt-xs hidden overflow-hidden rounded-[2px] lg:block">
         <table className="min-w-full text-left text-sm">
           <thead className="border-b border-[var(--dm-border-strong)] bg-dm-bg text-[11px] font-medium uppercase tracking-wide text-dm-muted">
             <tr>
@@ -129,7 +189,7 @@ export default async function FinancesPage() {
         </table>
       </div>
 
-      <section className="cozy-note cozy-tilt-xs p-5 text-[13px] leading-relaxed text-dm-muted shadow-[var(--cozy-shadow-note)]">
+      <section className="cozy-note cozy-tilt-xs hidden p-5 text-[13px] leading-relaxed text-dm-muted shadow-[var(--cozy-shadow-note)] lg:block">
         Scan receipts under each household’s Receipts tab. When you tap “Turn into split”, the split
         uses that receipt’s currency. After people pay each other outside the app, open the bill and
         tap <strong className="text-dm-text">We settled up — close bill</strong> so it stops counting.

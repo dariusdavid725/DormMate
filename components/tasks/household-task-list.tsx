@@ -103,7 +103,7 @@ export function HouseholdTaskList({
                 ) : (
                   <button
                     type="submit"
-                    className="cozy-complete shrink-0 rounded-md border border-[rgba(54,47,40,0.12)] bg-dm-electric px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] hover:brightness-105"
+                    className="cozy-complete shrink-0 rounded-md border border-[rgba(54,47,40,0.12)] bg-dm-electric px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white shadow-[1px_2px_0_rgba(54,47,40,0.08)] min-h-[44px] hover:brightness-105 sm:min-h-0 sm:py-2 touch-manipulation"
                   >
                     <CompleteChip idle="Claim" />
                   </button>

@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import type { HouseholdSummary } from "@/lib/households/queries";
 
 import { DashboardBottomNav } from "@/components/dashboard/dashboard-bottom-nav";
-import { MobileHouseholdStrip } from "@/components/dashboard/mobile-household-strip";
+import { MobileAppShell } from "@/components/mobile/mobile-app-shell";
+import { MobileTopBar } from "@/components/mobile/mobile-top-bar";
 import { SidebarNavLink } from "@/components/dashboard/sidebar-nav-link";
 import { WorkspaceHeader } from "@/components/dashboard/workspace-header";
 
@@ -26,8 +27,14 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <WorkspaceHeader email={email} showAdmin={showAdmin} />
-      <MobileHouseholdStrip households={stripItems} />
+      <div className="hidden lg:block">
+        <WorkspaceHeader email={email} showAdmin={showAdmin} />
+      </div>
+      <MobileTopBar
+        email={email}
+        showAdmin={showAdmin}
+        households={stripItems}
+      />
       <div className="flex min-h-0 flex-1">
         <aside className="dm-sidebar-glass hidden w-60 shrink-0 overflow-y-auto py-6 pl-6 pr-2 lg:flex lg:flex-col">
           <nav aria-label="Workspace" className="flex flex-col gap-6">
@@ -95,8 +102,8 @@ export function DashboardShell({
               Sidebar list unavailable. Reload if this persists.
             </div>
           ) : null}
-          <main className="relative flex-1 px-4 pb-24 pt-5 lg:px-8 lg:pb-10 lg:pt-7">
-            {children}
+          <main className="relative flex-1 px-3 pb-[calc(7.65rem+env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:px-8 lg:pb-10 lg:pt-7">
+            <MobileAppShell>{children}</MobileAppShell>
           </main>
           <footer className="hidden border-t border-[var(--dm-border-strong)] px-4 py-3 text-center text-[11px] text-dm-muted lg:block lg:px-10">
             DormMate
