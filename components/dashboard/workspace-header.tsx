@@ -22,18 +22,18 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin, hous
   const profileLabel = displayName?.trim() || email;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/96 pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(45,41,37,0.08)] backdrop-blur-sm">
-      <div className="mx-auto flex h-14 w-full max-w-[1240px] items-center justify-between gap-4 px-4 lg:h-16 lg:px-6">
+    <header className="dm-topbar-shell sticky top-0 z-40 border-b border-[var(--dm-border-strong)] pt-[env(safe-area-inset-top)] shadow-[0_8px_20px_rgba(28,39,56,0.08)] backdrop-blur-md">
+      <div className="mx-auto flex h-14 w-full max-w-[1260px] items-center justify-between gap-4 px-4 lg:h-16 lg:px-7">
         <div className="flex min-w-0 items-center gap-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2.5 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-2.5 py-1.5 text-lg font-semibold text-dm-text md:text-[1.2rem]"
+            className="inline-flex items-center gap-2.5 rounded-xl border border-[var(--dm-border)] bg-dm-surface px-2.5 py-1.5 text-lg font-semibold text-dm-text shadow-[0_8px_16px_rgba(28,39,56,0.08)] md:text-[1.2rem]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- static public brand logo */}
             <img src="/logo.png" alt="" className="h-8 w-8 rounded-lg object-cover" aria-hidden />
             Koti
           </Link>
-          <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted hover:border-dm-electric hover:text-dm-text sm:inline-flex">
+          <Link href="/dashboard/join" className="hidden rounded-md border border-dashed border-[var(--dm-border-strong)] px-2.5 py-1 text-xs font-semibold text-dm-muted transition-colors hover:border-dm-electric hover:text-dm-text sm:inline-flex">
             Join home
           </Link>
         </div>
@@ -91,7 +91,7 @@ export function WorkspaceHeader({ email, displayName, avatarUrl, showAdmin, hous
         </div>
       </div>
       {households.length > 0 ? (
-        <div className="mx-auto hidden w-full max-w-[1240px] items-center gap-2 overflow-x-auto px-4 pb-2 lg:flex lg:px-6">
+        <div className="mx-auto hidden w-full max-w-[1260px] items-center gap-2 overflow-x-auto px-4 pb-2 lg:flex lg:px-7">
           {households.slice(0, 6).map((h) => (
             <Link
               key={h.id}

@@ -40,7 +40,7 @@ export function MobileTopBar({
     }) ?? households[0];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--dm-border-strong)] bg-dm-surface/95 pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(45,41,37,0.08)] backdrop-blur-md lg:hidden">
+    <header className="dm-topbar-shell sticky top-0 z-40 border-b border-[var(--dm-border-strong)] pt-[env(safe-area-inset-top)] shadow-[0_8px_18px_rgba(28,39,56,0.08)] backdrop-blur-md lg:hidden">
       <div className="flex min-h-[52px] items-center gap-2 px-3 pb-2 pt-1">
         <div className="min-w-0 flex-1">
           <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-dm-muted">
@@ -65,7 +65,7 @@ export function MobileTopBar({
                   if (!id) return;
                   router.push(`/dashboard/household/${id}`);
                 }}
-              className="mt-0.5 max-w-full min-h-[48px] w-full touch-manipulation rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-[1.02rem] font-semibold leading-snug text-dm-text sm:text-[1.08rem]"
+              className="mt-0.5 max-w-full min-h-[48px] w-full touch-manipulation rounded-lg border border-[var(--dm-border-strong)] bg-dm-surface px-3 py-2.5 text-[1.02rem] font-semibold leading-snug text-dm-text shadow-[0_6px_14px_rgba(28,39,56,0.07)] sm:text-[1.08rem]"
               >
                 {households.map((h) => (
                   <option key={h.id} value={h.id}>
@@ -94,7 +94,7 @@ export function MobileTopBar({
             <span className="sr-only">Account menu</span>
           </summary>
           <div
-            className="absolute right-0 mt-2 w-[min(17rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[var(--cozy-shadow-paper)]"
+            className="absolute right-0 mt-2 w-[min(17rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--dm-border-strong)] bg-dm-surface p-2 shadow-[0_14px_28px_rgba(28,39,56,0.16)]"
             role="menu"
           >
             <p className="truncate px-2 py-1 text-[11px] text-dm-muted" title={email}>
