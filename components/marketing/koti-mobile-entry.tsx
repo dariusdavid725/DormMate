@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { PwaInstallMarketingMobile } from "@/components/pwa/pwa-install-cta";
+
 /** Full-viewport mobile app gate for "/". Desktop uses the usual marketing hero. */
 export function KotiMobileEntry() {
   return (
@@ -60,6 +62,8 @@ export function KotiMobileEntry() {
             Groceries, chores, receipts, expenses, and house updates — all in one shared home app.
           </p>
         </div>
+
+        <PwaInstallMarketingMobile />
 
         <div className="mx-auto w-full max-w-sm space-y-3">
           <Link

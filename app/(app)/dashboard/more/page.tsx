@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { PwaInstallMoreCard } from "@/components/pwa/pwa-install-cta";
 import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
 import { MobileListItem } from "@/components/mobile/mobile-list-item";
 import { MobileSection } from "@/components/mobile/mobile-section";
@@ -43,6 +44,8 @@ export default async function DashboardMorePage() {
           Homes, invites, and account — everything beyond the daily tabs.
         </p>
       </header>
+
+      <PwaInstallMoreCard />
 
       {error ?
         <p className="rounded-xl border border-dm-danger/35 px-4 py-3 text-[13px] text-dm-danger">

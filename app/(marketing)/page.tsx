@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { KotiMobileEntry } from "@/components/marketing/koti-mobile-entry";
+import { PwaInstallDesktopHint } from "@/components/pwa/pwa-install-cta";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -58,6 +59,7 @@ export default async function Home() {
                   Log in
                 </Link>
               </div>
+              <PwaInstallDesktopHint />
             </div>
 
             <div className="mt-14 space-y-4 lg:mt-6">

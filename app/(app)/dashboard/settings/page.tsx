@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
+import { PwaSettingsInstallHint } from "@/components/pwa/pwa-settings-install-hint";
 import { AccountPreferencesForm } from "@/components/settings/account-preferences-form";
 import { createClient } from "@/lib/supabase/server";
 
@@ -78,6 +79,9 @@ export default async function SettingsPage() {
                 avatarUrl: p.avatar_url ?? null,
               }}
             />
+          </div>
+          <div className="mt-5">
+            <PwaSettingsInstallHint />
           </div>
         </section>
 
