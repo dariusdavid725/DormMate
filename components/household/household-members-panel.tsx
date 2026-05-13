@@ -10,6 +10,7 @@ import {
   removeHouseholdMember,
 } from "@/lib/households/actions";
 import { AvatarUploadFormBlock } from "@/components/profile/avatar-upload-form-block";
+import { CopyTextButton } from "@/components/ui/copy-text-button";
 import {
   type AvatarUploadState,
   updateProfileDisplayName,
@@ -174,6 +175,39 @@ export function HouseholdMembersPanel({
                       </p>
                       {m.email?.trim() ?
                         <p className="truncate text-[12px] text-dm-muted">{m.email.trim()}</p>
+                      : null}
+                      {(m.phoneNumber?.trim() || m.iban?.trim()) ?
+                        <div className="flex min-w-0 flex-wrap items-center gap-1.5 pt-1">
+                          {m.phoneNumber?.trim() ?
+                            <>
+                              <span className="max-w-[10rem] truncate font-mono text-[11px] text-dm-text">
+                                {m.phoneNumber.trim()}
+                              </span>
+                              <CopyTextButton
+                                text={m.phoneNumber.trim()}
+                                label="Phone"
+                                className="touch-manipulation shrink-0 rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/80 px-2 py-0.5 text-[10px] font-semibold text-dm-text hover:border-dm-electric"
+                              />
+                            </>
+                          : null}
+                          {m.iban?.trim() ?
+                            <>
+                              <span className="max-w-[11rem] truncate font-mono text-[11px] text-dm-text">
+                                {m.iban.replace(/\s+/g, " ").trim()}
+                              </span>
+                              <CopyTextButton
+                                text={m.iban.replace(/\s+/g, "").trim()}
+                                label="IBAN"
+                                className="touch-manipulation shrink-0 rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/80 px-2 py-0.5 text-[10px] font-semibold text-dm-text hover:border-dm-electric"
+                              />
+                            </>
+                          : null}
+                        </div>
+                      : (
+                        <p className="text-[10px] text-dm-muted/80">No payment details yet</p>
+                      )}
+                      {m.paymentNote?.trim() ?
+                        <p className="line-clamp-2 text-[10px] text-dm-muted">{m.paymentNote.trim()}</p>
                       : null}
                       <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-dm-muted">
                         <span className="inline-flex rounded-full bg-[color-mix(in_srgb,var(--dm-electric)_15%,transparent)] px-2.5 py-1 font-semibold text-dm-text">

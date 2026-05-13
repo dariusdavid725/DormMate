@@ -19,6 +19,9 @@ type ProfileSeed = {
   bio: string;
   dietaryPreferences: string[];
   avatarUrl?: string | null;
+  phoneNumber?: string;
+  iban?: string;
+  paymentNote?: string;
 };
 
 const DIETARY = [
@@ -62,6 +65,11 @@ export function AccountPreferencesForm({
     return () => window.clearTimeout(tid);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refresh on successful avatar upload only
   }, [avatarState.ok, router]);
+
+  useEffect(() => {
+    if (!state.ok) return;
+    router.refresh();
+  }, [state.ok, router]);
 
   return (
     <div className="space-y-8">
@@ -154,6 +162,54 @@ export function AccountPreferencesForm({
             className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 text-sm"
           />
         </label>
+
+        <div className="space-y-3 border-t border-[var(--dm-border)] pt-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+            Pay roommates back
+          </p>
+          <p className="text-[12px] text-dm-muted">
+            Only people in your homes can see these. IBAN is stored without spaces.
+          </p>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+              Phone (Revolut, bank SMS, etc.)
+            </span>
+            <input
+              type="text"
+              name="phone_number"
+              maxLength={40}
+              defaultValue={profile.phoneNumber ?? ""}
+              autoComplete="tel"
+              className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+              IBAN
+            </span>
+            <input
+              type="text"
+              name="iban"
+              maxLength={48}
+              defaultValue={profile.iban ?? ""}
+              spellCheck={false}
+              className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 font-mono text-sm uppercase"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-dm-muted">
+              Payment note (optional)
+            </span>
+            <input
+              type="text"
+              name="payment_note"
+              maxLength={200}
+              defaultValue={profile.paymentNote ?? ""}
+              placeholder="e.g. Name on account, reference to use"
+              className="mt-2 w-full rounded-md border border-[var(--dm-border-strong)] bg-dm-bg/70 px-3 py-2.5 text-sm"
+            />
+          </label>
+        </div>
 
         <button className="rounded-md bg-dm-electric px-4 py-2 text-sm font-semibold text-white">
           <SubmitDetails idle="Save profile" />

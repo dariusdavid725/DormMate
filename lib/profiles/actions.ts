@@ -273,6 +273,11 @@ export async function updateProfileDetails(
   const pronouns = String(formData.get("pronouns") ?? "").trim();
   const genderIdentity = String(formData.get("gender_identity") ?? "").trim();
   const bio = String(formData.get("bio") ?? "").trim();
+  const phoneNumber = String(formData.get("phone_number") ?? "").trim();
+  const ibanRaw = String(formData.get("iban") ?? "")
+    .replace(/\s+/g, "")
+    .toUpperCase();
+  const paymentNote = String(formData.get("payment_note") ?? "").trim();
 
   const dietaryRaw = formData
     .getAll("dietary_preferences")
@@ -294,6 +299,15 @@ export async function updateProfileDetails(
   if (bio.length > 300) {
     return { error: "Bio too long (max 300)." };
   }
+  if (phoneNumber.length > 40) {
+    return { error: "Phone number is too long." };
+  }
+  if (ibanRaw.length > 48) {
+    return { error: "IBAN looks too long." };
+  }
+  if (paymentNote.length > 200) {
+    return { error: "Payment note is too long (max 200)." };
+  }
 
   const supabase = await createClient();
   const {
@@ -311,6 +325,9 @@ export async function updateProfileDetails(
       gender_identity: genderIdentity || null,
       dietary_preferences: dietary,
       bio: bio || null,
+      phone_number: phoneNumber || null,
+      iban: ibanRaw || null,
+      payment_note: paymentNote || null,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" },

@@ -29,6 +29,9 @@ export type HouseholdMemberRow = {
   avatarUrl: string | null;
   email: string | null;
   rewardPoints: number;
+  phoneNumber: string | null;
+  iban: string | null;
+  paymentNote: string | null;
 };
 
 export const loadHouseholdSummaries = cache(async (userId: string) => {
@@ -88,7 +91,16 @@ export const loadHouseholdSummaries = cache(async (userId: string) => {
 export async function loadHouseholdDetail(
   userId: string,
   householdId: string,
-): Promise<{ ok: false } | { ok: true; household: HouseholdDetail; memberRole: string }> {
+): Promise<
+  | { ok: false }
+  | {
+      ok: true;
+      household: HouseholdDetail;
+      memberRole: string;
+      /** True when a platform super-admin opens a household they are not a member of. */
+      viewAsPlatformAdmin?: boolean;
+    }
+> {
   const supabase = await createClient();
 
   const { data: hh, error: hhErr } = await supabase
@@ -120,12 +132,42 @@ export async function loadHouseholdDetail(
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (meErr?.message || !me) {
+  if (meErr?.message) {
+    console.error("[households] detail membership", meErr.message);
     return { ok: false };
   }
 
-  const role = (me as { role: string }).role;
-  const canManage = role === "owner" || role === "admin";
+  if (me) {
+    const role = (me as { role: string }).role;
+    const canManage = role === "owner" || role === "admin";
+
+    const typed: HouseholdDetail = {
+      id: row.id,
+      name: row.name,
+      currency: (row.currency ?? "RON").toUpperCase().slice(0, 8),
+      createdBy: row.created_by,
+      createdAt: row.created_at,
+      inviteCode: canManage ? row.invite_code : null,
+      canManageMembers: canManage,
+    };
+
+    return {
+      ok: true,
+      household: typed,
+      memberRole: role,
+    };
+  }
+
+  const { data: isAdminRaw, error: adminErr } = await supabase.rpc(
+    "is_platform_super_admin",
+  );
+  if (adminErr?.message) {
+    console.error("[households] detail admin check", adminErr.message);
+  }
+
+  if (isAdminRaw !== true) {
+    return { ok: false };
+  }
 
   const typed: HouseholdDetail = {
     id: row.id,
@@ -133,14 +175,15 @@ export async function loadHouseholdDetail(
     currency: (row.currency ?? "RON").toUpperCase().slice(0, 8),
     createdBy: row.created_by,
     createdAt: row.created_at,
-    inviteCode: canManage ? row.invite_code : null,
-    canManageMembers: canManage,
+    inviteCode: null,
+    canManageMembers: false,
   };
 
   return {
     ok: true,
     household: typed,
-    memberRole: role,
+    memberRole: "member",
+    viewAsPlatformAdmin: true,
   };
 }
 
@@ -155,7 +198,7 @@ export const loadHouseholdMembers = cache(async (householdId: string): Promise<
 
   if (error) {
     console.error("[households] list members rpc", error.message);
-    return { error: error.message };
+    return { error: "Could not load roommates." };
   }
 
   type RpcRow = {
@@ -166,9 +209,17 @@ export const loadHouseholdMembers = cache(async (householdId: string): Promise<
     avatar_url: string | null;
     email: string | null;
     reward_points?: number | null;
+    phone_number?: string | null;
+    iban?: string | null;
+    payment_note?: string | null;
   };
 
-  const rows = (data ?? []) as RpcRow[];
+  const rowsRaw = data ?? [];
+  const rows: RpcRow[] = Array.isArray(rowsRaw)
+    ? (rowsRaw as RpcRow[])
+    : rowsRaw && typeof rowsRaw === "object"
+      ? [rowsRaw as RpcRow]
+      : [];
 
   return rows.map((r) => ({
     userId: r.user_id,
@@ -178,5 +229,8 @@ export const loadHouseholdMembers = cache(async (householdId: string): Promise<
     avatarUrl: r.avatar_url,
     email: r.email,
     rewardPoints: Math.max(0, Math.floor(Number(r.reward_points ?? 0))),
+    phoneNumber: r.phone_number ?? null,
+    iban: r.iban ?? null,
+    paymentNote: r.payment_note ?? null,
   }));
 });

@@ -144,6 +144,20 @@ export default async function HouseholdDetailPage(props: PageProps) {
       ? memberBundle
       : ([] as HouseholdMemberRow[]);
 
+  const memberPaymentByUserId: Record<
+    string,
+    { phone: string | null; iban: string | null; note: string | null }
+  > = Object.fromEntries(
+    membersList.map((m) => [
+      m.userId,
+      {
+        phone: m.phoneNumber?.trim() || null,
+        iban: m.iban?.replace(/\s+/g, "").trim() || null,
+        note: m.paymentNote?.trim() || null,
+      },
+    ]),
+  );
+
   const memberLabels = Object.fromEntries(
     membersList.map((m) => [m.userId, labelMember(m)] as const),
   );
@@ -487,6 +501,7 @@ export default async function HouseholdDetailPage(props: PageProps) {
                   <HouseholdNetBalances
                     sections={balanceSections}
                     memberLabels={memberLabels}
+                    memberPayments={memberPaymentByUserId}
                   />
                 )}
               </div>

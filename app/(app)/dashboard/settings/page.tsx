@@ -25,7 +25,7 @@ export default async function SettingsPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "display_name, pronouns, gender_identity, dietary_preferences, bio, avatar_url",
+      "display_name, pronouns, gender_identity, dietary_preferences, bio, avatar_url, phone_number, iban, payment_note",
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -37,6 +37,9 @@ export default async function SettingsPage() {
     dietary_preferences?: string[] | null;
     bio?: string | null;
     avatar_url?: string | null;
+    phone_number?: string | null;
+    iban?: string | null;
+    payment_note?: string | null;
   };
 
   return (
@@ -77,6 +80,9 @@ export default async function SettingsPage() {
                   ? p.dietary_preferences
                   : [],
                 avatarUrl: p.avatar_url ?? null,
+                phoneNumber: p.phone_number ?? "",
+                iban: p.iban ?? "",
+                paymentNote: p.payment_note ?? "",
               }}
             />
           </div>

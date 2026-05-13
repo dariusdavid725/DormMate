@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { MobileScrollViewport } from "@/components/mobile/mobile-scroll-viewport";
 import { JoinHouseholdForm } from "@/components/household/join-household-form";
 import { joinHouseholdByInviteCodeCore } from "@/lib/households/actions";
+import { normalizeInviteCodeInput } from "@/lib/invites/normalize-invite-code";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -17,17 +18,19 @@ type Props = {
 
 export default async function JoinHouseholdPage({ searchParams }: Props) {
   const q = await searchParams;
-  const code = typeof q.code === "string" ? q.code : undefined;
+  const rawCode = typeof q.code === "string" ? q.code : undefined;
+  const codeNorm = rawCode ? normalizeInviteCodeInput(rawCode) : "";
+  const codeForJoin = codeNorm.length >= 4 ? codeNorm : null;
   const auto = q.auto !== "0";
   let autoError: string | null = null;
 
-  if (code && auto) {
+  if (codeForJoin && auto) {
     const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (user) {
-      const joined = await joinHouseholdByInviteCodeCore(code);
+      const joined = await joinHouseholdByInviteCodeCore(codeForJoin);
       if (joined.ok) {
         const { householdId, householdName, joined: isNewMember } = joined.result;
         const welcome = encodeURIComponent(`Welcome to ${householdName}!`);
@@ -65,12 +68,25 @@ export default async function JoinHouseholdPage({ searchParams }: Props) {
               {autoError}
             </p>
           ) : null}
-          <JoinHouseholdForm initialCode={code} />
+          <JoinHouseholdForm initialCode={rawCode?.trim() ?? ""} />
           <p className="mt-6 text-center text-[12px] text-dm-muted">
+            Already have an account?{" "}
+            <Link
+              className="touch-manipulation px-2 py-2 font-semibold text-dm-electric underline underline-offset-[0.22em] hover:opacity-90"
+              href={`/login?next=${encodeURIComponent(
+                `/dashboard/join${codeForJoin ? `?code=${encodeURIComponent(codeForJoin)}` : ""}`,
+              )}`}
+            >
+              Log in
+            </Link>
+          </p>
+          <p className="mt-4 text-center text-[12px] text-dm-muted">
             Need keys first?{" "}
             <Link
               className="touch-manipulation px-2 py-2 font-semibold text-dm-electric underline underline-offset-[0.22em] hover:opacity-90"
-              href={`/signup?next=${encodeURIComponent(`/dashboard/join?code=${encodeURIComponent(code ?? "")}`)}`}
+              href={`/signup?next=${encodeURIComponent(
+                `/dashboard/join${codeForJoin ? `?code=${encodeURIComponent(codeForJoin)}` : ""}`,
+              )}`}
             >
               Sign up
             </Link>

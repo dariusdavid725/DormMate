@@ -1,12 +1,21 @@
 import { formatMoneySafe } from "@/lib/currency/format-money";
 import type { BalanceSection } from "@/lib/expenses/compute-pending-balances";
+import { CopyTextButton } from "@/components/ui/copy-text-button";
+
+export type MemberPaymentLite = {
+  phone: string | null;
+  iban: string | null;
+  note: string | null;
+};
 
 export function HouseholdNetBalances({
   sections,
   memberLabels,
+  memberPayments,
 }: {
   sections: BalanceSection[];
   memberLabels: Record<string, string>;
+  memberPayments?: Record<string, MemberPaymentLite>;
 }) {
   if (!sections.length) {
     return (
@@ -33,6 +42,10 @@ export function HouseholdNetBalances({
                   : n < -0.005
                     ? "Owes others their share of these bills."
                     : "About even.";
+              const pay = memberPayments?.[row.userId];
+              const showPayChips =
+                n > 0.005 && pay && (pay.iban?.length || pay.phone?.length);
+
               return (
                 <li
                   key={`${sec.currency}-${row.userId}`}
@@ -43,6 +56,22 @@ export function HouseholdNetBalances({
                     {formatMoneySafe(n, sec.currency)}
                   </p>
                   <p className="mt-1 text-[11px] leading-snug text-dm-muted">{plain}</p>
+                  {showPayChips ?
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-dm-muted">
+                        Pay them
+                      </span>
+                      {pay.phone ?
+                        <CopyTextButton text={pay.phone} label="Copy phone" />
+                      : null}
+                      {pay.iban ?
+                        <CopyTextButton text={pay.iban} label="Copy IBAN" />
+                      : null}
+                    </div>
+                  : null}
+                  {pay?.note && n > 0.005 ?
+                    <p className="mt-1 line-clamp-2 text-[10px] text-dm-muted">{pay.note}</p>
+                  : null}
                 </li>
               );
             })}

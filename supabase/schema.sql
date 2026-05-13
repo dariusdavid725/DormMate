@@ -138,6 +138,9 @@ create table if not exists public.profiles (
   dietary_preferences text[] not null default '{}'::text[],
   bio text,
   pronouns text,
+  phone_number text,
+  iban text,
+  payment_note text,
   updated_at timestamptz not null default now ()
 );
 
@@ -2048,3 +2051,136 @@ with check (
   and public.user_can_see_household (household_id, (select auth.uid ()))
 );
 grant select, insert on public.receipts to authenticated;
+
+-------------------------------------------------------------------------------
+-- Reliability pass: profile payment fields, invite join RLS bypass, member list for admins
+-------------------------------------------------------------------------------
+alter table public.profiles add column if not exists phone_number text;
+alter table public.profiles add column if not exists iban text;
+alter table public.profiles add column if not exists payment_note text;
+
+drop function if exists public.list_household_members_for_user (uuid);
+
+create or replace function public.list_household_members_for_user (p_household_id uuid)
+returns table (
+  user_id uuid,
+  role text,
+  joined_at timestamptz,
+  display_name text,
+  avatar_url text,
+  reward_points integer,
+  email text,
+  phone_number text,
+  iban text,
+  payment_note text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select m.user_id,
+         m.role::text as role,
+         m.joined_at,
+         p.display_name,
+         p.avatar_url,
+         m.reward_points,
+         au.email::text as email,
+         p.phone_number,
+         p.iban,
+         p.payment_note
+  from public.household_members m
+  left join public.profiles p on p.id = m.user_id
+  left join auth.users au on au.id = m.user_id
+  where m.household_id = p_household_id
+    and (
+      public.is_platform_super_admin ()
+      or exists (
+        select 1
+        from public.household_members self
+        where self.household_id = m.household_id
+          and self.user_id = auth.uid ()
+      )
+    );
+$$;
+
+revoke all on function public.list_household_members_for_user (uuid) from public;
+grant execute on function public.list_household_members_for_user (uuid) to authenticated;
+
+drop function if exists public.join_household_by_invite_code (text);
+
+create or replace function public.join_household_by_invite_code (p_code text)
+returns table (
+  household_id uuid,
+  household_name text,
+  joined boolean
+)
+language plpgsql
+volatile
+security definer
+set search_path = public
+as $$
+declare
+  hid uuid;
+  uid uuid;
+  cleaned text;
+  inserted int := 0;
+begin
+  perform set_config('row_security', 'off', true);
+
+  uid := auth.uid ();
+  cleaned := upper(trim (both from coalesce (p_code, '')));
+
+  if uid is null then
+    raise exception 'not authenticated' using errcode = '42501';
+  end if;
+
+  if length (cleaned) < 4 then
+    raise exception 'invalid invite code' using errcode = '22023';
+  end if;
+
+  select h.id
+    into hid
+    from public.households h
+   where h.invite_code = cleaned;
+
+  if hid is null then
+    raise exception 'invalid invite code' using errcode = '42501';
+  end if;
+
+  insert into public.household_members (household_id, user_id, role)
+  values (hid, uid, 'member')
+  on conflict (household_id, user_id) do nothing;
+
+  get diagnostics inserted = row_count;
+  joined := inserted > 0;
+
+  if joined then
+    insert into public.household_activities (
+      household_id,
+      kind,
+      actor_user_id,
+      subject_id,
+      payload
+    )
+    values (
+      hid,
+      'member_joined_via_invite',
+      uid,
+      uid,
+      jsonb_build_object('method', 'invite_code')
+    );
+  end if;
+
+  select h.name
+    into household_name
+    from public.households h
+   where h.id = hid;
+
+  household_id := hid;
+  return next;
+end;
+$$;
+
+revoke all on function public.join_household_by_invite_code (text) from public;
+grant execute on function public.join_household_by_invite_code (text) to authenticated;

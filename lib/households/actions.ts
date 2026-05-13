@@ -7,6 +7,7 @@ import {
   PUBLIC_TRY_AGAIN,
   shouldExposeSupabaseError,
 } from "@/lib/errors/public";
+import { normalizeInviteCodeInput } from "@/lib/invites/normalize-invite-code";
 import { createClient } from "@/lib/supabase/server";
 
 export type HouseholdActionState = {
@@ -143,24 +144,57 @@ type JoinRpcRow = {
   joined: boolean;
 };
 
+function joinRpcRows(data: unknown): JoinRpcRow[] {
+  if (Array.isArray(data)) return data as JoinRpcRow[];
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    return [data as JoinRpcRow];
+  }
+  return [];
+}
+
 export async function joinHouseholdByInviteCodeCore(
   rawCode: string,
 ): Promise<{ ok: true; result: JoinInviteResult } | { ok: false; error: string }> {
-  const code = rawCode.trim();
+  const code = normalizeInviteCodeInput(rawCode);
   if (code.length < 4) {
     return { ok: false, error: "Paste a valid invite code." };
   }
 
   const supabase = await createClient();
-  const { data: rows, error: rpcErr } = await supabase.rpc(
+
+  const { error: refreshError } = await supabase.auth.refreshSession();
+  if (refreshError?.message) {
+    console.error("[joinHousehold] refreshSession", refreshError.message);
+  }
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token || !session.user?.id) {
+    console.error("[joinHousehold] missing session JWT");
+    return {
+      ok: false,
+      error: shouldExposeSupabaseError()
+        ? "Not signed in or session expired. Try logging in again."
+        : PUBLIC_TRY_AGAIN,
+    };
+  }
+
+  const { data: rowsRaw, error: rpcErr } = await supabase.rpc(
     "join_household_by_invite_code",
     { p_code: code },
   );
 
-  if (rpcErr?.message || !Array.isArray(rows) || rows.length < 1) {
+  const rows = joinRpcRows(rowsRaw);
+
+  if (rpcErr?.message || rows.length < 1) {
     const msg = (rpcErr?.message ?? "").toLowerCase();
-    if (msg.includes("invalid invite")) {
+    console.error("[joinHousehold] rpc", rpcErr?.message, rpcErr);
+    if (msg.includes("invalid invite") || msg.includes("invite code")) {
       return { ok: false, error: "Invalid or expired invite code." };
+    }
+    if (msg.includes("not authenticated")) {
+      return { ok: false, error: "Please log in again, then try the invite link." };
     }
     if (!shouldExposeSupabaseError()) {
       return { ok: false, error: PUBLIC_TRY_AGAIN };
@@ -168,7 +202,7 @@ export async function joinHouseholdByInviteCodeCore(
     return { ok: false, error: rpcErr?.message ?? "Could not join." };
   }
 
-  const row = rows[0] as JoinRpcRow;
+  const row = rows[0]!;
   return {
     ok: true,
     result: {

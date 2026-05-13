@@ -35,12 +35,18 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(login);
     }
   } catch {
-    /* env missing locally — skip gate */
+    /* env missing locally — skip gate + session refresh */
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    /*
+     * Refresh Supabase session cookies on navigations (incl. `/`, login, PWA entry).
+     * Excludes static assets and the web manifest.
+     */
+    "/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };
